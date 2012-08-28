@@ -12,10 +12,6 @@ window.onerror = function(msg, url, l) {
 void
 function() {
 
-
-
-
-
     include.cfg({
         lib: '/dev/libs/{name}/{name}.js'
     }) //    
@@ -31,8 +27,8 @@ function() {
                 mask.renderDom("pre.language-#{language} > code.language-#{language}", this.attr, container);
                 container = container.querySelector('code');
 
-                $.get(this.attr.src).then(function(response) {
-                    container.innerHTML = response;
+                $.get(this.attr.src).complete(function(response) {				  
+                    container.innerHTML = response.responseText;
                     Prism.highlightElement(container.parentNode);
                 });
             }
