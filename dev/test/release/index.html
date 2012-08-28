@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+    
+    <head>
+        <script type="application/javascript" src="script/build.release.js"></script>
+        <link rel="stylesheet" href="style/build.release.css">
+    </head>
+    
+    <body>
+        <div id="build.release.xhr">
+            <script type="include/load" data-appuri="/data.json">
+                {
+                    "user": "Smith"
+                }
+            </script>
+            <script type="include/lazy" data-appuri="/lazy.js">
+                ;
+                (function() {
+                    console.log('lazyTest initialization');
+
+                    return {
+                        greet: function() {
+                            console.log('lazy module says hello!');
+                        }
+                    }
+                })();
+            </script>
+        </div>
+    </body>
+
+</html>

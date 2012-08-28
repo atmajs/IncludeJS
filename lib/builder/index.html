@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <script type="text/javascript">
+            console.time('IndexLoad');
+        </script>
+        <script type="text/javascript" src='../class.js'></script>
+        <script type="text/javascript" src='../include.js'></script>
+        <script type="text/javascript" src='dom/zepto.js'></script>
+        <script type="text/javascript" src='index.js'></script>
+        
+        <link rel="stylesheet" href="style/builder.css" />
+    </head>
+    <body>
+        
+        <script type="text/template" id='layout'>
+            
+            div {
+                div {
+                    input type='text' value='../../index.html';
+                    button > 'Build'
+                    div > label {
+                            input type='checkbox' name='minify' id='minify';
+                            'Minify Script'
+                    }                                            
+                }
+                div.tab {
+                    div.header {
+                        div.active > 'Javascript'
+                        div > 'Css'
+                        div > 'Load/Lazy'
+                        div > 'HTML'
+                        div > 'Images'
+                    }
+                    div.panels {
+                        div.active > textarea placeholder='Javascript Output';
+                        div > textarea placeholder='Css Output';
+                        div > textarea placeholder='Load/Lazy Output';
+                        div > textarea placeholder='HTML Output';
+                        div > textarea placeholder='Image List (from CSS)';
+                    }
+                }                
+            }
+            div.overlay  > div > 'Processing...'
+            
+        </script>
+        
+    </body>
+</html>

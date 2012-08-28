@@ -1,0 +1,127 @@
+
+input[type=text], textarea {
+	-webkit-user-select: text;
+	padding: 6px 8px;
+	border-radius: 3px;
+	background:rgba(255,255,255,.5);
+	border: 1px solid rgba(33,33,33,.2);
+    outline: none;
+}
+
+input[type=text]:focus, textarea:focus {
+	background: white;
+	box-shadow: inset 0px 0px 4px #999;
+	border: 1px solid rgba(33,33,33,.5)
+}
+
+
+button{
+	outline: none;
+	position: relative;
+	color: #292929;
+	font-size: 16px;
+	text-align: center;
+	white-space: nowrap;
+	margin: 0;
+	padding: 6px 18px;
+	overflow: hidden;
+	border-radius: 3px;
+	border: 1px solid rgba(15, 15, 15, 0.4);	
+	background: -webkit-linear-gradient(top, #e1e1e1, #aaa);
+	text-overflow: ellipsis;
+	cursor: pointer;
+}
+
+button:active:not(:disabled) { background: -webkit-linear-gradient(top, #aaa, #e1e1e1); top: 1px; }
+
+button:disabled { opacity: .5; }
+
+
+
+button.negative {
+	color:#ddd;
+	background: -webkit-linear-gradient(top, #E14444, #D02222);	
+}
+button.negative:active {
+	background: -webkit-linear-gradient(top, #D02222, #E14444);	
+}
+
+
+.tab > div.header > div {
+    display: inline-block;
+    padding:5px 10px;
+    margin: 15px 4px 5px;
+    cursor: pointer;	
+	background:url(images/1.png) 0 0 no-repeat;
+}
+.tab > div.header > div:hover:not(.active){
+    text-decoration: underline;
+}
+
+.tab > div.header > .active {
+    background:rgb(44,50,44);
+    color: rgb(250,255,250);
+    border-radius: 10px;
+    border:1px solid #eee;
+    cursor: default;
+    box-shadow: 0px 0px 3px #000;
+}
+.tab > div.panels > div {
+    display: none;    
+}
+.tab > div.panels > div.active {
+    display: block;
+}
+
+/** Application */
+
+body{
+    background:#eee;
+    font-family: 'Segoe UI', sans-serif;
+	
+	-webkit-user-select: none;
+	-moz-user-select: -moz-none;
+	user-select: none;
+}
+
+textarea {
+    width:100%;
+    box-sizing: border-box;
+    height:100%;
+    min-height: 400px;
+}
+
+
+.overlay {
+	height:100%;width:100%; display:table;margin:0 auto; vertical-align: middle;
+	position:fixed;
+	top:0px; left: 0px;
+	background: rgba(50,30,20,.7);
+	text-shadow: 0px 0px 4px #000;
+	color:#fff;
+	font-size:1.4em;
+	font-family: Consolas, Arial;
+	display: none;
+	
+}
+.overlay > div { vertical-align:middle;display:table-cell; text-align: center;}
+
+
+
+input[type='text'] {
+	min-width: 300px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
