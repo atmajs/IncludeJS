@@ -1,7 +1,8 @@
-###IncludeJS. Resource Compiler. ###
+<h3>IncludeJS. Resource Compiler. </h3>
 
 ----------
-
-check more at http://tenbits.github.com/IncludeJS
+<p>
+	IncludeJS is part of <a href='http://tenbits.github.com/CompoJS/#include'> LibJS Project </a>
+	</p>
 
 
