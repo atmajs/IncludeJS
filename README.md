@@ -2,7 +2,7 @@
 
 ----------
 <p>
-	IncludeJS is part of <a href='http://tenbits.github.com/CompoJS/#include'> LibJS Project </a>
+	IncludeJS is part of <a href='http://LibJS.it/#include'> LibJS Project </a>
 	</p>
 
 
