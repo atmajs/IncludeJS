@@ -1,0 +1,6 @@
+
+;(function(global, document) {
+
+	"use strict";
+	
+	
