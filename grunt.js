@@ -7,7 +7,8 @@ module.exports = function(grunt) {
 			dist: {
 				src: ['src/intro.js.txt',
 						'src/1.scope-vars.js', 
-						'src/2.Helper.js', 
+						'src/2.Helper.js',
+						'src/2.Routing.js',
 						'src/3.Events.js', 
 						'src/4.IncludeDeferred.js', 
 						'src/5.Include.js', 

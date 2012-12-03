@@ -10,7 +10,7 @@ var loadScript = function(url, callback){
 
 }
 
-var isEvalEnabled = true; 
+var isEvalEnabled = false; 
 
 var ScriptStack = new(Class({
 

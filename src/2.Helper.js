@@ -38,59 +38,6 @@ var Helper = { /** TODO: improve url handling*/
 		}
 		return target;
 	},
-	/**
-	 *	@arg x :
-	 *	1. string - URL to resource
-	 *	2. array - URLs to resources
-	 *	3. object - {route: x} - route defines the route template to resource,
-	 *		it must be set before in include.cfg.
-	 *		example:
-	 *			include.cfg('net','scripts/net/{name}.js')
-	 *			include.js({net: 'downloader'}) // -> will load scipts/net/downloader.js
-	 *	@arg namespace - route in case of resource url template, or namespace in case of LazyModule
-	 *
-	 *	@arg fn - callback function, which receives namespace|route, url to resource and ?id in case of not relative url
-	 *	@arg xpath - xpath string of a lazy object 'object.sub.and.othersub';
-	 */
-	eachIncludeItem: function(type, x, fn, namespace, xpath) {
-		var key;
-		
-		if (x == null) {
-			console.error('Include Item has no Data', type, namespace);
-			return;
-		}
-
-		if (type == 'lazy' && xpath == null) {
-			for (key in x) {
-				this.eachIncludeItem(type, x[key], fn, null, key);
-			}
-			return;
-		}
-		if (x instanceof Array) {
-			for (var i = 0; i < x.length; i++) {
-				this.eachIncludeItem(type, x[i], fn, namespace, xpath);
-			}
-			return;
-		}
-		if (typeof x === 'object') {
-			for (key in x) {
-				this.eachIncludeItem(type, x[key], fn, key, xpath);
-			}
-			return;
-		}
-
-		if (typeof x === 'string') {
-			var route = namespace && cfg[namespace];
-			if (route) {
-				namespace += '.' + x;
-				x = route.replace(regexpName, x);
-			}
-			fn(namespace, x, xpath);
-			return;
-		}
-
-		console.error('Include Package is invalid', arguments);
-	},
 	invokeEach: function(arr, args) {
 		if (arr == null) {
 			return;

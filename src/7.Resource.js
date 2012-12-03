@@ -111,7 +111,7 @@ var Resource = Class({
 		}
 
 
-		Helper.eachIncludeItem(type, pckg, function(namespace, url, xpath) {
+		Routes.each(type, pckg, function(namespace, url, xpath) {
 			var resource = new Resource(type, url, namespace, xpath, this);
 
 			this.includes.push(resource);

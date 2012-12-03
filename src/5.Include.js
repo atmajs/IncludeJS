@@ -43,7 +43,15 @@ var Include = Class({
 		switch (typeof arg) {
 		case 'object':
 			for (var key in arg) {
-				cfg[key] = arg[key];
+				//cfg[key] = arg[key];
+				
+				if (key == 'lockedToFolder'){
+					cfg[key] = arg[key];
+					continue;
+				}
+				
+				console.log('reg', key, arg[key]);
+				Routes.register(key, arg[key]);
 			}
 			break;
 		case 'string':
