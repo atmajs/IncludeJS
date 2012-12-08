@@ -8,7 +8,7 @@ var Routes = (function() {
 		 */
 		register: function(namespace, route) {
 
-			routes[namespace] = route.split(/[\{\}]/g);
+			routes[namespace] = route instanceof Array ? route : route.split(/[\{\}]/g);
 
 		},
 
@@ -17,15 +17,15 @@ var Routes = (function() {
 		 */
 		resolve: function(namespace, template) {
 			var questionMark = template.indexOf('?'),
-				path, args, route;
+				path, params, route, i, x, length;
 
 			if (~questionMark) {
 				var arr = template.substring(questionMark + 1).split('&');
 
-				args = {};
-				for (var i = 0, x, length = arr.length; i < length; i++) {
+				params = {};
+				for (i = 0, length = arr.length; i < length; i++) {
 					x = arr[i].split('=');
-					args[x[0]] = x[1];
+					params[x[0]] = x[1];
 				}
 
 				template = template.substring(0, questionMark);
@@ -37,14 +37,14 @@ var Routes = (function() {
 			if (route == null){
 				return {
 					path: template,
-					args: args
-				}
+					params: params
+				};
 			}
 			
 			path = route[0];
 			
-			for (var i = 1; i < route.length; i++) {
-				if (i % 2 == 0) {
+			for (i = 1; i < route.length; i++) {
+				if (i % 2 === 0) {
 					path += route[i];
 				} else {
 					/** if template provides less "breadcrumbs" than needed -
@@ -69,7 +69,7 @@ var Routes = (function() {
 
 			return {
 				path: path,
-				args: args
+				params: params
 			};
 		},
 
@@ -119,26 +119,34 @@ var Routes = (function() {
 			if (typeof includeData === 'string') {
 				var x = includeData;
 				if (namespace) {
-					x = this.resolve(namespace, includeData).path;
+					x = this.resolve(namespace, includeData);
 					namespace += '.' + includeData;					
+				}else{
+					x = {
+						path: x
+					};
 				}
 				
-				console.log('resolved', namespace, x);
+				
 				fn(namespace, x, xpath);
 				return;
 			}
 
 			console.error('Include Package is invalid', arguments);
-		}
-	}
+		},
 
+		getRoutes: function(){
+			return routes;
+		}
+	};
+	
 })();
 
 
 /*{test}
 
 Routes.register('lib', '.reference/libjs/{0}/lib/{1}.js');
-console.log(JSON.stringify(Routes.resolve('lib','scroller?ui=black')));
+console.log(JSON.stringify(Routes.resolve('lib','scroller/scroller.mobile?ui=black')));
 
 Routes.register('framework', '.reference/libjs/framework/{0}.js');
 console.log(JSON.stringify(Routes.resolve('framework','dom/jquery')));

@@ -1,4 +1,12 @@
 
+var __eval = function(source, include) {
+	"use strict";
+	if (!source) {
+		console.error('error', include);
+	}
+	return eval(source);
+};
+
 ;(function(global, document) {
 
 	"use strict";

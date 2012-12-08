@@ -1,6 +1,6 @@
 var Include = Class({
-	setCurrent: function(data) {
-		currentParent = data;
+	setCurrent: function(resource) {
+		currentParent = resource;
 	},
 	incl: function(type, pckg) {
 
@@ -14,11 +14,9 @@ var Include = Class({
 			r.id = currentParent.id;
 			r.url = currentParent.url;
 			r.namespace = currentParent.namespace;
-			r.location = Helper.uri.getDir(r.url);
-			//-currentParent = null;
+			r.location = Helper.uri.getDir(r.url);			
 		}
-		return r.include(type, pckg);
-		//-return (this instanceof Resource ? this : new Resource).include(type, pckg);
+		return r.include(type, pckg);		
 	},
 	js: function(pckg) {
 		return this.incl('js', pckg);
@@ -43,15 +41,7 @@ var Include = Class({
 		switch (typeof arg) {
 		case 'object':
 			for (var key in arg) {
-				//cfg[key] = arg[key];
-				
-				if (key == 'lockedToFolder'){
-					cfg[key] = arg[key];
-					continue;
-				}
-				
-				console.log('reg', key, arg[key]);
-				Routes.register(key, arg[key]);
+				cfg[key] = arg[key];				
 			}
 			break;
 		case 'string':
@@ -64,6 +54,15 @@ var Include = Class({
 			break;
 		case 'undefined':
 			return cfg;
+		}
+		return this;
+	},
+	routes: function(arg){
+		if (arg == null){
+			return Routes.getRoutes();
+		}
+		for (var key in arg) {
+			Routes.register(key, arg[key]);
 		}
 		return this;
 	},
@@ -98,7 +97,7 @@ var Include = Class({
 				switch (key) {
 				case 'load':
 				case 'lazy':						
-					var container = document.querySelector('script[data-id="' + id + '"]');
+					var container = document.querySelector('#includejs-' + id);
 					if (container == null) {
 						console.error('"%s" Data was not embedded into html', id);
 						return;

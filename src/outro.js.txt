@@ -1,2 +1,2 @@
 
-})(this,document);
+})(window, typeof document == 'undefined' ? null : document);

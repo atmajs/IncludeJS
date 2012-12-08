@@ -15,7 +15,7 @@ var LazyModule = {
 				delete obj[module];
 				try {
 					var r = __eval(code, global.include);
-					if (r != null && r instanceof Resource === false){
+					if (!(r == null || r instanceof Resource)){
 						obj[module] = r;
 					}
 				} catch (error) {
