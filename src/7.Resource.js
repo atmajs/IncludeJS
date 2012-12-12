@@ -154,6 +154,10 @@ Resource.prototype = Helper.extend({}, IncludeDeferred, Include, {
 
 		var includes = this.includes;
 		if (includes && includes.length) {
+			if (this.state < 3 && this.url != null){
+				/** resource still loading/include is in process, but one of sub resources are already done */
+				return;
+			}
 			for (var i = 0; i < includes.length; i++) {
 				if (includes[i].state != 4) {
 					return;
