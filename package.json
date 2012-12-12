@@ -1,0 +1,31 @@
+{
+	"name": "IncludeJS",
+	"description": "Resource Loader",
+	"version": "0.5.1",
+	"homepage": "http://tenbits.github.com/LibJS/",
+	"contributors":[
+	],
+	"author": "Alex Kit <source.kit@gmail.com>",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/tenbits/IncludeJS.git"
+	},
+	"bugs": {
+		"url": "https://github.com/tenbits/IncludeJS/issues"
+	},
+	"licenses": [
+		"MIT"
+	],
+	"dependencies": {},
+	"devDependencies": {
+		"grunt": "~0.3.17",
+		"buster": "~0.6.3"
+	},
+	"scripts" : {
+        "test" : "node_modules/.bin/buster-test -r specification"
+    },
+	"keywords": [],
+	"engines" : {
+        "node" : "~0.8.9"
+    }
+}

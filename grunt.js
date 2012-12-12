@@ -18,6 +18,22 @@ module.exports = function(grunt) {
 						'src/9.export.js', 
 						'src/outro.js.txt'],
 				dest: 'lib/include.js'
+			},
+			distNode: {
+				src: ['src/intro.js.txt',
+						'src/1.scope-vars.js', 
+						'src/2.Helper.js',
+						'src/2.Routing.js',
+						'src/3.Events.js', 
+						'src/4.IncludeDeferred.js', 
+						'src/5.Include.js', 
+						'src/6.ScriptStack.js', 
+						'src/7.Resource.js', 
+						'src/8.LazyModule.js', 
+						'src/9.export.js', 
+						'src/10.node.js', 
+						'src/outro.js.txt'],
+				dest: 'lib/include.node.js'
 			}
 		},
 		min: {
