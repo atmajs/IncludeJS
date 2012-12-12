@@ -1,8 +1,8 @@
-var IncludeDeferred = Class({
-	Construct: function() {
-		this.callbacks = [];
-	},
+var IncludeDeferred = function() {
+	this.callbacks = [];
+};
 
+IncludeDeferred.prototype = {
 	/**	state observer */
 
 	on: function(state, callback) {
@@ -43,9 +43,7 @@ var IncludeDeferred = Class({
 		return this.on(4, this.resolve.bind(this, callback));
 	},
 	resolve: function(callback) {
-		var r = callback(this.response);
-		if (r != null) {
-			this.obj = r;
-		}
+		global.include = this;		
+		callback(this.response);		
 	}
-});
+};

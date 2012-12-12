@@ -1,7 +1,6 @@
 var ScriptStack = (function() {
 
-	var head,
-		stack = [],
+	var head, currentResource, stack = [],
 		loadScript = function(url, callback) {
 			//console.log('load script', url);
 			var tag = document.createElement('script');
@@ -20,7 +19,8 @@ var ScriptStack = (function() {
 						return;
 					}
 				}
-			}
+			}			
+			
 			resource.readystatechanged(4);
 		},
 		loadByEmbedding = function() {
@@ -28,19 +28,26 @@ var ScriptStack = (function() {
 				return;
 			}
 
-			var resource = stack[0];
+			if (currentResource != null){
+				return;
+			}
+
+
+			var resource = (currentResource = stack[0]);
 
 			if (resource.state === 1) {
 				return;
 			}
 
-
 			resource.state = 1;
 
 			global.include = resource;
 			
+			
+			global.iparams = resource.route.params;
+			
+			
 			loadScript(resource.url, function(e) {
-
 				for (var i = 0, length = stack.length; i < length; i++) {
 					if (stack[i] === resource) {
 						stack.splice(i, 1);
@@ -49,16 +56,23 @@ var ScriptStack = (function() {
 				}
 				resource.state = 3;
 				afterScriptRun(resource);
+
+				currentResource = null;
 				loadByEmbedding();
 			});
-
 		},
-
 		processByEval = function() {
-			var resource = stack[0];
+			if (stack.length === 0){
+				return;
+			}
+			if (currentResource != null){
+				return;
+			}
 
+			var resource = stack[0];
 			if (resource && resource.state > 2) {
-				resource.state = 0;
+				currentResource = resource;
+				resource.state = 1;
 
 				//console.log('evaling', resource.url, stack.length);			
 				try {
@@ -76,14 +90,16 @@ var ScriptStack = (function() {
 				}
 				resource.state = 3;
 				afterScriptRun(resource);
+
+				currentResource = null;
 				processByEval();
 			}
 		};
-		
+
 
 	return {
 		load: function(resource, parent) {
-			
+
 			//console.log('LOAD', resource.url, 'parent:',parent ? parent.url : '');
 
 			var added = false;

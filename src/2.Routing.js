@@ -17,8 +17,15 @@ var Routes = (function() {
 		 */
 		resolve: function(namespace, template) {
 			var questionMark = template.indexOf('?'),
-				path, params, route, i, x, length;
-
+				aliasIndex = template.indexOf('::'),
+				alias, path, params, route, i, x, length;
+				
+			
+			if (~aliasIndex){
+				alias = template.substring(aliasIndex + 2);
+				template = template.substring(0, aliasIndex);
+			}
+			
 			if (~questionMark) {
 				var arr = template.substring(questionMark + 1).split('&');
 
@@ -36,8 +43,9 @@ var Routes = (function() {
 			
 			if (route == null){
 				return {
-					path: template,
-					params: params
+					path: template.join('/'),
+					params: params,
+					alias: alias
 				};
 			}
 			
@@ -69,7 +77,8 @@ var Routes = (function() {
 
 			return {
 				path: path,
-				params: params
+				params: params,
+				alias: alias
 			};
 		},
 
@@ -117,16 +126,10 @@ var Routes = (function() {
 			}
 
 			if (typeof includeData === 'string') {
-				var x = includeData;
-				if (namespace) {
-					x = this.resolve(namespace, includeData);
-					namespace += '.' + includeData;					
-				}else{
-					x = {
-						path: x
-					};
-				}
-				
+				var x = this.resolve(namespace, includeData);
+				if (namespace){
+					namespace += '.' + includeData;
+				}				
 				
 				fn(namespace, x, xpath);
 				return;
@@ -145,7 +148,10 @@ var Routes = (function() {
 
 /*{test}
 
+console.log(JSON.stringify(Routes.resolve(null,'scroller.js::Scroller')));
+
 Routes.register('lib', '.reference/libjs/{0}/lib/{1}.js');
+console.log(JSON.stringify(Routes.resolve('lib','scroller::Scroller')));
 console.log(JSON.stringify(Routes.resolve('lib','scroller/scroller.mobile?ui=black')));
 
 Routes.register('framework', '.reference/libjs/framework/{0}.js');

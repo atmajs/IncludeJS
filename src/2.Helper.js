@@ -32,9 +32,15 @@ var Helper = { /** TODO: improve url handling*/
 			return url;
 		}
 	},
-	extend: function(target, source) {
-		for (var key in source) {
-			target[key] = source[key];
+	extend: function(target) {
+		for(var i = 1; i< arguments.length; i++){
+			var source = arguments[i];
+			if (typeof source === 'function'){
+				source = source.prototype;
+			}
+			for (var key in source) {
+				target[key] = source[key];
+			}
 		}
 		return target;
 	},

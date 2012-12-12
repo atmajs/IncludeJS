@@ -1,7 +1,6 @@
-var Resource = Class({
-	Base: Include,
-	Extends: IncludeDeferred,
-	Construct: function(type, route, namespace, xpath, parent, id) {
+var Resource = function(type, route, namespace, xpath, parent, id) {
+		Include.call(this);
+		IncludeDeferred.call(this);
 
 		if (type == null) {
 			return this;
@@ -10,6 +9,7 @@ var Resource = Class({
 		var url = route && route.path;
 
 
+		this.route = route;
 		this.namespace = namespace;
 		this.type = type;
 		this.xpath = xpath;
@@ -40,7 +40,7 @@ var Resource = Class({
 			return bin[type][id];
 		}
 
-
+		
 		if (rewrites != null && rewrites[id] != null) {
 			url = rewrites[id];
 		} else {
@@ -56,6 +56,7 @@ var Resource = Class({
 		var tag;
 		switch (type) {
 		case 'js':
+			this.exports = {};
 			ScriptStack.load(this, parent);
 
 			break;
@@ -84,9 +85,11 @@ var Resource = Class({
 			tag = null;
 		}
 		return this;
-	},
+	};
+
+Resource.prototype = Helper.extend({}, IncludeDeferred, Include, {
 	include: function(type, pckg) {
-		this.state = 0;
+		this.state = 1;
 		if (this.includes == null) {
 			this.includes = [];
 		}
@@ -123,7 +126,7 @@ var Resource = Class({
 	childLoaded: function(resource) {
 
 
-		if (resource != null && resource.obj != null && resource.obj instanceof Include === false) {
+		if (resource && resource.exports) {
 
 			switch (resource.type) {
 			case 'js':
@@ -133,13 +136,18 @@ var Resource = Class({
 				//////if (this.response == null) {
 				//////	this.response = {};
 				//////}
+				
+				if (resource.route.alias){
+					this.response[resource.route.alias] = resource.exports;
+					break;
+				}
 
 				var obj = (this.response[resource.type] || (this.response[resource.type] = []));
 
 				if (resource.namespace != null) {
 					obj = Helper.ensureArray(obj, resource.namespace);
 				}
-				obj[resource.index] = resource.obj;
+				obj[resource.index] = resource.exports;
 				break;
 			}
 		}
@@ -162,7 +170,7 @@ var Resource = Class({
 			switch (this.type) {
 			case 'load':
 			case 'ajax':
-				this.obj = response;
+				this.exports = response;
 				break;
 			case 'lazy':
 				LazyModule.create(this.xpath, response);

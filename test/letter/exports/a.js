@@ -1,0 +1,3 @@
+include.exports = {
+	a: 'a'
+}

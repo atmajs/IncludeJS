@@ -1,6 +1,11 @@
-var Include = Class({
+var Include = function(){};
+Include.prototype = {
 	setCurrent: function(resource) {
-		currentParent = resource;
+		//currentParent = resource;
+		//r.location = Helper.uri.getDir(r.url);
+		
+		global.include = new Resource(null, resource.route, resource.namespace, null, null, resource.id);
+		
 	},
 	incl: function(type, pckg) {
 
@@ -9,13 +14,13 @@ var Include = Class({
 		}
 
 		var r = new Resource();
-
-		if (currentParent) {
-			r.id = currentParent.id;
-			r.url = currentParent.url;
-			r.namespace = currentParent.namespace;
-			r.location = Helper.uri.getDir(r.url);			
-		}
+		//
+		//if (currentParent) {
+		//	r.id = currentParent.id;
+		//	r.url = currentParent.url;
+		//	r.namespace = currentParent.namespace;
+		//	r.location = Helper.uri.getDir(r.url);			
+		//}
 		return r.include(type, pckg);		
 	},
 	js: function(pckg) {
@@ -109,4 +114,4 @@ var Include = Class({
 			}
 		}
 	}
-});
+};
