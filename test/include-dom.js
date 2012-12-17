@@ -10,13 +10,14 @@ include.routes({
 	condition: '/test/letter/condition/{0}.js',
 });
 
+include.cfg({
+	path: buster.env.contextPath + '/'
+});
+
+buster.testRunner.timeout = 500;
 
 buster.testCase('Load:DOM', {
 	'Waterfall': function(done) {
-		
-		include.cfg({
-			path: buster.env.contextPath + '/'
-		});
 		
 		global.letters = {};
 		
@@ -68,7 +69,7 @@ buster.testCase('Load:DOM', {
 			condition: 'a?letter=b::Letter'
 		}).done(function(resp){
 			
-			assert(resp.Letter == 'b', 'Condition load failed');
+			assert.equals(resp.Letter, 'b', 'Condition load failed');
 			
 			done();
 		})

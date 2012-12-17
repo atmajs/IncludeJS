@@ -1,6 +1,9 @@
 
 global.include = new Include();
-global.include.helper = Helper;
-global.include.Routes = Routes;
 
-global.IncludeResource = Resource;
+global.includeLib = {
+	Helper: Helper,
+	Routes: Routes,
+	Resource: Resource,
+	ScriptStack: ScriptStack
+};

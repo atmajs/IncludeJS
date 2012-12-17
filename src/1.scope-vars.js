@@ -15,7 +15,6 @@ var bin = {},
 	},	
 	handler = {},
 	hasOwnProp = {}.hasOwnProperty,
-	rewrites = typeof IncludeRewrites != 'undefined' ? IncludeRewrites : null,
-	currentParent = null,
+	//-currentParent = null,
 	XMLHttpRequest = global.XMLHttpRequest;
 	

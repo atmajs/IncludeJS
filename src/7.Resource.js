@@ -2,51 +2,41 @@ var Resource = function(type, route, namespace, xpath, parent, id) {
 		Include.call(this);
 		IncludeDeferred.call(this);
 
-		if (type == null) {
-			return this;
-		}
-
+		////if (type == null) {
+		////	this.state = 3;
+		////	return this;
+		////}
+		
 		var url = route && route.path;
-
-
+		
+		if (url != null) {
+			this.url = url = Helper.uri.resolveUrl(url, parent);
+		}
+		
 		this.route = route;
 		this.namespace = namespace;
 		this.type = type;
 		this.xpath = xpath;
-		this.url = url;
-
-		if (url != null) {
-			this.url = Helper.uri.resolveUrl(url, parent);
-		}
-
-
-		if (!id) {
-			if (namespace) {
-				id = namespace;
-			} else if (url[0] == '/') {
-				id = url;
-			} else if (parent && parent.namespace) {
-				id = parent.namespace + '/' + url;
-			} else if (parent && parent.location) {
-				id = '/' + parent.location.replace(/^[\/]+/, '') + url;
-			} else if (parent && parent.id) {
-				id = parent.id + '/' + url;
-			} else {
-				id = '/' + url;
-			}
-		}
-
-		if (bin[type] && bin[type][id]) {
-			return bin[type][id];
-		}
-
 		
-		if (rewrites != null && rewrites[id] != null) {
-			url = rewrites[id];
-		} else {
-			url = this.url;
+		
+		
+		if (id == null && url){
+			id = (url[0] == '/' ? '' : '/') + url;
 		}
-
+		
+		
+		var resource = bin[type] && bin[type][id];		
+		if (resource) {
+			resource.route = route;			
+			return resource;
+		}
+		
+		if (url == null){
+			this.state = 3;
+			return this;
+		}
+		
+		
 		this.location = Helper.uri.getDir(url);
 
 
@@ -56,9 +46,8 @@ var Resource = function(type, route, namespace, xpath, parent, id) {
 		var tag;
 		switch (type) {
 		case 'js':
-			this.exports = {};
 			ScriptStack.load(this, parent);
-
+			
 			break;
 		case 'ajax':
 		case 'load':
@@ -89,7 +78,9 @@ var Resource = function(type, route, namespace, xpath, parent, id) {
 
 Resource.prototype = Helper.extend({}, IncludeDeferred, Include, {
 	include: function(type, pckg) {
-		this.state = 1;
+		//-this.state = 1;
+		this.state = this.state >= 3 ? 3 : 1;
+
 		if (this.includes == null) {
 			this.includes = [];
 		}
@@ -106,6 +97,9 @@ Resource.prototype = Helper.extend({}, IncludeDeferred, Include, {
 
 		return this;
 	},
+	/** Deprecated
+	 *	Use Resource Alias instead
+	 */
 	calcIndex: function(type, namespace) {
 		if (this.response == null) {
 			this.response = {};
@@ -154,7 +148,7 @@ Resource.prototype = Helper.extend({}, IncludeDeferred, Include, {
 
 		var includes = this.includes;
 		if (includes && includes.length) {
-			if (this.state < 3 && this.url != null){
+			if (this.state < 3/* && this.url != null */){
 				/** resource still loading/include is in process, but one of sub resources are already done */
 				return;
 			}

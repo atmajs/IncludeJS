@@ -1,10 +1,13 @@
 var Include = function(){};
 Include.prototype = {
 	setCurrent: function(resource) {
-		//currentParent = resource;
-		//r.location = Helper.uri.getDir(r.url);
 		
-		global.include = new Resource(null, resource.route, resource.namespace, null, null, resource.id);
+		var r = new Resource('js', {path: resource.id}, resource.namespace, null, null, resource.id);
+		if (r.state != 4){
+			console.error("Current Resource should be loaded");
+		}
+		
+		global.include = r;
 		
 	},
 	incl: function(type, pckg) {

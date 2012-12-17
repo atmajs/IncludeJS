@@ -48,6 +48,9 @@ var ScriptStack = (function() {
 			
 			
 			loadScript(resource.url, function(e) {
+				if (e.type == 'error'){
+					console.log('Script Loaded Error', resource.url);					
+				}
 				for (var i = 0, length = stack.length; i < length; i++) {
 					if (stack[i] === resource) {
 						stack.splice(i, 1);
@@ -132,6 +135,7 @@ var ScriptStack = (function() {
 				loadByEmbedding();
 			}
 
-		}
+		},
+		afterScriptRun: afterScriptRun
 	};
 })();
