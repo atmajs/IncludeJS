@@ -3,7 +3,7 @@ global.include = new Include();
 
 global.includeLib = {
 	Helper: Helper,
-	Routes: Routes,
+	Routes: RoutesLib,
 	Resource: Resource,
 	ScriptStack: ScriptStack
 };
