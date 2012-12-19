@@ -105,7 +105,7 @@ Include.prototype = {
 				switch (key) {
 				case 'load':
 				case 'lazy':						
-					var container = document.querySelector('#includejs-' + id);
+					var container = document.querySelector('#includejs-' + id.replace(/\W/g,''));
 					if (container == null) {
 						console.error('"%s" Data was not embedded into html', id);
 						return;
