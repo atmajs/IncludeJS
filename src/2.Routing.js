@@ -1,4 +1,4 @@
-var Routes = (function() {
+var RoutesLib = function() {
 
 	var routes = {};
 
@@ -143,7 +143,9 @@ var Routes = (function() {
 		}
 	};
 	
-})();
+};
+
+var Routes = RoutesLib();
 
 
 /*{test}
