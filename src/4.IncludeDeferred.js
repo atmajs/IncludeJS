@@ -42,8 +42,7 @@ IncludeDeferred.prototype = {
 	done: function(callback) {		
 		return this.on(4, this.resolve.bind(this, callback));
 	},
-	resolve: function(callback) {
-		global.include = this;		
+	resolve: function(callback) {		
 		callback(this.response);		
 	}
 };
