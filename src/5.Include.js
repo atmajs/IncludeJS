@@ -15,15 +15,8 @@ Include.prototype = {
 		if (this instanceof Resource) {
 			return this.include(type, pckg);
 		}
-
 		var r = new Resource();
-		//
-		//if (currentParent) {
-		//	r.id = currentParent.id;
-		//	r.url = currentParent.url;
-		//	r.namespace = currentParent.namespace;
-		//	r.location = Helper.uri.getDir(r.url);			
-		//}
+		
 		return r.include(type, pckg);		
 	},
 	js: function(pckg) {
@@ -110,7 +103,7 @@ Include.prototype = {
 						console.error('"%s" Data was not embedded into html', id);
 						return;
 					}
-					resource.obj = container.innerHTML;						
+					resource.exports = container.innerHTML;						
 					break;
 				}
 				(bin[key] || (bin[key] = {}))[id] = resource;
