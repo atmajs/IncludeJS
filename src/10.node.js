@@ -14,8 +14,10 @@ XMLHttpRequest.prototype = {
 		var that = this;
 		fs.readFile(this.url, 'utf-8', function(err, data){
 			if (err) {
-				throw err;			
+				console.error('>>', err.code, err.path);
+				data = '';		
 			}
+
 			that.readyState = 4;
 			that.responseText = data;
 			that.onreadystatechange();			
