@@ -1,9 +1,7 @@
 
 var __eval = function(source, include) {
 	"use strict";
-	if (!source) {
-		console.error('error', include);
-	}
+	
 	var iparams = include.route.params;
 	return eval(source);
 };
