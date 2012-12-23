@@ -15,9 +15,13 @@ module.exports = function(grunt) {
 						'src/6.ScriptStack.js', 
 						'src/7.Resource.js', 
 						'src/8.LazyModule.js', 
-						'src/9.export.js', 
+						'src/9.export.js',						
 						'src/outro.js.txt'],
 				dest: 'lib/include.js'
+			},
+			distReload:{
+				src: 'src/11.Autoreload.js',
+				dest: 'lib/include.autoreload.js'
 			},
 			distNode: {
 				src: ['src/intro.js.txt',
