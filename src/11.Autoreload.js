@@ -34,12 +34,14 @@
 	var handlers = {
 		css: function(path){
 			
-			var styles = document.getElementsByTagName('link');
+			var styles = document.getElementsByTagName('link'),
+				length = styles.length,
+				i = 0,
+				x, href;
 			
-			for(var i = 0, x, length = styles.length; i<length; i++){
-				x = styles[i];
-				
-				var href= x.getAttribute('href');
+			for(; i < length; i++){
+				x = styles[i];				
+				href = x.getAttribute('href');
 				
 				if (!href){
 					continue;
@@ -49,16 +51,13 @@
 					href = href.substring(0, href.indexOf('?'));
 				}	
 				
-				if (path.toLowerCase().indexOf(href.toLowerCase())){
+				if (~path.toLowerCase().indexOf(href.toLowerCase())){
 					
-					reloadTag(x, 'href',{
-						rel: 'stylesheet'
-					});
+					reloadTag(x, 'href');
 					
 					break;
-				}
-				
-			}			
+				}				
+			}		
 		}
 	}
 	
