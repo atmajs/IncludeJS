@@ -122,26 +122,30 @@ Resource.prototype = Helper.extend({}, IncludeDeferred, Include, {
 
 		if (resource && resource.exports) {
 
-			switch (resource.type) {
+			var type = resource.type;
+			switch (type) {
 			case 'js':
 			case 'load':
 			case 'ajax':
-
-				//////if (this.response == null) {
-				//////	this.response = {};
-				//////}
 				
-				if (resource.route.alias){
-					this.response[resource.route.alias] = resource.exports;
+				var alias = resource.route.alias || Routes.parseAlias(resource),
+					obj = type == 'js' ? this.response : (this.response[type] || (this.response[type] = {}));
+				
+				
+				if (alias){
+					obj[alias] = resource.exports;
 					break;
+				}else{
+					console.warn('Resource Alias is Not defined', resource);
 				}
-
-				var obj = (this.response[resource.type] || (this.response[resource.type] = []));
-
-				if (resource.namespace != null) {
-					obj = Helper.ensureArray(obj, resource.namespace);
-				}
-				obj[resource.index] = resource.exports;
+				
+				///////@TODO - obsolete - use only alias				
+				//////var obj = (this.response[resource.type] || (this.response[resource.type] = []));
+				//////
+				//////if (resource.namespace != null) {
+				//////	obj = Helper.ensureArray(obj, resource.namespace);
+				//////}
+				//////obj[resource.index] = resource.exports;
 				break;
 			}
 		}

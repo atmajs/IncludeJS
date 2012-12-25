@@ -1,6 +1,7 @@
 var RoutesLib = function() {
 
-	var routes = {};
+	var routes = {},
+		regexpAlias = /(\w+)\.\w+$/;
 
 	return {
 		/**
@@ -140,6 +141,13 @@ var RoutesLib = function() {
 
 		getRoutes: function(){
 			return routes;
+		},
+		
+		parseAlias: function(resource){
+			var url = resource.url,
+				result = regexpAlias.exec(url);
+			
+			return result && result[1];			
 		}
 	};
 	
