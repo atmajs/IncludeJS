@@ -84,6 +84,9 @@ Resource.prototype = Helper.extend({}, IncludeDeferred, Include, {
 		if (this.includes == null) {
 			this.includes = [];
 		}
+		if (this.response == null){
+			this.response = {};
+		}
 
 
 		Routes.each(type, pckg, function(namespace, route, xpath) {
