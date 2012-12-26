@@ -109,5 +109,12 @@ Include.prototype = {
 				(bin[key] || (bin[key] = {}))[id] = resource;
 			}
 		}
+	},
+	/**
+	 *	Create new Resource Instance,
+	 *	as sometimes it is necessary to call include. on new empty context
+	 */
+	instance: function(){
+		return new Resource();
 	}
 };
