@@ -14,10 +14,6 @@ IncludeDeferred.prototype = {
 	},
 	readystatechanged: function(state) {
 		
-		if (this.state >= state){
-			console.warn('State Downgrade', this);
-		}
-		
 		this.state = state;
 		
 		if (this.state === 4){
