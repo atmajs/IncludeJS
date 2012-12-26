@@ -91,7 +91,8 @@ Resource.prototype = Helper.extend({}, IncludeDeferred, Include, {
 
 			this.includes.push(resource);
 
-			resource.index = this.calcIndex(type, namespace);
+			// obsolete - we only use alias
+			//////resource.index = this.calcIndex(type, namespace);
 			resource.on(4, this.childLoaded.bind(this));
 		}.bind(this));
 
@@ -100,22 +101,22 @@ Resource.prototype = Helper.extend({}, IncludeDeferred, Include, {
 	/** Deprecated
 	 *	Use Resource Alias instead
 	 */
-	calcIndex: function(type, namespace) {
-		if (this.response == null) {
-			this.response = {};
-		}
-		switch (type) {
-		case 'js':
-		case 'load':
-		case 'ajax':
-			var key = type + 'Index';
-			if (this.response[key] == null) {
-				this.response[key] = -1;
-			}
-			return ++this.response[key];
-		}
-		return -1;
-	},
+	//////calcIndex: function(type, namespace) {
+	//////	if (this.response == null) {
+	//////		this.response = {};
+	//////	}
+	//////	switch (type) {
+	//////	case 'js':
+	//////	case 'load':
+	//////	case 'ajax':
+	//////		var key = type + 'Index';
+	//////		if (this.response[key] == null) {
+	//////			this.response[key] = -1;
+	//////		}
+	//////		return ++this.response[key];
+	//////	}
+	//////	return -1;
+	//////},
 
 	childLoaded: function(resource) {
 
