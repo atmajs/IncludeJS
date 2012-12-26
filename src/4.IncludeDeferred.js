@@ -13,7 +13,17 @@ IncludeDeferred.prototype = {
 		return this;
 	},
 	readystatechanged: function(state) {
+		
+		if (this.state >= state){
+			console.warn('State Downgrade', this);
+		}
+		
 		this.state = state;
+		
+		if (this.state === 4){
+			global.include = this;
+		}
+		
 		for (var i = 0, x, length = this.callbacks.length; i < length; i++) {
 			x = this.callbacks[i];
 			
