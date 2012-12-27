@@ -1,7 +1,7 @@
 var RoutesLib = function() {
 
 	var routes = {},
-		regexpAlias = /(\w+)\.\w+$/;
+		regexpAlias = /([^\\\/]+)\.\w+$/;
 
 	return {
 		/**
