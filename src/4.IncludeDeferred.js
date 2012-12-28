@@ -1,5 +1,6 @@
 var IncludeDeferred = function() {
 	this.callbacks = [];
+	this.state = 0;
 };
 
 IncludeDeferred.prototype = {
@@ -14,10 +15,12 @@ IncludeDeferred.prototype = {
 	},
 	readystatechanged: function(state) {
 		
-		this.state = state;
-		
-		if (this.state === 4){
-			global.include = this;
+		if (state > this.state){
+			this.state = state;
+
+			if (this.state === 4){
+				global.include = this;
+			}
 		}
 		
 		for (var i = 0, x, length = this.callbacks.length; i < length; i++) {
