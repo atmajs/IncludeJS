@@ -4,11 +4,18 @@ var ScriptStack = (function() {
 		loadScript = function(url, callback) {
 			//console.log('load script', url);
 			var tag = document.createElement('script');
-			tag.type = 'application/javascript';
+			tag.type = 'text/javascript';
 			tag.src = url;
-			tag.onload = tag.onerror = callback;
+			
+			if ('onreadystatechange' in tag){
+				tag.onreadystatechange = function(){
+					(this.readyState == 'complete' || this.readyState == 'loaded') && callback();
+				};
+			}else{			
+				tag.onload = tag.onerror = callback;
+			}
 
-			(head || (head = document.querySelector('head'))).appendChild(tag);
+			(head || (head = document.getElementsByTagName('head')[0])).appendChild(tag);
 		},
 		afterScriptRun = function(resource) {
 			var includes = resource.includes;
@@ -48,7 +55,7 @@ var ScriptStack = (function() {
 			
 			
 			loadScript(resource.url, function(e) {
-				if (e.type == 'error'){
+				if (e && e.type == 'error'){
 					console.log('Script Loaded Error', resource.url);					
 				}
 				for (var i = 0, length = stack.length; i < length; i++) {
