@@ -2,8 +2,6 @@
 
 	window.include.embed('/socket.io/socket.io.js').done(function() {
 		
-		console.log('socket.io loaded');
-
 		if (!window.io){
 			return;
 		}
