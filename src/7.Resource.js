@@ -46,7 +46,8 @@ var Resource = function(type, route, namespace, xpath, parent, id) {
 		var tag;
 		switch (type) {
 		case 'js':
-			ScriptStack.load(this, parent);
+		case 'embed':
+			ScriptStack.load(this, parent, type == 'embed');
 			
 			break;
 		case 'ajax':
@@ -62,12 +63,12 @@ var Resource = function(type, route, namespace, xpath, parent, id) {
 			tag.rel = "stylesheet";
 			tag.type = "text/css";
 			break;
-		case 'embed':
-			tag = document.createElement('script');
-			tag.type = 'application/javascript';
-			tag.src = url;
-			tag.onload = tag.onerror = this.readystatechanged.bind(this, 4);			
-			break;
+		////case 'embed':
+		////	tag = document.createElement('script');
+		////	tag.type = 'application/javascript';
+		////	tag.src = url;
+		////	tag.onload = tag.onerror = this.readystatechanged.bind(this, 4);			
+		////	break;
 		}
 		if (tag != null) {
 			document.querySelector('head').appendChild(tag);

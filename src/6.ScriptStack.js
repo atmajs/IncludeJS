@@ -101,7 +101,7 @@ var ScriptStack = (function() {
 
 
 	return {
-		load: function(resource, parent) {
+		load: function(resource, parent, forceEmbed) {
 
 			//console.log('LOAD', resource.url, 'parent:',parent ? parent.url : '');
 
@@ -119,21 +119,24 @@ var ScriptStack = (function() {
 			if (!added) {
 				stack.push(resource);
 			}
-
-			if (cfg.eval) {
-				Helper.xhr(resource.url, function(url, response) {
-					if (!response) {
-						console.error('Not Loaded:', url);
-					}
-
-					resource.source = response;
-					resource.readystatechanged(3);
-					//	process next
-					processByEval();
-				});
-			} else {
+			
+			if (!cfg.eval || forceEmbed){
 				loadByEmbedding();
+				return;
 			}
+
+			
+			Helper.xhr(resource.url, function(url, response) {
+				if (!response) {
+					console.error('Not Loaded:', url);
+				}
+
+				resource.source = response;
+				resource.readystatechanged(3);
+				//	process next
+				processByEval();
+			});
+		
 
 		},
 		afterScriptRun: afterScriptRun
