@@ -5,5 +5,6 @@ global.includeLib = {
 	Helper: Helper,
 	Routes: RoutesLib,
 	Resource: Resource,
-	ScriptStack: ScriptStack
+	ScriptStack: ScriptStack,
+	registerLoader: CustomLoader.register
 };
