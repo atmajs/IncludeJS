@@ -4,6 +4,10 @@ var CustomLoader = (function() {
 	return {
 		handle: function(resource) {
 			
+			if (!resource.url){
+				return false;
+			}
+
 			var url = resource.url,
 				extension = url.substring(url.lastIndexOf('.') + 1);
 			
