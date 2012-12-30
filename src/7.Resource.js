@@ -43,7 +43,7 @@ var Resource = function(type, route, namespace, xpath, parent, id) {
 
 		(bin[type] || (bin[type] = {}))[id] = this;
 		
-		if (CustomLoader.hanlder(resource) === true){
+		if (CustomLoader.handle(this) === true){
 			return this;
 		}
 
