@@ -1,13 +1,17 @@
 var Include = function(){};
 Include.prototype = {
-	setCurrent: function(resource) {
+	setCurrent: function(data) {
 		
-		var r = new Resource('js', {path: resource.id}, resource.namespace, null, null, resource.id);
-		if (r.state != 4){
+		var resource = new Resource('js', {
+			path: data.id
+		}, data.namespace, null, null, data.id);
+		
+		if (resource.state != 4){
 			console.error("Current Resource should be loaded");
 		}
 		
-		global.include = r;
+		resource.state = 2;
+		global.include = resource;
 		
 	},
 	incl: function(type, pckg) {
