@@ -17,7 +17,7 @@ var CustomLoader = (function() {
 			}
 			
 			Helper.xhr(resource.url, function(url, response){
-				resource.source = resource;
+				resource.source = response;
 				
 				
 				_handlers[extension](resource);
