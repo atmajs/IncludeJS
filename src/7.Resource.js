@@ -63,12 +63,6 @@ var Resource = function(type, route, namespace, xpath, parent, id) {
 			tag.rel = "stylesheet";
 			tag.type = "text/css";
 			break;
-		////case 'embed':
-		////	tag = document.createElement('script');
-		////	tag.type = 'application/javascript';
-		////	tag.src = url;
-		////	tag.onload = tag.onerror = this.readystatechanged.bind(this, 4);			
-		////	break;
 		}
 		if (tag != null) {
 			document.getElementsByTagName('head')[0].appendChild(tag);
@@ -94,34 +88,12 @@ Resource.prototype = Helper.extend({}, IncludeDeferred, Include, {
 			var resource = new Resource(type, route, namespace, xpath, this);
 
 			this.includes.push(resource);
-
-			// obsolete - we only use alias
-			//////resource.index = this.calcIndex(type, namespace);
 			resource.on(4, this.childLoaded.bind(this));
 		}.bind(this));
 
 		return this;
 	},
-	/** Deprecated
-	 *	Use Resource Alias instead
-	 */
-	//////calcIndex: function(type, namespace) {
-	//////	if (this.response == null) {
-	//////		this.response = {};
-	//////	}
-	//////	switch (type) {
-	//////	case 'js':
-	//////	case 'load':
-	//////	case 'ajax':
-	//////		var key = type + 'Index';
-	//////		if (this.response[key] == null) {
-	//////			this.response[key] = -1;
-	//////		}
-	//////		return ++this.response[key];
-	//////	}
-	//////	return -1;
-	//////},
-
+	
 	childLoaded: function(resource) {
 
 
@@ -144,13 +116,6 @@ Resource.prototype = Helper.extend({}, IncludeDeferred, Include, {
 					console.warn('Resource Alias is Not defined', resource);
 				}
 				
-				///////@TODO - obsolete - use only alias				
-				//////var obj = (this.response[resource.type] || (this.response[resource.type] = []));
-				//////
-				//////if (resource.namespace != null) {
-				//////	obj = Helper.ensureArray(obj, resource.namespace);
-				//////}
-				//////obj[resource.index] = resource.exports;
 				break;
 			}
 		}
