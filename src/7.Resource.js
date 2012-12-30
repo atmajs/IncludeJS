@@ -71,7 +71,7 @@ var Resource = function(type, route, namespace, xpath, parent, id) {
 		////	break;
 		}
 		if (tag != null) {
-			document.querySelector('head').appendChild(tag);
+			document.getElementsByTagName('head')[0].appendChild(tag);
 			tag = null;
 		}
 		return this;
