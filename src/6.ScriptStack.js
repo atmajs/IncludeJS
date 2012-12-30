@@ -17,19 +17,19 @@ var ScriptStack = (function() {
 
 			(head || (head = document.getElementsByTagName('head')[0])).appendChild(tag);
 		},
-		afterScriptRun = function(resource) {
-			var includes = resource.includes;
-
-			if (includes != null && includes.length) {
-				for (var i = 0; i < includes.length; i++) {
-					if (includes[i].state != 4) {
-						return;
-					}
-				}
-			}			
-			
-			resource.readystatechanged(4);
-		},
+		////////afterScriptRun = function(resource) {
+		////////	var includes = resource.includes;
+		////////	
+		////////	if (includes != null && includes.length) {
+		////////		for (var i = 0; i < includes.length; i++) {
+		////////			if (includes[i].state != 4) {
+		////////				return;
+		////////			}
+		////////		}
+		////////	}			
+		////////	
+		////////	resource.readystatechanged(4);
+		////////},
 		loadByEmbedding = function() {
 			if (stack.length === 0) {
 				return;
@@ -49,8 +49,6 @@ var ScriptStack = (function() {
 			resource.state = 1;
 
 			global.include = resource;
-			
-			
 			global.iparams = resource.route.params;
 			
 			
@@ -64,8 +62,10 @@ var ScriptStack = (function() {
 						break;
 					}
 				}
-				resource.state = 3;
-				afterScriptRun(resource);
+				
+				//-resource.state = 3;
+				//-afterScriptRun(resource);
+				resource.readystatechanged(3);
 
 				currentResource = null;
 				loadByEmbedding();
@@ -80,10 +80,12 @@ var ScriptStack = (function() {
 			}
 
 			var resource = stack[0];
-			if (resource && resource.state > 2) {
+			if (resource && resource.state > 1) {
 				currentResource = resource;
+			
 				resource.state = 1;
-
+				global.include = resource;
+				
 				//console.log('evaling', resource.url, stack.length);			
 				try {
 					__eval(resource.source, resource);
@@ -98,8 +100,9 @@ var ScriptStack = (function() {
 						break;
 					}
 				}
-				resource.state = 3;
-				afterScriptRun(resource);
+				//-resource.state = 3;
+				//-afterScriptRun(resource);
+				resource.readystatechanged(3);
 
 				currentResource = null;
 				processByEval();
@@ -139,13 +142,13 @@ var ScriptStack = (function() {
 				}
 
 				resource.source = response;
-				resource.readystatechanged(3);
-				//	process next
+				resource.state = 2;
+				
 				processByEval();
 			});
 		
 
-		},
-		afterScriptRun: afterScriptRun
+		}/*,
+		afterScriptRun: afterScriptRun*/
 	};
 })();
