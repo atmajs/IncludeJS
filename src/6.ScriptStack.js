@@ -163,7 +163,9 @@ var ScriptStack = (function() {
 				
 				if (x === parent){
 					stack.splice(i, 0, resource);
-					tasks--;
+					length++;
+					i++;
+					tasks--;					
 				}
 			}
 			
