@@ -145,9 +145,32 @@ var ScriptStack = (function() {
 				resource.state = 2;
 				
 				processByEval();
-			});
-		
-
+			});		
+		},
+		/** Move resource in stack close to parent */
+		moveToParent: function(resource, parent){
+			var i, length, x, tasks = 2;
+			
+			for(i = 0, x, length = stack.length; i<length && tasks; i++){
+				x = stack[i];
+				
+				if (x === resource){
+					stack.splice(i, 1);
+					length--;
+					i--;
+					tasks--;
+				}
+				
+				if (x === parent){
+					stack.splice(i, 0, resource);
+					tasks--;
+				}
+			}
+			
+			if (parent == null){
+				stack.unshift(resource);
+			}
+			
 		}/*,
 		afterScriptRun: afterScriptRun*/
 	};
