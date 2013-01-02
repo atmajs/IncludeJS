@@ -28,7 +28,7 @@ var Resource = function(type, route, namespace, xpath, parent, id) {
 		var resource = bin[type] && bin[type][id];		
 		if (resource) {
 			
-			if (resource.state == 0 && type == 'js'){				
+			if (resource.state === 0 && type == 'js'){				
 				ScriptStack.moveToParent(resource, parent);
 			}
 			
