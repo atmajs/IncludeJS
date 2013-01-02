@@ -14,22 +14,9 @@ var ScriptStack = (function() {
 			}else{			
 				tag.onload = tag.onerror = callback;
 			}
-
 			(head || (head = document.getElementsByTagName('head')[0])).appendChild(tag);
 		},
-		////////afterScriptRun = function(resource) {
-		////////	var includes = resource.includes;
-		////////	
-		////////	if (includes != null && includes.length) {
-		////////		for (var i = 0; i < includes.length; i++) {
-		////////			if (includes[i].state != 4) {
-		////////				return;
-		////////			}
-		////////		}
-		////////	}			
-		////////	
-		////////	resource.readystatechanged(4);
-		////////},
+		
 		loadByEmbedding = function() {
 			if (stack.length === 0) {
 				return;
@@ -63,8 +50,6 @@ var ScriptStack = (function() {
 					}
 				}
 				
-				//-resource.state = 3;
-				//-afterScriptRun(resource);
 				resource.readystatechanged(3);
 
 				currentResource = null;
@@ -100,10 +85,8 @@ var ScriptStack = (function() {
 						break;
 					}
 				}
-				//-resource.state = 3;
-				//-afterScriptRun(resource);
+				
 				resource.readystatechanged(3);
-
 				currentResource = null;
 				processByEval();
 			}
@@ -173,7 +156,6 @@ var ScriptStack = (function() {
 				stack.unshift(resource);
 			}
 			
-		}/*,
-		afterScriptRun: afterScriptRun*/
+		}
 	};
 })();
