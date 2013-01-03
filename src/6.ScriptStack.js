@@ -84,12 +84,13 @@ var ScriptStack = (function() {
 				return;
 			}
 
-			var resource = (currentResource = stack[0]);
+			var resource = stack[0];
 
-			if (resource.state == 1) {
+			if (resource.state < 2) {
 				return;
 			}
 
+			currentResource = resource;
 
 			resource.state = 1;
 			global.include = resource;

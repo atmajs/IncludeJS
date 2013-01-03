@@ -21,6 +21,8 @@ Include.prototype = {
 		}
 		var r = new Resource();
 		
+		r.type = 'js';
+		
 		return r.include(type, pckg);		
 	},
 	js: function(pckg) {

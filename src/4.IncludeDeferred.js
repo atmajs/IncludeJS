@@ -31,13 +31,12 @@ IncludeDeferred.prototype = {
 				}			
 				
 				this.state = 4;
-			}
-			
-			//do not set asset resource to global
-			if (this.type === 'js' && this.state === 4){
-				global.include = this;
-			}
-			
+			}			
+		}
+		
+		//do not set asset resource to global
+		if (this.type === 'js' && this.state === 4){
+			global.include = this;
 		}
 		
 		for (i = 0, length = this.callbacks.length; i < length; i++) {
