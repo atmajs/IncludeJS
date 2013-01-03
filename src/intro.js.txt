@@ -8,7 +8,8 @@ var __eval = function(source, include) {
 		return eval(source);
 	} catch (error) {
 		error.url = include.url;
-		Helper.reportError(error);
+		//Helper.reportError(error);
+		console.error(error);
 	}
 	
 };
