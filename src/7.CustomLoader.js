@@ -1,8 +1,5 @@
 var CustomLoader = (function() {
 
-	var _handlers = {};
-
-
 	var _loaders = {};
 
 
