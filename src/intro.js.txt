@@ -3,7 +3,14 @@ var __eval = function(source, include) {
 	"use strict";
 	
 	var iparams = include.route.params;
-	return eval(source);
+	
+	try {
+		return eval(source);
+	} catch (error) {
+		error.url = include.url;
+		Helper.reportError(error);
+	}
+	
 };
 
 ;(function(global, document) {
