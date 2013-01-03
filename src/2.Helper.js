@@ -1,4 +1,3 @@
-
 var Helper = { /** TODO: improve url handling*/
 	uri: {
 		getDir: function(url) {
@@ -33,9 +32,9 @@ var Helper = { /** TODO: improve url handling*/
 		}
 	},
 	extend: function(target) {
-		for(var i = 1; i< arguments.length; i++){
+		for (var i = 1; i < arguments.length; i++) {
 			var source = arguments[i];
-			if (typeof source === 'function'){
+			if (typeof source === 'function') {
 				source = source.prototype;
 			}
 			for (var key in source) {
@@ -51,7 +50,7 @@ var Helper = { /** TODO: improve url handling*/
 		if (arr instanceof Array) {
 			for (var i = 0, x, length = arr.length; i < length; i++) {
 				x = arr[i];
-				if (typeof x === 'function'){
+				if (typeof x === 'function') {
 					(args != null ? x.apply(this, args) : x());
 				}
 			}
@@ -81,8 +80,19 @@ var Helper = { /** TODO: improve url handling*/
 		xhr.onreadystatechange = function() {
 			xhr.readyState == 4 && callback && callback(url, xhr.responseText);
 		};
-		
+
 		xhr.open('GET', url, true);
 		xhr.send();
 	}
-};
+},
+
+	XHR = function(resource, callback) {
+		var xhr = new XMLHttpRequest(),
+			s = Date.now();
+		xhr.onreadystatechange = function() {
+			xhr.readyState == 4 && callback && callback(resource, xhr.responseText);
+		};
+
+		xhr.open('GET', resource.url, true);
+		xhr.send();
+	};
