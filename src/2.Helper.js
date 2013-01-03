@@ -6,7 +6,7 @@ var Helper = { /** TODO: improve url handling*/
 		},
 		/** @obsolete */
 		resolveCurrent: function() {
-			var scripts = document.querySelectorAll('script');
+			var scripts = document.getElementsByTagName('script');
 			return scripts[scripts.length - 1].getAttribute('src');
 		},
 		resolveUrl: function(url, parent) {
@@ -73,16 +73,6 @@ var Helper = { /** TODO: improve url handling*/
 			obj = obj[key] || (obj[key] = {});
 		}
 		return (obj[arr.shift()] = []);
-	},
-	xhr: function(url, callback) {
-		var xhr = new XMLHttpRequest(),
-			s = Date.now();
-		xhr.onreadystatechange = function() {
-			xhr.readyState == 4 && callback && callback(url, xhr.responseText);
-		};
-
-		xhr.open('GET', url, true);
-		xhr.send();
 	}
 },
 

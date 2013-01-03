@@ -146,9 +146,9 @@ var ScriptStack = (function() {
 				return;
 			}
 
-			Helper.xhr(resource.url, function(url, response) {
+			XHR(resource, function(resource, response) {
 				if (!response) {
-					console.error('Not Loaded:', url);
+					console.error('Not Loaded:', resource.url);
 				}
 
 				resource.source = response;
