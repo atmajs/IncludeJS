@@ -21,7 +21,7 @@ module.exports = function(grunt) {
 				dest: 'lib/include.js'
 			},
 			distReload:{
-				src: 'src/11.Autoreload.js',
+				src: 'src/20.Autoreload.js',
 				dest: 'lib/include.autoreload.js'
 			},
 			distNode: {
