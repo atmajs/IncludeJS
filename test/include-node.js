@@ -13,7 +13,7 @@ buster.testCase('Load', {
 
 		include.js({
 			waterfall: 'a'
-		}).done(function() {
+		}).done(function(res) {
 
 			assert.equals(letters, {
 				A: {
@@ -39,7 +39,7 @@ buster.testCase('Load', {
 			done();
 		});
 	},
-	'Exports': function(done) {
+	'Exports': function(done) {		
 		include.js({
 			exports: ['a::A', 'b::B']
 		}).done(function(resp) {
