@@ -87,6 +87,35 @@ IncludeDeferred.prototype = { /**	state observer */
 		return this.on(4, this.resolve.bind(this, callback));
 	},
 	resolve: function(callback) {
+		if (this.includes.length > 0 && this.response == null){
+			this.response = {};
+			
+			for(var i = 0, x, length = this.includes.length; i<length; i++){
+				x = this.includes[i];
+				if (!x.exports){
+					continue;
+				}
+				
+				var type = x.type;
+				switch (type) {
+				case 'js':
+				case 'load':
+				case 'ajax':
+
+					var alias = x.route.alias || Routes.parseAlias(x),
+						obj = type == 'js' ? this.response : (this.response[type] || (this.response[type] = {}));
+					
+					if (alias) {
+						obj[alias] = x.exports;						
+						break;
+					} else {
+						console.warn('Resource Alias is Not defined', x);
+					}
+					break;
+				}
+				
+			}	
+		}
 		callback(this.response);
 	}
 };

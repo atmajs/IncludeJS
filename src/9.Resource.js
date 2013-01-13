@@ -122,9 +122,6 @@ var Resource = (function(Include, IncludeDeferred, Routes, ScriptStack, CustomLo
 			if (this.includes == null) {
 				this.includes = [];
 			}
-			if (this.response == null) {
-				this.response = {};
-			}
 
 
 			Routes.each(type, pckg, function(namespace, route, xpath) {
@@ -138,31 +135,6 @@ var Resource = (function(Include, IncludeDeferred, Routes, ScriptStack, CustomLo
 		},
 
 		childLoaded: function(resource) {
-
-
-			if (resource && resource.exports) {
-
-				var type = resource.type;
-				switch (type) {
-				case 'js':
-				case 'load':
-				case 'ajax':
-
-					var alias = resource.route.alias || Routes.parseAlias(resource),
-						obj = type == 'js' ? this.response : (this.response[type] || (this.response[type] = {}));
-
-
-					if (alias) {
-						obj[alias] = resource.exports;
-						break;
-					} else {
-						console.warn('Resource Alias is Not defined', resource);
-					}
-
-					break;
-				} 
-			}
-
 			var includes = this.includes;
 			if (includes && includes.length) {
 				if (this.state < 3 /* && this.url != null */ ) {
