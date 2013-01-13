@@ -93,8 +93,8 @@ var Resource = (function(Include, IncludeDeferred, Routes, ScriptStack, CustomLo
 				ScriptStack.moveToParent(resource, parent);
 			}
 
-			// @TODO - [fix] - multiple routes by one resource for multiple parents
-			resource.route = route;
+			//// @done - @remove - @TODO - [fix] - multiple routes by one resource for multiple parents
+			////resource.route = route;
 			return resource;
 		}
 
@@ -127,7 +127,7 @@ var Resource = (function(Include, IncludeDeferred, Routes, ScriptStack, CustomLo
 			Routes.each(type, pckg, function(namespace, route, xpath) {
 				var resource = new Resource(type, route, namespace, xpath, this);
 
-				this.includes.push(resource);
+				this.includes.push({resource: resource, route: route});
 				resource.on(4, this.childLoaded.bind(this));
 			}.bind(this));
 
@@ -142,7 +142,7 @@ var Resource = (function(Include, IncludeDeferred, Routes, ScriptStack, CustomLo
 					return;
 				}
 				for (var i = 0; i < includes.length; i++) {
-					if (includes[i].state != 4) {
+					if (includes[i].resource.state != 4) {
 						return;
 					}
 				}

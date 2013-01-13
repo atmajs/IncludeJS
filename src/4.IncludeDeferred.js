@@ -24,7 +24,7 @@ IncludeDeferred.prototype = { /**	state observer */
 
 				if (includes != null && includes.length) {
 					for (i = 0; i < includes.length; i++) {
-						if (includes[i].state != 4) {
+						if (includes[i].resource.state != 4) {
 							return;
 						}
 					}
@@ -90,26 +90,31 @@ IncludeDeferred.prototype = { /**	state observer */
 		if (this.includes.length > 0 && this.response == null){
 			this.response = {};
 			
+			var resource, route;
+			
 			for(var i = 0, x, length = this.includes.length; i<length; i++){
 				x = this.includes[i];
-				if (!x.exports){
+				resource = x.resource;
+				route = x.route;
+				
+				if (!resource.exports){
 					continue;
 				}
 				
-				var type = x.type;
+				var type = resource.type;
 				switch (type) {
 				case 'js':
 				case 'load':
 				case 'ajax':
 
-					var alias = x.route.alias || Routes.parseAlias(x),
+					var alias = route.alias || Routes.parseAlias(route),
 						obj = type == 'js' ? this.response : (this.response[type] || (this.response[type] = {}));
 					
 					if (alias) {
-						obj[alias] = x.exports;						
+						obj[alias] = resource.exports;						
 						break;
 					} else {
-						console.warn('Resource Alias is Not defined', x);
+						console.warn('Resource Alias is Not defined', resource);
 					}
 					break;
 				}

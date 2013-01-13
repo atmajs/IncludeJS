@@ -143,9 +143,9 @@ var RoutesLib = function() {
 			return routes;
 		},
 		
-		parseAlias: function(resource){
-			var url = resource.url,
-				result = regexpAlias.exec(url);
+		parseAlias: function(route){
+			var path = route.path,
+				result = regexpAlias.exec(path);
 			
 			return result && result[1];			
 		}
