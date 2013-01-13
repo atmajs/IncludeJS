@@ -13,7 +13,7 @@ buster.testCase('Load', {
 
 		include.js({
 			waterfall: 'a'
-		}).done(function(res) {
+		}).done(function() {
 
 			assert.equals(letters, {
 				A: {

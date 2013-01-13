@@ -123,10 +123,12 @@ var Resource = (function(Include, IncludeDeferred, Routes, ScriptStack, CustomLo
 				this.includes = [];
 			}
 
+			this.response = null;
 
 			Routes.each(type, pckg, function(namespace, route, xpath) {
 				var resource = new Resource(type, route, namespace, xpath, this);
-
+				
+				
 				this.includes.push({resource: resource, route: route});
 				resource.on(4, this.childLoaded.bind(this));
 			}.bind(this));
