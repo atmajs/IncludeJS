@@ -1,6 +1,8 @@
 <h3>IncludeJS</h3>
 <hr/>
-<img src="https://travis-ci.org/tenbits/IncludeJS.png?branch=master" alt="Build Status" />
+<a href='http://travis-ci.org/tenbits/IncludeJS'>
+	<img src="https://travis-ci.org/tenbits/IncludeJS.png?branch=master" alt="Build Status" />
+</a>
 <h6>Resource Loader</h6>
 
 
