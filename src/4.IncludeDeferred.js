@@ -57,7 +57,11 @@ IncludeDeferred.prototype = { /**	state observer */
 			length--;
 			i--;
 			
-			x.callback(this);
+			try {
+				x.callback(this);
+			} catch(error){
+				console.error(error.toString(), 'file:', this.url);
+			}
 			
 			if (this.state < 4){
 				break;
