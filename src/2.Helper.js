@@ -83,6 +83,6 @@ var Helper = { /** TODO: improve url handling*/
 			xhr.readyState == 4 && callback && callback(resource, xhr.responseText);
 		};
 
-		xhr.open('GET', resource.url, true);
+		xhr.open('GET', typeof resource === 'object' ? resource.url : resource, true);
 		xhr.send();
 	};
