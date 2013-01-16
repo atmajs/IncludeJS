@@ -122,5 +122,16 @@ Include.prototype = {
 	 */
 	instance: function(){
 		return new Resource();
+	},
+	
+	getResource: function(url){
+		var id = (url[0] == '/' ? '' : '/' )+ url;
+		
+		for(var key in bin){
+			if (bin[key].hasOwnProperty(id)){
+				return bin[key];
+			}
+		}
+		return null;
 	}
 };
