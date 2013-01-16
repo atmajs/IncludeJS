@@ -1,5 +1,6 @@
 (function() {
 
+	
 	window.include.embed('/socket.io/socket.io.js').done(function() {
 		
 		if (!window.io){
@@ -17,7 +18,16 @@
 
 
 	function fileChanged(path) {
-		var ext = /\w+$/g.exec(path)[0];
+		var ext = /\w+$/g.exec(path)[0],
+			resource = include.getResource(path);
+			
+		if (resource && resource.reload){
+			XHR(path, function(path, response){
+				resource.reload(response);
+			});
+			return;
+		}
+		
 		
 		var handler = handlers[ext];
 		
