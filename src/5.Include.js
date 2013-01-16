@@ -129,9 +129,41 @@ Include.prototype = {
 		
 		for(var key in bin){
 			if (bin[key].hasOwnProperty(id)){
-				return bin[key];
+				return bin[key][id];
 			}
 		}
 		return null;
+	},
+	
+	plugin: function(pckg, callback){
+		
+		var urls = [],
+			length = 0,
+			j = 0,
+			i = 0,
+			onload = function(url, response){
+				j++;
+				
+				embedPlugin(response);
+				
+				if (j == length - 1 && callback){
+					callback();
+					callback = null;
+				}
+			};
+		Routes.each('', pckg, function(namespace, route){
+			urls.push(route.path[0] == '/' ? route.path.substring(1) : route.path);
+		});
+		
+		length = urls.length;
+		
+		for(; i<length; i++){
+			XHR(urls[i], onload);
+		}
+		return this;
 	}
 };
+
+function embedPlugin(source){
+	eval(source);
+}
