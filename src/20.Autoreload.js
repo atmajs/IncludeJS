@@ -23,6 +23,8 @@
 			
 		if (resource && resource.reload){
 			XHR(path, function(path, response){
+				
+				window.include = resource;
 				resource.reload(response);
 			});
 			return;
