@@ -2,12 +2,12 @@
 var __eval = function(source, include) {
 	"use strict";
 	
-	var iparams = include.route.params;
+	var iparams = include && include.route.params;
 	
 	try {
 		return eval(source);
 	} catch (error) {
-		error.url = include.url;
+		error.url = include && include.url;
 		//Helper.reportError(error);
 		console.error(error);
 	}
