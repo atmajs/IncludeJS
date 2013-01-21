@@ -1,17 +1,19 @@
-(function() {
+(function(global) {
 
-	
-	window.include.embed('/socket.io/socket.io.js').done(function() {
-		
-		if (!window.io){
+
+	global.include.js({
+		lib: ['mask', 'mask/plugin.reload::reloadPlugin' ]
+	}).embed('/socket.io/socket.io.js').done(function(resp) {
+
+		if (!global.io) {
 			return;
 		}
-		
-		var socket = window.io.connect();
+
+		var socket = global.io.connect();
 
 		socket.on('filechange', function(path) {
-			console.log(path);
-
+			console.log('Changed:', path);
+			
 			fileChanged(path);
 		});
 	});
@@ -20,66 +22,66 @@
 	function fileChanged(path) {
 		var ext = /\w+$/g.exec(path)[0],
 			resource = include.getResource(path);
-			
-		if (resource && resource.reload){
-			XHR(path, function(path, response){
-				
-				window.include = resource;
+
+		if (resource && resource.reload) {
+			XHR(path, function(path, response) {
+
+				global.include = resource;
 				resource.reload(response);
 			});
 			return;
 		}
-		
-		
-		var handler = handlers[ext];
-		
-		if (handler){
+
+
+		var handler = Handlers[ext];
+
+		if (handler) {
 			handler(path);
-		}else{
-			window.location.reload();
-		}		
+		} else {
+			global.location.reload();
+		}
 	}
-	
-	
-	var handlers = {
-		css: function(path){
-			
+
+
+	var Handlers = {
+		css: function(path) {
+
 			var styles = document.getElementsByTagName('link'),
 				length = styles.length,
 				i = 0,
 				x, href;
-			
-			for(; i < length; i++){
-				x = styles[i];				
+
+			for (; i < length; i++) {
+				x = styles[i];
 				href = x.getAttribute('href');
-				
-				if (!href){
+
+				if (!href) {
 					continue;
 				}
-			
+
 				if (~href.indexOf('?')) {
 					href = href.substring(0, href.indexOf('?'));
-				}	
-				
-				if (~path.toLowerCase().indexOf(href.toLowerCase())){
-					
+				}
+
+				if (~path.toLowerCase().indexOf(href.toLowerCase())) {
+
 					reloadTag(x, 'href');
-					
+
 					break;
-				}				
-			}		
+				}
+			}
 		}
 	}
-	
-	function reloadTag(node, srcAttribute){
+
+	function reloadTag(node, srcAttribute) {
 		var clone = node.cloneNode(),
 			src = node.getAttribute(srcAttribute);
-		
+
 		src += (src.indexOf('?') > -1 ? '&' : '?') + Date.now() + '=true';
-		
+
 		clone.setAttribute(srcAttribute, src);
-		
-		node.parentNode.replaceChild(clone, node);		
+
+		node.parentNode.replaceChild(clone, node);
 	}
 
-}());
+}(typeof window === 'undefined' ? global : window));
