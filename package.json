@@ -1,8 +1,8 @@
 {
-	"name": "IncludeJS",
+	"name": "includejs-loader",
 	"description": "Resource Loader",
-	"version": "0.5.2",
-	"homepage": "http://tenbits.github.com/LibJS/",
+	"version": "0.5.3",
+	"homepage": "http://libjs.it/#/include",
 	"contributors":[
 	],
 	"author": "Alex Kit <source.kit@gmail.com>",
@@ -16,6 +16,7 @@
 	"licenses": [
 		"MIT"
 	],
+	"main": "./lib/include.node.js",
 	"dependencies": {},
 	"devDependencies": {
 		"grunt": "~0.3.17",
