@@ -68,7 +68,7 @@ var Resource = (function(Include, IncludeDeferred, Routes, ScriptStack, CustomLo
 		var includes = resource.includes;
 		if (includes && includes.length) {
 			if (resource.state < 3 /* && resource.url != null */ ) {
-				// resource still loading/include is in process, but one of sub resources are already done 
+				// resource still loading/include is in process, but one of sub resources are already done
 				return;
 			}
 			for (var i = 0; i < includes.length; i++) {
@@ -126,6 +126,10 @@ var Resource = (function(Include, IncludeDeferred, Routes, ScriptStack, CustomLo
 
 		(bin[type] || (bin[type] = {}))[id] = this;
 
+		if (cfg.version){
+			this.url += (!~this.url.indexOf('?') ? '?' : '&' ) + 'v=' + cfg.version;
+		}
+
 		return process(this);
 
 	};
@@ -142,11 +146,11 @@ var Resource = (function(Include, IncludeDeferred, Routes, ScriptStack, CustomLo
 			}
 
 			this.response = null;
-			
+
 			var _childLoaded = childLoaded.bind(this);
 
 			Routes.each(type, pckg, function(namespace, route, xpath) {
-				
+
 				var resource = new Resource(type, route, namespace, xpath, this);
 
 				this.includes.push({
