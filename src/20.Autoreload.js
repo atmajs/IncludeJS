@@ -23,15 +23,6 @@
 		var ext = /\w+$/g.exec(path)[0],
 			resource = include.getResource(path);
 
-		if (resource && resource.reload) {
-			XHR(path, function(path, response) {
-
-				global.include = resource;
-				resource.reload(response);
-			});
-			return;
-		}
-
 		if (resource){
 			if (resource.reload){
 				XHR(path, function(path, response) {
