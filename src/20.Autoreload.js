@@ -70,6 +70,10 @@
 					continue;
 				}
 
+				if (href[0] == '/'){
+					href = href.substring(1);
+				}
+
 				if (~href.indexOf('?')) {
 					href = href.substring(0, href.indexOf('?'));
 				}
