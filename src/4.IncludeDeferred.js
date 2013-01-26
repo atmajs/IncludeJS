@@ -1,3 +1,13 @@
+
+/**
+ * STATES:
+ * 0: Resource Created
+ * 1: Loading
+ * 2: Loaded - Evaluating
+ * 3: Evaluated - Childs Loading
+ * 4: Childs Loaded - Completed
+ */
+
 var IncludeDeferred = function() {
 	this.callbacks = [];
 	this.state = 0;
@@ -6,7 +16,7 @@ var IncludeDeferred = function() {
 IncludeDeferred.prototype = { /**	state observer */
 
 	on: function(state, callback) {
-		state <= this.state ? callback(this) : this.callbacks.unshift({
+		state <= this.state ? callback(this) : this.callbacks[this.state < 3 ? 'unshift':'push']({
 			state: state,
 			callback: callback
 		});
@@ -18,29 +28,29 @@ IncludeDeferred.prototype = { /**	state observer */
 
 		if (state > this.state) {
 			this.state = state;
+		}
 
-			if (this.state === 3) {
-				var includes = this.includes;
+		if (this.state === 3) {
+			var includes = this.includes;
 
-				if (includes != null && includes.length) {
-					for (i = 0; i < includes.length; i++) {
-						if (includes[i].resource.state != 4) {
-							return;
-						}
+			if (includes != null && includes.length) {
+				for (i = 0; i < includes.length; i++) {
+					if (includes[i].resource.state != 4) {
+						return;
 					}
 				}
-
-				this.state = 4;
 			}
+
+			this.state = 4;
 		}
 
 		i = 0;
 		length = this.callbacks.length;
-		
+
 		if (length === 0){
 			return;
 		}
-		
+
 		//do not set asset resource to global
 		if (this.type === 'js' && this.state === 4) {
 			currentInclude = global.include;
@@ -52,22 +62,22 @@ IncludeDeferred.prototype = { /**	state observer */
 			if (x.state > this.state) {
 				continue;
 			}
-			
+
 			this.callbacks.splice(i,1);
 			length--;
 			i--;
-			
+
 			try {
 				x.callback(this);
 			} catch(error){
 				console.error(error.toString(), 'file:', this.url);
 			}
-			
+
 			if (this.state < 4){
 				break;
 			}
 		}
-		
+
 		if (currentInclude != null){
 			global.include = currentInclude;
 		}
@@ -93,18 +103,18 @@ IncludeDeferred.prototype = { /**	state observer */
 	resolve: function(callback) {
 		if (this.includes.length > 0 && this.response == null){
 			this.response = {};
-			
+
 			var resource, route;
-			
+
 			for(var i = 0, x, length = this.includes.length; i<length; i++){
 				x = this.includes[i];
 				resource = x.resource;
 				route = x.route;
-				
+
 				if (!resource.exports){
 					continue;
 				}
-				
+
 				var type = resource.type;
 				switch (type) {
 				case 'js':
@@ -113,17 +123,17 @@ IncludeDeferred.prototype = { /**	state observer */
 
 					var alias = route.alias || Routes.parseAlias(route),
 						obj = type == 'js' ? this.response : (this.response[type] || (this.response[type] = {}));
-					
+
 					if (alias) {
-						obj[alias] = resource.exports;						
+						obj[alias] = resource.exports;
 						break;
 					} else {
 						console.warn('Resource Alias is Not defined', resource);
 					}
 					break;
 				}
-				
-			}	
+
+			}
 		}
 		callback(this.response);
 	}
