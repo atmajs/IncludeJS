@@ -34,7 +34,8 @@ var Include = (function() {
 				console.error("Current Resource should be loaded");
 			}
 
-			resource.state = 2;
+			/**@TODO - probably state shoulb be changed to 2 at this place */
+			resource.state = 3;
 			global.include = resource;
 
 		},
@@ -151,8 +152,12 @@ var Include = (function() {
 			return new Resource();
 		},
 
-		getResource: function(url) {
+		getResource: function(url, type) {
 			var id = (url[0] == '/' ? '' : '/') + url;
+
+			if (type != null){
+				return bin[type][id];
+			}
 
 			for (var key in bin) {
 				if (bin[key].hasOwnProperty(id)) {
