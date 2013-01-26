@@ -136,7 +136,7 @@ var Resource = (function(Include, IncludeDeferred, Routes, ScriptStack, CustomLo
 
 	Resource.prototype = Helper.extend({}, IncludeDeferred, Include, {
 		include: function(type, pckg) {
-			this.state = this.state >= 3 ? 3 : 1;
+			this.state = this.state >= 3 ? 3 : 2;
 
 			if (this.includes == null) {
 				this.includes = [];
