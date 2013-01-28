@@ -101,13 +101,16 @@ IncludeDeferred.prototype = { /**	state observer */
 		return this.on(4, this.resolve.bind(this, callback));
 	},
 	resolve: function(callback) {
-		if (this.includes.length > 0 && this.response == null){
+		var includes = this.includes,
+			length = includes == null ? 0 : includes.length;
+
+		if (length > 0 && this.response == null){
 			this.response = {};
 
 			var resource, route;
 
-			for(var i = 0, x, length = this.includes.length; i<length; i++){
-				x = this.includes[i];
+			for(var i = 0, x; i < length; i++){
+				x = includes[i];
 				resource = x.resource;
 				route = x.route;
 
