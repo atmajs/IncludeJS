@@ -13,21 +13,27 @@ var Helper = { /** TODO: improve url handling*/
 			if (cfg.path && url[0] == '/') {
 				url = cfg.path + url.substring(1);
 			}
-			if (url[0] == '/') {
-				if (isWeb === false || cfg.lockedToFolder === true) {
-					return url.substring(1);
-				}
-				return url;
-			}
+
 			switch (url.substring(0, 5)) {
-			case 'file:':
-			case 'http:':
-				return url;
+				case 'file:':
+				case 'http:':
+					return url;
+			}
+			
+
+			if (url[0] === '/') {
+				if (isWeb === false || cfg.lockedToFolder === true) {
+					url = url.substring(1);
+				}
+			}else if (parent != null && parent.location != null) {
+				url = parent.location + url;
+			}
+		
+
+			while(url.indexOf('../') > -1){
+				url = url.replace(/[^\/]+\/\.\.\//,'');
 			}
 
-			if (parent != null && parent.location != null) {
-				return parent.location + url;
-			}
 			return url;
 		}
 	},
