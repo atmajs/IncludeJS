@@ -59,7 +59,7 @@ IncludeDeferred.prototype = { /**	state observer */
 
 		for (; i < length; i++) {
 			x = this.callbacks[i];
-			if (x.state > this.state) {
+			if (x == null || x.state > this.state) {
 				continue;
 			}
 
