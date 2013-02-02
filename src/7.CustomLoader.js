@@ -11,7 +11,8 @@ var CustomLoader = (function() {
 		}
 
 		var loaderRoute = cfg.loader[extension],
-			path, namespace;
+			path = loaderRoute,
+			namespace = null;
 
 		if (typeof loaderRoute === 'object') {
 			for (var key in loaderRoute) {
@@ -28,7 +29,7 @@ var CustomLoader = (function() {
 		load: function(resource, callback) {
 
 			var loader = createLoader(resource.url);
-			loader.done(function() {				
+			loader.done(function() {
 				XHR(resource, function(resource, response) {
 					callback(resource, loader.exports.process(response, resource));
 				});
