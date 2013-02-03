@@ -19,7 +19,11 @@ var Helper = { /** TODO: improve url handling*/
 				case 'http:':
 					return url;
 			}
-			
+
+			if (url.substring(0,2) === './'){
+				url = url.substring(2);
+			}
+
 
 			if (url[0] === '/') {
 				if (isWeb === false || cfg.lockedToFolder === true) {
@@ -28,7 +32,7 @@ var Helper = { /** TODO: improve url handling*/
 			}else if (parent != null && parent.location != null) {
 				url = parent.location + url;
 			}
-		
+
 
 			while(url.indexOf('../') > -1){
 				url = url.replace(/[^\/]+\/\.\.\//,'');
