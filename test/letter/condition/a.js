@@ -1,5 +1,5 @@
 
-var letter = iparams.letter;
+var letter = inlude.iparams && inlude.iparams.letter;
 assert.equals(typeof letter, 'string', 'Parameter letter should be defined');
 
 include.js(letter + '.js::Letter').done(function(resp){
