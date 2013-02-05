@@ -107,7 +107,7 @@ IncludeDeferred.prototype = { /**	state observer */
 	done: function(callback) {
 		var that = this;
 		return this.on(4, function(){
-			that.resolve(callback)
+			that.resolve(callback);
 		});
 	},
 	resolve: function(callback) {

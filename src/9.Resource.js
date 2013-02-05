@@ -143,7 +143,7 @@ var Resource = (function(Include, IncludeDeferred, Routes, ScriptStack, CustomLo
 			if (this.childLoaded == null){
 				this.childLoaded = function(child){
 					childLoaded.call(that, that, child);
-				}
+				};
 			}
 
 			this.response = null;
