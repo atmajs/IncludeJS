@@ -1,7 +1,7 @@
 (function(global) {
 
 
-	global.include.js({
+	global.include.instance().js({
 		lib: ['mask', 'mask/plugin.reload::reloadPlugin' ]
 	}).embed('/socket.io/socket.io.js').done(function(resp) {
 
