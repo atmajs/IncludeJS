@@ -90,9 +90,12 @@ IncludeDeferred.prototype = { /**	state observer */
 	/** idefer */
 
 	ready: function(callback) {
+		var that = this;
 		return this.on(4, function() {
-			Events.ready(this.resolve.bind(this, callback));
-		}.bind(this));
+			Events.ready(function(){
+				that.resolve(callback);
+			});
+		});
 	},
 	/** assest loaded and window is loaded */
 	loaded: function(callback) {
@@ -102,7 +105,10 @@ IncludeDeferred.prototype = { /**	state observer */
 	},
 	/** assets loaded */
 	done: function(callback) {
-		return this.on(4, this.resolve.bind(this, callback));
+		var that = this;
+		return this.on(4, function(){
+			that.resolve(callback)
+		});
 	},
 	resolve: function(callback) {
 		var includes = this.includes,

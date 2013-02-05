@@ -134,29 +134,30 @@ var Resource = (function(Include, IncludeDeferred, Routes, ScriptStack, CustomLo
 
 	Resource.prototype = Helper.extend({}, IncludeDeferred, Include, {
 		include: function(type, pckg) {
+			var that = this;
 			this.state = this.state >= 3 ? 3 : 2;
 
 			if (this.includes == null) {
 				this.includes = [];
 			}
 			if (this.childLoaded == null){
-				this.childLoaded = childLoaded.bind(this, this);
+				this.childLoaded = function(child){
+					childLoaded.call(that, that, child);
+				}
 			}
 
 			this.response = null;
-
-			var _childLoaded = childLoaded.bind(this);
 
 			Routes.each(type, pckg, function(namespace, route, xpath) {
 
 				var resource = new Resource(type, route, namespace, xpath, this);
 
-				this.includes.push({
+				that.includes.push({
 					resource: resource,
 					route: route
 				});
-				resource.on(4, this.childLoaded);
-			}.bind(this));
+				resource.on(4, that.childLoaded);
+			});
 
 			return this;
 		}
