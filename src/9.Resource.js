@@ -150,7 +150,7 @@ var Resource = (function(Include, IncludeDeferred, Routes, ScriptStack, CustomLo
 
 			Routes.each(type, pckg, function(namespace, route, xpath) {
 
-				var resource = new Resource(type, route, namespace, xpath, this);
+				var resource = new Resource(type, route, namespace, xpath, that);
 
 				that.includes.push({
 					resource: resource,
