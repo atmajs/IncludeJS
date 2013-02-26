@@ -53,11 +53,21 @@
 
 
 	function getFile(url) {
-		return url.replace('file:///', '');
+		return url.replace('file:///', '').replace(/\\/g, '/');
 	}
 
 	function getDir(url) {
 		return url.substring(0, url.lastIndexOf('/'));
+	}
+
+	Resource.prototype.instance = function(currentUrl){
+		if (typeof currentUrl === 'string'){
+			var path = getDir(getFile(currentUrl));
+
+			module.paths.unshift(path + '/node_modules');
+		}
+
+		return new Resource();
 	}
 
 }());

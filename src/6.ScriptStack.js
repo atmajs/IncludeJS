@@ -95,7 +95,7 @@ var ScriptStack = (function() {
 			resource.state = 1;
 			global.include = resource;
 
-			//console.log('evaling', resource.url, stack.length);			
+			//console.log('evaling', resource.url, stack.length);
 			__eval(resource.source, resource);
 
 			for (var i = 0, x, length = stack.length; i < length; i++) {
@@ -138,6 +138,10 @@ var ScriptStack = (function() {
 			if (!cfg.eval || forceEmbed) {
 				loadByEmbedding();
 				return;
+			}
+
+			if (cfg.sync === true){
+				currentResource = null;
 			}
 
 
