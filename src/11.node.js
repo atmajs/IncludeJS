@@ -1,7 +1,10 @@
 (function() {
 
 	var fs = require('fs'),
-		vm = require('vm');
+		vm = require('vm'),
+		Module = module.constructor,
+		globalPath,
+		includePath;
 
 
 	XMLHttpRequest = function() {};
@@ -47,7 +50,7 @@
 		global.__dirname = getDir(global.__filename);
 		global.module = module;
 
-		vm.runInThisContext(source, include.url);
+		vm.runInThisContext(source, global.__filename);
 
 	};
 
@@ -60,11 +63,31 @@
 		return url.substring(0, url.lastIndexOf('/'));
 	}
 
-	Resource.prototype.instance = function(currentUrl){
-		if (typeof currentUrl === 'string'){
-			var path = getDir(getFile(currentUrl));
+	Resource.prototype.instance = function(currentUrl) {
+		if (typeof currentUrl === 'string') {
 
-			module.paths.unshift(path + '/node_modules');
+			var old = module,
+				next = new Module(currentUrl, old);
+
+			next.filename = getFile(currentUrl);
+			next.paths = Module._nodeModulePaths(getDir(next.filename));
+
+
+			if (!globalPath) {
+				var _path = /[^;]+[\\\/]npm[\\\/][^;]*/g.exec(process.env.path);
+
+				globalPath = _path && _path[0].replace(/\\/g, '/');
+				globalPath += (globalPath[globalPath.length - 1] !== '/' ? '/' : '') + 'node_modules';
+
+				includePath = io.env.applicationDir.toLocalDir() + 'node_modules';
+			}
+
+
+			next.paths.unshift(includePath);
+			next.paths.unshift(globalPath);
+
+			module = next;
+			require = next.require.bind(next);
 		}
 
 		return new Resource();
