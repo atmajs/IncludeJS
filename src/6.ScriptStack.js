@@ -164,11 +164,10 @@ var ScriptStack = (function() {
 		},
 		/* Move resource in stack close to parent */
 		moveToParent: function(resource, parent) {
-			var i = 0,
-				length = stack.length,
+			var length = stack.length,
 				parentIndex = -1,
 				resourceIndex = -1,
-				x;
+				x, i;
 
 			for (i = 0; i < length; i++) {
 				if (stack[i] === resource) {
@@ -183,7 +182,7 @@ var ScriptStack = (function() {
 				return;
 			}
 
-			for (; i < length; i++) {
+			for (i= 0; i < length; i++) {
 				if (stack[i] === parent) {
 					parentIndex = i;
 					break;
@@ -203,7 +202,7 @@ var ScriptStack = (function() {
 			}
 
 			stack.splice(resourceIndex, 1);
-			stack.splice(parentIndex - 1, 0, resource);
+			stack.splice(parentIndex, 0, resource);
 
 
 		}
