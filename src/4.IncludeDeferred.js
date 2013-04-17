@@ -97,12 +97,14 @@ IncludeDeferred.prototype = { /**	state observer */
 			});
 		});
 	},
-	/** assest loaded and window is loaded */
-	loaded: function(callback) {
-		return this.on(4, function() {
-			Events.load(callback);
-		});
-	},
+
+	///////// Deprecated
+	/////////** assest loaded and window is loaded */
+	////////loaded: function(callback) {
+	////////	return this.on(4, function() {
+	////////		Events.load(callback);
+	////////	});
+	////////},
 	/** assets loaded */
 	done: function(callback) {
 		var that = this;
