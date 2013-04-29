@@ -50,7 +50,13 @@
 		global.__dirname = getDir(global.__filename);
 		global.module = module;
 
+		source = '(function(){ ' + source + ' }())';
+
 		vm.runInThisContext(source, global.__filename);
+
+		if (include.exports == null){
+			include.exports = module.exports;
+		}
 
 	};
 
