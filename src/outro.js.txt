@@ -1,2 +1,2 @@
 
-})(typeof window === 'undefined' ? global : window, typeof document == 'undefined' ? null : document);
+})(typeof window === 'undefined' ? global : window, typeof document === 'undefined' ? null : document);

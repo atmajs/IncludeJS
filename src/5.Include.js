@@ -34,7 +34,7 @@ var Include = (function() {
 				path: data.id
 			}, data.namespace, null, null, data.id);
 
-			if (resource.state != 4) {
+			if (resource.state !== 4) {
 				console.error("Current Resource should be loaded");
 			}
 
@@ -79,16 +79,16 @@ var Include = (function() {
 				for (var key in arg) {
 					cfg[key] = arg[key];
 
-					if (key == 'modules' && arg[key] === true) {
+					if (key === 'modules' && arg[key] === true) {
 						enableModules();
 					}
 				}
 				break;
 			case 'string':
-				if (arguments.length == 1) {
+				if (arguments.length === 1) {
 					return cfg[arg];
 				}
-				if (arguments.length == 2) {
+				if (arguments.length === 2) {
 					cfg[arg] = arguments[1];
 				}
 				break;
@@ -128,10 +128,10 @@ var Include = (function() {
 					resource.type = key;
 
 					if (url) {
-						if (url[0] == '/') {
+						if (url[0] === '/') {
 							url = url.substring(1);
 						}
-						resource.location = Helper.uri.getDir(url);
+						resource.location = path_getDir(url);
 					}
 
 					switch (key) {
@@ -144,7 +144,10 @@ var Include = (function() {
 						}
 						resource.exports = container.innerHTML;
 						break;
-					}(bin[key] || (bin[key] = {}))[id] = resource;
+					}
+					
+					//
+					(bin[key] || (bin[key] = {}))[id] = resource;
 				}
 			}
 		},
@@ -157,7 +160,7 @@ var Include = (function() {
 		},
 
 		getResource: function(url, type) {
-			var id = (url[0] == '/' ? '' : '/') + url;
+			var id = (url[0] === '/' ? '' : '/') + url;
 
 			if (type != null){
 				return bin[type][id];
@@ -182,13 +185,13 @@ var Include = (function() {
 
 					embedPlugin(response);
 
-					if (j == length - 1 && callback) {
+					if (j === length - 1 && callback) {
 						callback();
 						callback = null;
 					}
 				};
 			Routes.each('', pckg, function(namespace, route) {
-				urls.push(route.path[0] == '/' ? route.path.substring(1) : route.path);
+				urls.push(route.path[0] === '/' ? route.path.substring(1) : route.path);
 			});
 
 			length = urls.length;

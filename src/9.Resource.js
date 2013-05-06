@@ -7,24 +7,24 @@ var Resource = (function(Include, IncludeDeferred, Routes, ScriptStack, CustomLo
 
 		if (CustomLoader.exists(resource) === false) {
 			switch (type) {
-			case 'js':
-			case 'embed':
-				ScriptStack.load(resource, parent, type == 'embed');
-				break;
-			case 'ajax':
-			case 'load':
-			case 'lazy':
-				XHR(resource, onXHRCompleted);
-				break;
-			case 'css':
-				resource.state = 4;
+				case 'js':
+				case 'embed':
+					ScriptStack.load(resource, parent, type === 'embed');
+					break;
+				case 'ajax':
+				case 'load':
+				case 'lazy':
+					XHR(resource, onXHRCompleted);
+					break;
+				case 'css':
+					resource.state = 4;
 
-				var tag = document.createElement('link');
-				tag.href = url;
-				tag.rel = "stylesheet";
-				tag.type = "text/css";
-				document.getElementsByTagName('head')[0].appendChild(tag);
-				break;
+					var tag = document.createElement('link');
+					tag.href = url;
+					tag.rel = "stylesheet";
+					tag.type = "text/css";
+					document.getElementsByTagName('head')[0].appendChild(tag);
+					break;
 			}
 		} else {
 			CustomLoader.load(resource, onXHRCompleted);
@@ -41,42 +41,26 @@ var Resource = (function(Include, IncludeDeferred, Routes, ScriptStack, CustomLo
 		}
 
 		switch (resource.type) {
-		case 'js':
-		case 'embed':
-			resource.source = response;
-			ScriptStack.load(resource, resource.parent, resource.type == 'embed');
-			return;
-		case 'load':
-		case 'ajax':
-			resource.exports = response;
-			break;
-		case 'lazy':
-			LazyModule.create(resource.xpath, response);
-			break;
-		case 'css':
-			var tag = document.createElement('style');
-			tag.type = "text/css";
-			tag.innerHTML = response;
-			document.getElementsByTagName('head')[0].appendChild(tag);
-			break;
-		}
-
-		resource.readystatechanged(4);
-	}
-
-	function childLoaded(resource, child) {
-		var includes = resource.includes;
-		if (includes && includes.length) {
-			if (resource.state < 3 /* && resource.url != null */ ) {
-				// resource still loading/include is in process, but one of sub resources are already done
+			case 'js':
+			case 'embed':
+				resource.source = response;
+				ScriptStack.load(resource, resource.parent, resource.type === 'embed');
 				return;
-			}
-			for (var i = 0; i < includes.length; i++) {
-				if (includes[i].resource.state != 4) {
-					return;
-				}
-			}
+			case 'load':
+			case 'ajax':
+				resource.exports = response;
+				break;
+			case 'lazy':
+				LazyModule.create(resource.xpath, response);
+				break;
+			case 'css':
+				var tag = document.createElement('style');
+				tag.type = "text/css";
+				tag.innerHTML = response;
+				document.getElementsByTagName('head')[0].appendChild(tag);
+				break;
 		}
+
 		resource.readystatechanged(4);
 	}
 
@@ -84,28 +68,29 @@ var Resource = (function(Include, IncludeDeferred, Routes, ScriptStack, CustomLo
 		Include.call(this);
 		IncludeDeferred.call(this);
 
+		this.childLoaded = fn_proxy(this.childLoaded, this);
+
 		var url = route && route.path;
 
 		if (url != null) {
-			this.url = url = Helper.uri.resolveUrl(url, parent);
+			this.url = url = path_resolveUrl(url, parent);
 		}
 
 		this.route = route;
 		this.namespace = namespace;
 		this.type = type;
 		this.xpath = xpath;
-
 		this.parent = parent;
 
 		if (id == null && url) {
-			id = (url[0] == '/' ? '' : '/') + url;
+			id = (url[0] === '/' ? '' : '/') + url;
 		}
 
 
 		var resource = bin[type] && bin[type][id];
 		if (resource) {
 
-			if (resource.state < 4 && type == 'js') {
+			if (resource.state < 4 && type === 'js') {
 				ScriptStack.moveToParent(resource, parent);
 			}
 
@@ -118,45 +103,75 @@ var Resource = (function(Include, IncludeDeferred, Routes, ScriptStack, CustomLo
 		}
 
 
-		this.location = Helper.uri.getDir(url);
+		this.location = path_getDir(url);
 
 
 
 		(bin[type] || (bin[type] = {}))[id] = this;
 
-		if (cfg.version){
-			this.url += (!~this.url.indexOf('?') ? '?' : '&' ) + 'v=' + cfg.version;
+		if (cfg.version) {
+			this.url += (this.url.indexOf('?') === -1 ? '?' : '&') + 'v=' + cfg.version;
 		}
 
 		return process(this);
 
 	};
 
-	Resource.prototype = Helper.extend({}, IncludeDeferred, Include, {
-		include: function(type, pckg) {
-			var that = this;
+	Resource.prototype = obj_inherit({
+		constructor: Resource
+	}, IncludeDeferred, Include, {
+		childLoaded: function(child) {
+			var resource = this,
+				includes = resource.includes;
+			if (includes && includes.length) {
+				if (resource.state < 3 /* && resource.url != null */ ) {
+					// resource still loading/include is in process, but one of sub resources are already done
+					return;
+				}
+				for (var i = 0; i < includes.length; i++) {
+					if (includes[i].resource.state !== 4) {
+						return;
+					}
+				}
+			}
+			resource.readystatechanged(4);
+		},
+		create: function(type, route, namespace, xpath, id) {
+			var resource;
+
 			this.state = this.state >= 3 ? 3 : 2;
+			this.response = null;
 
 			if (this.includes == null) {
 				this.includes = [];
 			}
-			if (this.childLoaded == null){
-				this.childLoaded = function(child){
-					childLoaded.call(that, that, child);
-				};
-			}
 
-			this.response = null;
+			resource = new Resource(type, route, namespace, xpath, this, id);
+
+			this.includes.push({
+				resource: resource,
+				route: route
+			});
+
+			resource.on(4, this.childLoaded);
+
+			return resource;
+		},
+		include: function(type, pckg) {
+			var that = this;
+			//this.state = this.state >= 3 ? 3 : 2;
+			//
+			//if (this.includes == null) {
+			//	this.includes = [];
+			//}
+			//
+			//
+			//this.response = null;
 
 			Routes.each(type, pckg, function(namespace, route, xpath) {
 
-				var resource = new Resource(type, route, namespace, xpath, that);
+				that.create(type, route, namespace, xpath);
 
-				that.includes.push({
-					resource: resource,
-					route: route
-				});
-				resource.on(4, that.childLoaded);
 			});
 
 			return this;

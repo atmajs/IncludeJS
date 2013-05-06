@@ -1,21 +1,20 @@
 var Events = (function(document) {
 	if (document == null) {
 		return {
-			ready: Helper.doNothing,
-			load: Helper.doNothing
+			ready: fn_doNothing,
+			load: fn_doNothing
 		};
 	}
-	var readycollection = [],
-		timer = Date.now();
+	var readycollection = [];
 
 	function onReady() {
-		Events.ready = Helper.doNothing;
+		Events.ready = fn_doNothing;
 
 		if (readycollection == null) {
 			return;
 		}
 
-		Helper.invokeEach(readycollection);
+		arr_invoke(readycollection);
 		readycollection = null;
 	}
 

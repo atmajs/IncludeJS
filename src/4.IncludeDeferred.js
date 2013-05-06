@@ -35,7 +35,7 @@ IncludeDeferred.prototype = { /**	state observer */
 
 			if (includes != null && includes.length) {
 				for (i = 0; i < includes.length; i++) {
-					if (includes[i].resource.state != 4) {
+					if (includes[i].resource.state !== 4) {
 						return;
 					}
 				}
@@ -137,7 +137,7 @@ IncludeDeferred.prototype = { /**	state observer */
 				case 'ajax':
 
 					var alias = route.alias || Routes.parseAlias(route),
-						obj = type == 'js' ? this.response : (this.response[type] || (this.response[type] = {}));
+						obj = type === 'js' ? this.response : (this.response[type] || (this.response[type] = {}));
 
 					if (alias) {
 						obj[alias] = resource.exports;

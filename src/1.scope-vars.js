@@ -10,6 +10,7 @@
 
 var bin = {},
 	isWeb = !! (global.location && global.location.protocol && /^https?:/.test(global.location.protocol)),
+	reg_subFolder = /[^\/]+\/\.\.\//,
 	cfg = {
 		eval: document == null
 	},	
@@ -17,4 +18,5 @@ var bin = {},
 	hasOwnProp = {}.hasOwnProperty,
 	//-currentParent = null,
 	XMLHttpRequest = global.XMLHttpRequest;
+
 	

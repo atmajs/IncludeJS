@@ -1,6 +1,12 @@
 // import ../src/intro.js.txt
 // import ../src/1.scope-vars.js 
 // import ../src/2.Helper.js
+
+// import ../src/utils/fn.js
+// import ../src/utils/object.js
+// import ../src/utils/array.js
+// import ../src/utils/path.js
+
 // import ../src/2.Routing.js
 // import ../src/3.Events.js 
 // import ../src/4.IncludeDeferred.js 

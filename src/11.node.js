@@ -9,6 +9,7 @@
 
 	XMLHttpRequest = function() {};
 	XMLHttpRequest.prototype = {
+		constructor: XMLHttpRequest,
 		open: function(method, url) {
 			this.url = url;
 		},
@@ -41,7 +42,7 @@
 		}
 	};
 
-	__eval = function(source, include) {
+	__eval = function(source, include, isGlobalCntx) {
 
 		global.include = include;
 		global.require = require;
@@ -50,11 +51,13 @@
 		global.__dirname = getDir(global.__filename);
 		global.module = module;
 
-		source = '(function(){ ' + source + ' }())';
+		if (isGlobalCntx !== true) {
+			source = '(function(){ ' + source + ' }())';
+		}
 
 		vm.runInThisContext(source, global.__filename);
 
-		if (include.exports == null){
+		if (include.exports == null) {
 			include.exports = module.exports;
 		}
 
@@ -62,12 +65,39 @@
 
 
 	function getFile(url) {
-		return url.replace('file:///', '').replace(/\\/g, '/');
+		return url.replace('file:///', '')
+			.replace(/\\/g, '/');
 	}
 
 	function getDir(url) {
 		return url.substring(0, url.lastIndexOf('/'));
 	}
+
+
+	Resource.prototype.inject = function(pckg) {
+		
+		return include
+			.create()
+			.load(pckg)
+			.done(function(resp){
+
+
+			var sources = resp.load,
+				key;
+			try {
+				for (key in sources) {
+					__eval(sources[key], include , true);
+				}
+			} catch (e) {
+				console.error('Tested source eval error', e);
+			}
+
+			include.readystatechanged(3);
+		});
+
+		
+	};
+
 
 	Resource.prototype.instance = function(currentUrl) {
 		if (typeof currentUrl === 'string') {
@@ -97,6 +127,8 @@
 		}
 
 		return new Resource();
-	}
+	};
+
+
 
 }());

@@ -11,7 +11,7 @@ var ScriptStack = (function() {
 
 			if ('onreadystatechange' in tag) {
 				tag.onreadystatechange = function() {
-					(this.readyState == 'complete' || this.readyState == 'loaded') && callback();
+					(this.readyState === 'complete' || this.readyState === 'loaded') && callback();
 				};
 			} else {
 				tag.onload = tag.onerror = callback;
@@ -42,7 +42,7 @@ var ScriptStack = (function() {
 			function resourceLoaded(e) {
 
 
-				if (e && e.type == 'error') {
+				if (e && e.type === 'error') {
 					console.log('Script Loaded Error', resource.url);
 				}
 
@@ -56,7 +56,7 @@ var ScriptStack = (function() {
 					}
 				}
 
-				if (i == length) {
+				if (i === length) {
 					console.error('Loaded Resource not found in stack', resource);
 					return;
 				}
@@ -100,7 +100,7 @@ var ScriptStack = (function() {
 
 			for (var i = 0, x, length = stack.length; i < length; i++) {
 				x = stack[i];
-				if (x == resource) {
+				if (x === resource) {
 					stack.splice(i, 1);
 					break;
 				}

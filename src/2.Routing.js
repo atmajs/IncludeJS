@@ -19,18 +19,18 @@ var RoutesLib = function() {
 		resolve: function(namespace, template) {
 			var questionMark = template.indexOf('?'),
 				aliasIndex = template.indexOf('::'),
-				alias, path, params, route, i, x, length;
+				alias, path, params, route, i, x, length, arr;
 				
 			
-			if (~aliasIndex){
+			if (aliasIndex !== -1){
 				alias = template.substring(aliasIndex + 2);
 				template = template.substring(0, aliasIndex);
 			}
 			
-			if (~questionMark) {
-				var arr = template.substring(questionMark + 1).split('&');
-
+			if (questionMark !== -1) {
+				arr = template.substring(questionMark + 1).split('&');
 				params = {};
+				
 				for (i = 0, length = arr.length; i < length; i++) {
 					x = arr[i].split('=');
 					params[x[0]] = x[1];
@@ -68,8 +68,8 @@ var RoutesLib = function() {
 					
 					path += template[index];
 					
-					if (i == route.length - 2){
-						for(index++;index < template.length; index++){
+					if (i === route.length - 2){
+						for(index++; index < template.length; index++){
 							path += '/' + template[index];
 						}
 					}
@@ -105,7 +105,7 @@ var RoutesLib = function() {
 				return;
 			}
 
-			if (type == 'lazy' && xpath == null) {
+			if (type === 'lazy' && xpath == null) {
 				for (key in includeData) {
 					this.each(type, includeData[key], fn, null, key);
 				}
