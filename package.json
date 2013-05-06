@@ -1,7 +1,7 @@
 {
 	"name": "includejs-loader",
 	"description": "Resource Loader",
-	"version": "0.5.3",
+	"version": "0.6.0",
 	"homepage": "http://libjs.it/#/include",
 	"contributors":[
 	],
