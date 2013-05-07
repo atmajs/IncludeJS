@@ -4,9 +4,14 @@ function arr_invoke(arr, args, ctx) {
 		return;
 	}
 
-	for (var i = 0, x, length = arr.length; i < length; i++) {
-		if (typeof arr[i] === 'function') {
-			args != null ? x.apply(ctx, args) : x();
+	for (var i = 0, length = arr.length; i < length; i++) {
+		if (typeof arr[i] !== 'function') {
+			continue;
+		}
+		if (args == null) {
+			arr[i].call(ctx);
+		}else{
+			arr[i].apply(ctx, args);
 		}
 	}
 
