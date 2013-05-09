@@ -16,7 +16,8 @@ var bin = {},
 	},	
 	handler = {},
 	hasOwnProp = {}.hasOwnProperty,
-	//-currentParent = null,
+	__array_slice = Array.prototype.slice,
+	
 	XMLHttpRequest = global.XMLHttpRequest;
 
 	

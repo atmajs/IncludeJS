@@ -25,9 +25,34 @@ var Include = (function() {
 			}
 		});
 	}
+	
+	function includePackage(resource, type, mix){
+		var pckg = mix.length === 1 ? mix[0] : __array_slice.call(mix);
+		
+		if (resource instanceof Resource) {
+			return resource.include(type, pckg);
+		}
+		return new Resource('js').include(type, pckg);
+	}
+	
+	function createIncluder(type) {
+		return function(){
+			return includePackage(this, type, arguments);
+		};
+	}
 
-	var Include = function() {};
-	Include.prototype = {
+	function Include() {}
+
+	
+	var fns = ['js', 'css', 'load', 'ajax', 'embed', 'lazy'],
+		i = 0,
+		imax = fns.length;
+	for (; i < imax; i++){
+		Include.prototype[fns[i]] = createIncluder(fns[i]);
+	}
+	
+	
+	obj_inherit(Include, {
 		setCurrent: function(data) {
 
 			var resource = new Resource('js', {
@@ -43,36 +68,7 @@ var Include = (function() {
 			global.include = resource;
 
 		},
-		incl: function(type, pckg) {
-
-			if (this instanceof Resource) {
-				return this.include(type, pckg);
-			}
-			var r = new Resource();
-
-			r.type = 'js';
-
-			return r.include(type, pckg);
-		},
-		js: function(pckg) {
-			return this.incl('js', pckg);
-		},
-		css: function(pckg) {
-			return this.incl('css', pckg);
-		},
-		load: function(pckg) {
-			return this.incl('load', pckg);
-		},
-		ajax: function(pckg) {
-			return this.incl('ajax', pckg);
-		},
-		embed: function(pckg) {
-			return this.incl('embed', pckg);
-		},
-		lazy: function(pckg) {
-			return this.incl('lazy', pckg);
-		},
-
+		
 		cfg: function(arg) {
 			switch (typeof arg) {
 			case 'object':
@@ -97,12 +93,18 @@ var Include = (function() {
 			}
 			return this;
 		},
-		routes: function(arg) {
-			if (arg == null) {
+		routes: function(mix) {
+			if (mix == null) {
 				return Routes.getRoutes();
 			}
-			for (var key in arg) {
-				Routes.register(key, arg[key]);
+			
+			if (arguments.length === 2) {
+				Routes.register(mix, arguments[1]);
+				return this;
+			}
+			
+			for (var key in mix) {
+				Routes.register(key, mix[key]);
 			}
 			return this;
 		},
@@ -201,7 +203,7 @@ var Include = (function() {
 			}
 			return this;
 		}
-	};
+	});
 
 	return Include;
 }());
