@@ -117,9 +117,7 @@ var Resource = (function(Include, IncludeDeferred, Routes, ScriptStack, CustomLo
 
 	};
 
-	Resource.prototype = obj_inherit({
-		constructor: Resource
-	}, IncludeDeferred, Include, {
+	Resource.prototype = obj_inherit(Resource, IncludeDeferred, Include, {
 		childLoaded: function(child) {
 			var resource = this,
 				includes = resource.includes;
