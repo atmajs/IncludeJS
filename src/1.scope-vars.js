@@ -12,6 +12,11 @@ var bin = {},
 	isWeb = !! (global.location && global.location.protocol && /^https?:/.test(global.location.protocol)),
 	reg_subFolder = /[^\/]+\/\.\.\//,
 	cfg = {
+		path: null,
+		loader: null,
+		version: null,
+		lockedToFolder: null,
+		sync: null,
 		eval: document == null
 	},	
 	handler = {},
