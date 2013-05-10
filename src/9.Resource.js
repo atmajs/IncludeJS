@@ -99,6 +99,7 @@ var Resource = (function(Include, IncludeDeferred, Routes, ScriptStack, CustomLo
 
 		if (url == null) {
 			this.state = 3;
+			this.location = path_getDir(path_resolveCurrent());
 			return this;
 		}
 
@@ -157,15 +158,6 @@ var Resource = (function(Include, IncludeDeferred, Routes, ScriptStack, CustomLo
 		},
 		include: function(type, pckg) {
 			var that = this;
-			//this.state = this.state >= 3 ? 3 : 2;
-			//
-			//if (this.includes == null) {
-			//	this.includes = [];
-			//}
-			//
-			//
-			//this.response = null;
-
 			Routes.each(type, pckg, function(namespace, route, xpath) {
 
 				that.create(type, route, namespace, xpath);

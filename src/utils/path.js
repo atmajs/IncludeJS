@@ -5,6 +5,9 @@ function path_getDir(url) {
 
 // @TODO - implement url resolving of a top script
 function path_resolveCurrent() {
+	if (document == null) {
+		return '';
+	}
 	var scripts = document.getElementsByTagName('script');
 	return scripts[scripts.length - 1].getAttribute('src');
 }
