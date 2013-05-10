@@ -9,7 +9,7 @@ function path_resolveCurrent() {
 		return '';
 	}
 	var scripts = document.getElementsByTagName('script');
-	return scripts[scripts.length - 1].getAttribute('src');
+	return scripts[scripts.length - 1].getAttribute('src') || '';
 }
 
 function path_resolveUrl(url, parent) {
