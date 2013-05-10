@@ -10,7 +10,7 @@
 
 var bin = {},
 	isWeb = !! (global.location && global.location.protocol && /^https?:/.test(global.location.protocol)),
-	reg_subFolder = /[^\/]+\/\.\.\//,
+	reg_subFolder = /([^\/]+\/)?\.\.\//,
 	cfg = {
 		path: null,
 		loader: null,
