@@ -178,7 +178,7 @@ var ScriptStack = (function() {
 
 			if (resourceIndex === -1) {
 				// this should be not the case, but anyway checked.
-				console.error('Bug - Resource is not in stack', resource);
+				console.warn('Resource is not in stack', resource);
 				return;
 			}
 

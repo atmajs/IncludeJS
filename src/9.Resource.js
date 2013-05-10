@@ -160,6 +160,12 @@ var Resource = (function(Include, IncludeDeferred, Routes, ScriptStack, CustomLo
 			var that = this;
 			Routes.each(type, pckg, function(namespace, route, xpath) {
 
+				// if DEBUG
+				if (that.route != null && that.route.path === route.path) {
+					console.error(route.path, 'loads itself');
+				}
+				// endif
+			
 				that.create(type, route, namespace, xpath);
 
 			});
