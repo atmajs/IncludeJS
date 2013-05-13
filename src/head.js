@@ -1,15 +1,17 @@
-(function (root, factory) {
+(function (factory) {
     'use strict';
 
-    if (root == null && typeof global !== 'undefined'){
-        root = global;
-    }
-
-    var doc = typeof document === 'undefined' ? null : document;
-
+	var root, doc;
+	
+    if (typeof window !== 'undefined' && typeof document !== 'undefined'){
+		root = window;
+        doc = document;
+    } else {
+		root = global;
+	}
+	
 	
 	factory(root, doc);
 
-
-}(this, function (global, document) {
+}(function (global, document) {
     'use strict';
