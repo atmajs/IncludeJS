@@ -167,7 +167,7 @@ var ScriptStack = (function() {
 			var length = stack.length,
 				parentIndex = -1,
 				resourceIndex = -1,
-				x, i;
+				i;
 
 			for (i = 0; i < length; i++) {
 				if (stack[i] === resource) {

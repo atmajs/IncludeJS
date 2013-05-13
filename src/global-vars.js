@@ -1,14 +1,15 @@
 
-var __eval = function(source, include) {
+function __eval(source, include) {
 	"use strict";
 	
 	var iparams = include && include.route.params;
 
-	/* if (!DEBUG)	
+	/* if !DEBUG
 	try {
 	*/
 		return eval.call(window, source);
-	/* if (!DEBUG)
+	
+	/* if !DEBUG
 	} catch (error) {
 		error.url = include && include.url;
 		//Helper.reportError(error);
@@ -16,10 +17,4 @@ var __eval = function(source, include) {
 	}
 	*/
 	
-};
-
-;(function(global, document) {
-
-	"use strict";
-	
-	
+}

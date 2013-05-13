@@ -18,7 +18,7 @@ var bin = {},
 		lockedToFolder: null,
 		sync: null,
 		eval: document == null
-	},	
+	},
 	handler = {},
 	hasOwnProp = {}.hasOwnProperty,
 	__array_slice = Array.prototype.slice,

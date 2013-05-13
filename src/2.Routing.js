@@ -130,12 +130,12 @@ var RoutesLib = function() {
 				var x = this.resolve(namespace, includeData);
 				if (namespace){
 					namespace += '.' + includeData;
-				}				
+				}
 				
 				fn(namespace, x, xpath);
 				return;
 			}
-
+			
 			console.error('Include Package is invalid', arguments);
 		},
 
@@ -147,7 +147,7 @@ var RoutesLib = function() {
 			var path = route.path,
 				result = regexpAlias.exec(path);
 			
-			return result && result[1];			
+			return result && result[1];
 		}
 	};
 	

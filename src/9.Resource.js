@@ -1,6 +1,6 @@
 var Resource = (function(Include, IncludeDeferred, Routes, ScriptStack, CustomLoader) {
 
-	function process(resource, loader) {
+	function process(resource) {
 		var type = resource.type,
 			parent = resource.parent,
 			url = resource.url;
