@@ -1,7 +1,9 @@
 (function(global) {
 
 
-	global.include.instance().embed('/socket.io/socket.io.js').done(function(resp) {
+	global.include
+	.instance()
+	.embed('/socket.io/socket.io.js').done(function(resp) {
 
 		if (!global.io) {
 			return;
