@@ -152,8 +152,6 @@ var Resource = (function(Include, IncludeDeferred, Routes, ScriptStack, CustomLo
 				route: route
 			});
 
-			resource.on(4, this.childLoaded);
-
 			return resource;
 		},
 		include: function(type, pckg) {
@@ -166,7 +164,9 @@ var Resource = (function(Include, IncludeDeferred, Routes, ScriptStack, CustomLo
 				}
 				// endif
 			
-				that.create(type, route, namespace, xpath);
+				that
+					.create(type, route, namespace, xpath)
+					.on(4, that.childLoaded);
 
 			});
 

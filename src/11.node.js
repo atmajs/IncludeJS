@@ -75,8 +75,8 @@
 
 
 	Resource.prototype.inject = function(pckg) {
-		
-		return include
+		var current = include;
+		include
 			.create()
 			.load(pckg)
 			.done(function(resp){
@@ -95,7 +95,7 @@
 			include.readystatechanged(3);
 		});
 
-		
+		return current;
 	};
 
 
