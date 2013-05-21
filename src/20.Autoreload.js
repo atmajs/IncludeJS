@@ -1,22 +1,24 @@
 (function(global) {
 
-
-	global.include
-	.instance()
-	.embed('/socket.io/socket.io.js').done(function(resp) {
-
+	if (typeof io !== 'undefined' && io.sockets) {
+		SocketIOReady();
+	}else{
+		global.include.instance().embed('/socket.io/socket.io.js').done(SocketIOReady);	
+	}
+	
+	function SocketIOReady() {
 		if (!global.io) {
 			return;
 		}
 
-		var socket = global.io.connect();
+		var socket = global.io.connect('/browser');
 
 		socket.on('filechange', function(path) {
 			console.log('Changed:', path);
 
 			fileChanged(path);
 		});
-	});
+	}
 
 
 	function fileChanged(path) {
