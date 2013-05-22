@@ -178,6 +178,9 @@ var Include = (function() {
 			}
 			return null;
 		},
+		getResources: function(){
+			return bin;
+		},
 
 		plugin: function(pckg, callback) {
 
