@@ -178,7 +178,10 @@ var ScriptStack = (function() {
 
 			if (resourceIndex === -1) {
 				// this should be not the case, but anyway checked.
-				console.warn('Resource is not in stack', resource);
+				
+				// - resource can load resources in done cb, and then it will be
+				// already not in stack
+				//-console.warn('Resource is not in stack', resource);
 				return;
 			}
 
