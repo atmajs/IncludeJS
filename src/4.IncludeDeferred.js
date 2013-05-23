@@ -15,8 +15,13 @@ var IncludeDeferred = function() {
 
 IncludeDeferred.prototype = { /**	state observer */
 
-	on: function(state, callback) {
-		state <= this.state ? callback(this) : this.callbacks[this.state < 3 ? 'unshift':'push']({
+	on: function(state, callback, sender) {
+		// this === sender in case when script loads additional
+		// resources and there are already parents listeners
+		
+		var mutator = (this.state < 3 || this === sender) ? 'unshift':'push';
+		
+		state <= this.state ? callback(this) : this.callbacks[mutator]({
 			state: state,
 			callback: callback
 		});
@@ -95,7 +100,7 @@ IncludeDeferred.prototype = { /**	state observer */
 			Events.ready(function(){
 				that.resolve(callback);
 			});
-		});
+		}, this);
 	},
 
 	///////// Deprecated
@@ -110,7 +115,7 @@ IncludeDeferred.prototype = { /**	state observer */
 		var that = this;
 		return this.on(4, function(){
 			that.resolve(callback);
-		});
+		}, this);
 	},
 	resolve: function(callback) {
 		var includes = this.includes,
