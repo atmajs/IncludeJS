@@ -161,7 +161,11 @@ var Include = (function() {
 		 *	as sometimes it is necessary to call include. on new empty context
 		 */
 		instance: function() {
-			return new Resource();
+			var resource;
+			resource = new Resource();
+			resource.state = 4;
+			
+			return resource;
 		},
 
 		getResource: function(url, type) {
