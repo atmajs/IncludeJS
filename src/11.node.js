@@ -82,6 +82,8 @@
 
 	Resource.prototype.inject = function(pckg) {
 		var current = include;
+		
+		include.state = include.state >= 3 ? 3 : 2;
 		include
 			.create()
 			.load(pckg)
@@ -141,7 +143,9 @@
 			require = next.require.bind(next);
 		}
 
-		return new Resource();
+		var res = new Resource();
+		res.state = 4;
+		return res;
 	};
 
 
