@@ -15,8 +15,8 @@
 		},
 		send: function() {
 
-			if (this.url.indexOf('file:///') > -1) {
-				this.url = this.url.replace('file:///', '');
+			if (this.url.indexOf('file://') !== -1) {
+				this.url = getFile(this.url);
 			}
 
 			if (cfg.sync === true) {
@@ -71,8 +71,14 @@
 
 
 	function getFile(url) {
-		return url.replace('file:///', '')
-			.replace(/\\/g, '/');
+		url = url.replace('file://', '').replace(/\\/g, '/');
+		
+		if (/^\/\w+:\/[^\/]/i.test(url)){
+			// win32 drive
+			return url.substring(1);
+		}
+		
+		return url;
 	}
 
 	function getDir(url) {
@@ -119,7 +125,13 @@
 
 			if (!globalPath) {
 				var delimiter = process.platform === 'win32' ? ';' : ':',
-					parts = process.env.path.split(delimiter),
+					PATH = process.env.PATH || process.env.path;
+
+				if (!PATH){
+					console.error('PATH not defined in env', process.env);
+				}
+
+				var parts = PATH.split(delimiter),
 					globalPath = ruqq.arr.first(parts, function(x){
 						return /([\\\/]npm[\\\/])|([\\\/]npm$)/gi.test(x);
 					});
@@ -131,7 +143,7 @@
 					includePath = io.env.applicationDir.toLocalDir() + 'node_modules';
 				}else {
 					console.error('Could not resolve global NPM Directory from system path');
-					console.log('searched with pattern /npm');
+					console.log('searched with pattern /npm in', PATH, delimiter);
 				}
 			}
 
