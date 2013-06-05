@@ -92,7 +92,9 @@
 			current.state = current.state >= 3 ? 3 : 2;
 			
 			var bundle = current.create();
-				
+			
+			bundle.url = this.url;
+			bundle.location = this.location;
 			bundle.load(pckg).done(function(resp){
 	
 				var sources = resp.load,
