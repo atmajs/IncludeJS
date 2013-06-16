@@ -3,10 +3,10 @@ letters.C = {
 };
 
 include.js('c.small.js').done(function() {
-	assert.equals(letters.B.b, {
+	deepEq(letters.B.b, {
 		loaded: true
 	}, 'c.js: Small b not loaded');
-	assert.equals(letters.C.c, {
+	deepEq(letters.C.c, {
 		loaded: true
 	}, 'c.js: Small c not loaded');
 });

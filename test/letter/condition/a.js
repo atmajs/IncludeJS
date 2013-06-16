@@ -1,10 +1,13 @@
 
 var letter = include.route.params && include.route.params.letter;
-assert.equals(typeof letter, 'string', 'Parameter letter should be defined');
+
+assert(letter);
 
 include.js(letter + '.js::Letter').done(function(resp){
 
-	assert.equals(letter, resp.Letter, 'Parameter should be equal to returned response');
-	assert.match(include.url, '/a.js');
+	eq(letter, resp.Letter, 'Parameter should be equal to returned response');
+	
+	assert.notEqual(include.url.indexOf('/a.js'), -1);
+	
 	include.exports = resp.Letter;
 })

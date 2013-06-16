@@ -1,21 +1,23 @@
-var buster = require('buster');
+window.global = window;
+
 
 include.routes({
-	waterfall: 'test/letter/waterfall/{0}/{1}.js',
-	exports: 'test/letter/exports/{0}.js',
-	condition: 'test/letter/condition/{0}.js',
+	waterfall: '/utest/test/letter/waterfall/{0}/{1}.js',
+	exports: '/utest/test/letter/exports/{0}.js',
+	condition: '/utest/test/letter/condition/{0}.js',
 });
 
 
-buster.testCase('Load', {
+
+UTest({
 	'Waterfall': function(done) {
+
 		global.letters = {};
 
 		include.js({
 			waterfall: 'a'
 		}).done(function() {
-
-			assert.equals(letters, {
+			deepEq(letters, {
 				A: {
 					loaded: true,
 					a: {
@@ -35,20 +37,19 @@ buster.testCase('Load', {
 					}
 				}
 			}, "Waterfall failed");
-
 			done();
 		});
 	},
-	'Exports': function(done) {		
+	'Exports': function(done) {
 		include.js({
 			exports: ['a::A', 'b::B']
 		}).done(function(resp) {
-			
-			assert.equals(resp.A, {
+
+			deepEq(resp.A, {
 				a: 'a'
-			}, 'Response from a.js is not "a"');
-			
-			assert.equals(resp.B, {
+			}, 'Response from a.js::A is not "a" |');
+
+			deepEq(resp.B, {
 				b: 'b',
 				c: 'c'
 			}, 'Response from b.js is wrong');
@@ -56,12 +57,13 @@ buster.testCase('Load', {
 			done();
 		});
 	},
-	'Condition' : function(done){
-		include.js({
+	'Condition': function(done) {
+		include.instance().js({
 			condition: 'a?letter=b::Letter'
-		}).done(function(resp){
-			
-			assert(resp.Letter == 'b', 'Condition load failed');
+		}).done(function(resp) {
+			deepEq(resp, {
+				Letter: 'b'
+			}, 'Condition load failed');
 			
 			done();
 		})

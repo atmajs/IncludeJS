@@ -1,7 +1,7 @@
 {
 	"name": "includejs-loader",
 	"description": "Resource Loader",
-	"version": "0.6.0",
+	"version": "0.6.1",
 	"homepage": "http://libjs.it/#/include",
 	"contributors":[
 	],
@@ -19,11 +19,10 @@
 	"main": "./lib/include.node.js",
 	"dependencies": {},
 	"devDependencies": {
-		"grunt": "~0.3.17",
-		"buster": "~0.6.3"
+		"includejs": "~0.9.26"
 	},
 	"scripts" : {
-        "test" : "node_modules/.bin/buster-test -r specification"
+        "test" : "node_modules/.bin/includejs test"
     },
 	"keywords": [],
 	"engines" : {
