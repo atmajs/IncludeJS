@@ -1,8 +1,15 @@
 var CustomLoader = (function() {
 
-	var _loaders = {};
+	// import loader/json.js
 
+	var _loaders = {
+		'json': JSONParser
+	};
 
+	cfg.loader = {
+		json : 1
+	}
+	
 	function createLoader(url) {
 		var extension = url.substring(url.lastIndexOf('.') + 1);
 
@@ -24,15 +31,25 @@ var CustomLoader = (function() {
 
 		return (_loaders[extension] = new Resource('js', Routes.resolve(namespace, path), namespace));
 	}
+	
+	function doLoad(resource, loader, callback) {
+		XHR(resource, function(resource, response) {
+			callback(resource, loader.process(response, resource));
+		});
+	}
 
 	return {
 		load: function(resource, callback) {
 
 			var loader = createLoader(resource.url);
+			
+			if (loader.process) {
+				doLoad(resource, loader, callback);
+				return;
+			}
+			
 			loader.done(function() {
-				XHR(resource, function(resource, response) {
-					callback(resource, loader.exports.process(response, resource));
-				});
+				doLoad(resource, loader.exports, callback);
 			});
 		},
 		exists: function(resource) {

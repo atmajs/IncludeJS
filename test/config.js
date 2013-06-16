@@ -5,7 +5,7 @@ module.exports = {
 			env: [
 				'lib/include.node.js'
 			],
-			tests: 'test/*.node.test'
+			tests: 'test/**.node.test'
 		},
 		
 		'dom': {
