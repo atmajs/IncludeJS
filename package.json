@@ -19,7 +19,7 @@
 	"main": "./lib/include.node.js",
 	"dependencies": {},
 	"devDependencies": {
-		"includejs": "~0.9.26"
+		"includejs": "~0.9.28"
 	},
 	"scripts" : {
         "test" : "node_modules/.bin/includejs test"
