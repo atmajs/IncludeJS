@@ -1,11 +1,21 @@
 (function (root, factory) {
     'use strict';
 
-	var doc = typeof document !== 'undefined' ? document : null;
-	
-	if (root == null) {
-		root = typeof window === 'undefined' || doc == null ? global : window;
-	}
+    var doc;
+
+    if (typeof exports !== 'undefined' && (root === exports || root == null)){
+
+    	root = global;
+
+    }else{
+    	
+    	if (root == null) {
+			root = typeof window === 'undefined' || doc == null ? global : window;
+		}
+
+		doc = typeof document !== 'undefined' ? document : null;
+    }
+
 	
 	
 	factory(root, doc);

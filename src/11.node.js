@@ -43,7 +43,8 @@
 	};
 
 	__eval = function(source, include, isGlobalCntx) {
-
+		module.exports = {};
+		
 		global.include = include;
 		global.require = require;
 		global.exports = module.exports;
@@ -62,9 +63,14 @@
 			console.error(e.stack);
 		}
 		
-
+		
+		
 		if (include.exports == null) {
-			include.exports = module.exports;
+			var exports = module.exports;
+			
+			if (typeof exports !== 'object' || Object.keys(exports).length) {
+				include.exports = module.exports;
+			}
 		}
 
 	};
@@ -109,20 +115,19 @@
 							source = resource.exports;
 
 						
-						////var res = new Resource('js');
-						////for(var key in resource){
-						////	res[key] = resource[key];
-						////}
-
-						////resource = res;
-						//// modify existed res instance
-						
 						resource.exports = null;
 						resource.type = 'js';
 						resource.includes = null;
 						resource.state = 3;
 						
-						////bundle.includes[i].resource = res;
+						
+						for (var key in bin.load) {
+							if (bin.load[key] === resource) {
+								delete bin.load[key];
+								break;
+							}
+						}
+						
 
 						__eval(source, resource, true);
 
