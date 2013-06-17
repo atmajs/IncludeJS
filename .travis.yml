@@ -4,9 +4,9 @@ before_script:
   - sleep 5
   - node_modules/.bin/includejs &
   - node_modules/.bin/includejs server &
-  - sleep 5
+  - sleep 3
   - firefox http://localhost:5777/utest/ &
-  - sleep 5
+  - sleep 7
  
 script:
   - "npm test"
