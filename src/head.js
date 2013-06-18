@@ -1,24 +1,22 @@
 (function (root, factory) {
     'use strict';
 
-    var doc;
-
-    if (typeof exports !== 'undefined' && (root === exports || root == null)){
-
-    	root = global;
-
-    }else{
-    	
-    	if (root == null) {
-			root = typeof window === 'undefined' || doc == null ? global : window;
-		}
-
-		doc = typeof document !== 'undefined' ? document : null;
+	var _global, _exports, _document;
+	
+	if (typeof exports !== 'undefined' && (root === exports || root == null)){
+		// raw nodejs module
+    	_global = global;
     }
-
 	
+	if (_global == null) {
+		_global = typeof window === 'undefined' ? global : window;
+	}
 	
-	factory(root, doc);
+	_document = _global.document;
+	_exports = root || _global;
+    
+	
+	factory(_global, _exports, _document);
 
-}(this, function (global, document) {
+}(this, function (global, exports, document) {
     'use strict';

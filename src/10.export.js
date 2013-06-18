@@ -1,8 +1,7 @@
 
-global.include = new Include();
+exports.include = new Include();
 
-global.includeLib = {
-	//Helper: Helper,
+exports.includeLib = {
 	Routes: RoutesLib,
 	Resource: Resource,
 	ScriptStack: ScriptStack,
