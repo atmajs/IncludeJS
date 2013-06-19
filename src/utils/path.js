@@ -9,8 +9,10 @@ function path_resolveCurrent() {
 		return '';
 	}
 	var scripts = document.getElementsByTagName('script'),
-		last = scripts[scripts.length - 1];
-	return last && last.getAttribute('src') || '';
+		last = scripts[scripts.length - 1],
+		url = last && last.getAttribute('src') || '';
+		
+	return (url[0] === '/') ? url : '/' + url;
 }
 
 function path_resolveUrl(url, parent) {

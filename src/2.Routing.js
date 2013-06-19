@@ -8,6 +8,12 @@ var RoutesLib = function() {
 		 *	@param route {String} = Example: '.reference/libjs/{0}/{1}.js'
 		 */
 		register: function(namespace, route) {
+			
+			if (typeof route === 'string' && route[0] !== '/') {
+				var location = path_getDir(include.url || path_resolveCurrent());
+				
+				route = location + route;
+			}
 
 			routes[namespace] = route instanceof Array ? route : route.split(/[\{\}]/g);
 
