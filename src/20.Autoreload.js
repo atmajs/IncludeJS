@@ -3,7 +3,11 @@
 	if (typeof io !== 'undefined' && io.sockets) {
 		SocketIOReady();
 	}else{
-		global.include.instance().embed('/socket.io/socket.io.js').done(SocketIOReady);	
+		global
+			.include
+			.instance()
+			.embed('/socket.io/socket.io.js')
+			.done(SocketIOReady);	
 	}
 	
 	function SocketIOReady() {
@@ -50,42 +54,46 @@
 
 		if (handler) {
 			handler(path);
-		} else {
-			global.location.reload();
+			return;
 		}
+		
+		
+		global.location.reload();
 	}
 
 
 	var Handlers = {
-		css: function(path) {
+		css: handler_Css,
+		less: handler_Css
+	}
+	
+	function handler_Css(path) {
+		var styles = document.getElementsByTagName('link'),
+			imax = styles.length,
+			i = 0,
+			x, href;
 
-			var styles = document.getElementsByTagName('link'),
-				length = styles.length,
-				i = 0,
-				x, href;
+		for (; i < imax; i++) {
+			x = styles[i];
+			href = x.getAttribute('href');
 
-			for (; i < length; i++) {
-				x = styles[i];
-				href = x.getAttribute('href');
+			if (!href) 
+				continue;
+			
 
-				if (!href) {
-					continue;
-				}
+			if (href[0] === '/')
+				href = href.substring(1);
+			
 
-				if (href[0] === '/'){
-					href = href.substring(1);
-				}
+			if (href.indexOf('?') !== -1) 
+				href = href.substring(0, href.indexOf('?'));
+			
 
-				if (href.indexOf('?') !== -1) {
-					href = href.substring(0, href.indexOf('?'));
-				}
+			if (path.toLowerCase().indexOf(href.toLowerCase()) !== -1) {
 
-				if (path.toLowerCase().indexOf(href.toLowerCase()) !== -1) {
+				reloadTag(x, 'href');
 
-					reloadTag(x, 'href');
-
-					break;
-				}
+				break;
 			}
 		}
 	}
