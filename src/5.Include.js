@@ -160,10 +160,14 @@ var Include = (function() {
 		 *	Create new Resource Instance,
 		 *	as sometimes it is necessary to call include. on new empty context
 		 */
-		instance: function() {
+		instance: function(url) {
 			var resource;
 			resource = new Resource();
 			resource.state = 4;
+			
+			if (url) {
+				resource.location = path_getDir(url);
+			}
 			
 			return resource;
 		},

@@ -58,7 +58,7 @@ function path_isRelative(path) {
 			// f
 		case 104:
 			// h
-			return /^file:|https?:/.test(path);
+			return /^file:|https?:/.test(path) === false;
 	}
 	
 	return true;
