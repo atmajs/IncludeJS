@@ -46,3 +46,20 @@ function path_resolveUrl(url, parent) {
 
 	return url;
 }
+
+function path_isRelative(path) {
+	var c = path.charCodeAt(0);
+	
+	switch (c) {
+		case 47:
+			// /
+			return false;
+		case 102:
+			// f
+		case 104:
+			// h
+			return /^file:|https?:/.test(path);
+	}
+	
+	return true;
+}

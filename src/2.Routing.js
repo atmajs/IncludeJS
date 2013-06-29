@@ -3,17 +3,19 @@ var RoutesLib = function() {
 	var routes = {},
 		regexpAlias = /([^\\\/]+)\.\w+$/;
 
+	
+		
 	return {
 		/**
 		 *	@param route {String} = Example: '.reference/libjs/{0}/{1}.js'
 		 */
 		register: function(namespace, route, currentInclude) {
 			
-			if (typeof route === 'string' && route[0] !== '/') {
+			if (typeof route === 'string' && path_isRelative(route)) {
 				var res = currentInclude || include,
 					location = res.location || path_getDir(res.url || path_resolveCurrent());
 					
-				if (location[0] !== '/') {
+				if (path_isRelative(location)) {
 					location = '/' + location;
 				}
 				
