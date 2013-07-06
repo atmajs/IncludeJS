@@ -14,8 +14,7 @@ var CustomLoader = (function() {
 	}
 	
 	function createLoader(url) {
-		var extension = url.substring(url.lastIndexOf('.') + 1),
-			loader = cfg.loader[extension];
+		var loader = cfg.loader[path_getExtension(url)];
 
 		if (loader_isInstance(loader)) {
 			return loader;
@@ -61,10 +60,9 @@ var CustomLoader = (function() {
 				return false;
 			}
 
-			var url = resource.url,
-				extension = path_getExtension(url);
+			var ext = path_getExtension(resource.url);
 
-			return cfg.loader.hasOwnProperty(extension);
+			return cfg.loader.hasOwnProperty(ext);
 		},
 		
 		/**
