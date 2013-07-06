@@ -62,7 +62,7 @@ var CustomLoader = (function() {
 			}
 
 			var url = resource.url,
-				extension = url.substring(url.lastIndexOf('.') + 1);
+				extension = path_getExtension(url);
 
 			return cfg.loader.hasOwnProperty(extension);
 		},

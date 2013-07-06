@@ -63,3 +63,12 @@ function path_isRelative(path) {
 	
 	return true;
 }
+
+function path_getExtension(path) {
+	var query = path.indexOf('?');
+	if (query === -1) {
+		return path.substring(path.lastIndexOf('.') + 1);
+	}
+	
+	return path.substring(path.lastIndexOf('.', query) + 1, query);
+}
