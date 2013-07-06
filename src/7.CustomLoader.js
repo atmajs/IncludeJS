@@ -61,6 +61,14 @@ var CustomLoader = (function() {
 				extension = url.substring(url.lastIndexOf('.') + 1);
 
 			return cfg.loader.hasOwnProperty(extension);
+		},
+		
+		/**
+		 *	IHandler:
+		 *	{ process: function(content) { return _handler(content); }; }
+		 */
+		register: function(extension, handler){
+			_loaders[extension] = handler;
 		}
 	};
 }());
