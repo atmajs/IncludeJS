@@ -75,12 +75,26 @@ var Include = (function() {
 		cfg: function(arg) {
 			switch (typeof arg) {
 			case 'object':
-				for (var key in arg) {
-					cfg[key] = arg[key];
+				var key, value;
+				for (key in arg) {
+					value = arg[key];
 
-					if (key === 'modules' && arg[key] === true) {
-						enableModules();
+					switch(key){
+						case 'loader':
+							for(var x in value){
+								cfg[key] = value[x];
+							}
+							break;
+						case 'modules':
+							if (value === true){
+								enableModules();
+							}
+							break;
+						default:
+							cfg[key] = value;
+							break;
 					}
+					
 				}
 				break;
 			case 'string':
