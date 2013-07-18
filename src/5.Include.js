@@ -82,7 +82,7 @@ var Include = (function() {
 					switch(key){
 						case 'loader':
 							for(var x in value){
-								cfg[key] = value[x];
+								cfg[key][x] = value[x];
 							}
 							break;
 						case 'modules':
@@ -94,7 +94,7 @@ var Include = (function() {
 							cfg[key] = value;
 							break;
 					}
-					
+
 				}
 				break;
 			case 'string':
