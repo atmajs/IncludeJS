@@ -82,7 +82,7 @@ var Include = (function() {
 					switch(key){
 						case 'loader':
 							for(var x in value){
-								cfg[key][x] = value[x];
+								CustomLoader.register(x, value[x]);
 							}
 							break;
 						case 'modules':

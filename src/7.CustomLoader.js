@@ -74,6 +74,17 @@ var CustomLoader = (function() {
 		 *	 path to IHandler
 		 */
 		register: function(extension, handler){
+			if (typeof handler === 'string'){
+				var resource = include;
+				if (resource.location == null) { 
+					resource = {
+						location: path_getDir(path_resolveCurrent())
+					};
+				}
+
+				handler = path_resolveUrl(handler, resource);
+			}
+
 			cfg.loader[extension] = handler;
 		}
 	};
