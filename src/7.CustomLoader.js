@@ -14,7 +14,8 @@ var CustomLoader = (function() {
 	}
 	
 	function createLoader(url) {
-		var loader = cfg.loader[path_getExtension(url)];
+		var extension = path_getExtension(url),
+			loader = cfg.loader[extension];
 
 		if (loader_isInstance(loader)) {
 			return loader;

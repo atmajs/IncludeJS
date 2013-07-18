@@ -44,8 +44,8 @@
 				var content = fs.readFileSync(url, 'utf8');
 				
 				callback(null, content);
-			} catch(e) {
-				alert(e);
+			} catch(error) {
+				console.error('File Read - ', error);
 			}
 			
 			return;
