@@ -4,6 +4,12 @@ var Resource = (function(Include, IncludeDeferred, Routes, ScriptStack, CustomLo
 		var type = resource.type,
 			parent = resource.parent,
 			url = resource.url;
+			
+		if (document == null && type === 'css') {
+			resource.state = 4;
+			
+			return resource;
+		}
 
 		if (CustomLoader.exists(resource) === false) {
 			switch (type) {
