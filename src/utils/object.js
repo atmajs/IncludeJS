@@ -7,7 +7,9 @@ function obj_inherit(target /* source, ..*/ ) {
 		source, key;
 	for (; i < imax; i++) {
 
-		source = typeof arguments[i] === 'function' ? arguments[i].prototype : arguments[i];
+		source = typeof arguments[i] === 'function'
+			? arguments[i].prototype
+			: arguments[i];
 
 		for (key in source) {
 			target[key] = source[key];
