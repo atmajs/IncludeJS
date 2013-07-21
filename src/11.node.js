@@ -84,11 +84,14 @@
 		};
 	}
 	function bin_remove(url) {
-		var type, id
+		var type, id, index;
 		for (type in bin) {
 			
 			for (id in bin[type]) {
-				if (id.indexOf(url) === id.length - url.length) {
+				
+				index = id.indexOf(url);
+				if (index !== -1 && index === id.length - url.length) {
+			
 					delete bin[type][id];
 					return;
 				}
