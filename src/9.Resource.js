@@ -42,8 +42,8 @@ var Resource = (function(Include, IncludeDeferred, Routes, ScriptStack, CustomLo
 	function onXHRCompleted(resource, response) {
 		if (!response) {
 			console.warn('Resource cannt be loaded', resource.url);
-			resource.readystatechanged(4);
-			return;
+			//- resource.readystatechanged(4);
+			//- return;
 		}
 
 		switch (resource.type) {

@@ -131,7 +131,7 @@ IncludeDeferred.prototype = { /**	state observer */
 				resource = x.resource;
 				route = x.route;
 
-				if (!resource.exports){
+				if (typeof resource.exports === 'undefined'){
 					continue;
 				}
 

@@ -83,16 +83,42 @@
 			}, 150);
 		};
 	}
-	function bin_remove(url) {
-		var type, id, index;
+	function bin_remove(mix) {
+		if (mix == null) 
+			return;
+		
+		var type,
+			id,
+			index,
+			res;
+			
+		var isUrl = typeof mix === 'string',
+			url = isUrl ? mix : null;
+		
+		
 		for (type in bin) {
 			
 			for (id in bin[type]) {
 				
+				if (isUrl === false) {
+					if (bin[type][id] === mix) {
+						delete bin[type][id];
+						return;
+					}
+					continue;
+				}
+				
 				index = id.indexOf(url);
 				if (index !== -1 && index === id.length - url.length) {
+					
+					res = bin[type][id];
 			
 					delete bin[type][id];
+					
+					if (type === 'load') {
+						bin_remove(res.parent);
+					}
+					
 					return;
 				}
 			}
