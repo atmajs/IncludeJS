@@ -176,12 +176,16 @@ var Include = (function() {
 		 */
 		instance: function(url) {
 			var resource;
+			if (url == null) {
+				resource = new Include();
+				resource.state = 4;
+				
+				return resource;
+			}
+			
 			resource = new Resource();
 			resource.state = 4;
-			
-			if (url) {
-				resource.location = path_getDir(url);
-			}
+			resource.location = path_getDir(url);
 			
 			return resource;
 		},
