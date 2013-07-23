@@ -1,4 +1,4 @@
-var Resource = (function(Include, IncludeDeferred, Routes, ScriptStack, CustomLoader) {
+var Resource = (function(Include, Routes, ScriptStack, CustomLoader) {
 
 	function process(resource) {
 		var type = resource.type,
@@ -72,8 +72,7 @@ var Resource = (function(Include, IncludeDeferred, Routes, ScriptStack, CustomLo
 
 	var Resource = function(type, route, namespace, xpath, parent, id) {
 		Include.call(this);
-		IncludeDeferred.call(this);
-
+		
 		this.childLoaded = fn_proxy(this.childLoaded, this);
 
 		var url = route && route.path;
@@ -124,7 +123,7 @@ var Resource = (function(Include, IncludeDeferred, Routes, ScriptStack, CustomLo
 
 	};
 
-	Resource.prototype = obj_inherit(Resource, IncludeDeferred, Include, {
+	Resource.prototype = obj_inherit(Resource, Include, {
 		childLoaded: function(child) {
 			var resource = this,
 				includes = resource.includes;
@@ -181,4 +180,4 @@ var Resource = (function(Include, IncludeDeferred, Routes, ScriptStack, CustomLo
 
 	return Resource;
 
-}(Include, IncludeDeferred, Routes, ScriptStack, CustomLoader));
+}(Include, Routes, ScriptStack, CustomLoader));

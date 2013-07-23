@@ -1,5 +1,7 @@
 (function() {
 
+	cfg.server = true;
+
 	var fs = require('fs'),
 		vm = require('vm'),
 		Module = module.constructor,

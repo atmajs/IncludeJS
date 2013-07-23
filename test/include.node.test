@@ -69,6 +69,19 @@ UTest({
 	'Empty' : function(done){
 		include
 			.instance()
-			.done(done);
+			.done(function(){
+				
+				include
+					.instance()
+					.client()
+					.js('WANT/LOAD')
+					.done(function(){
+						assert(this.includes == null);
+						done();
+					})	
+				
+			});
+			
+			
 	}
 })

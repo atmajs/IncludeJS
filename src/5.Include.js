@@ -1,61 +1,12 @@
-var Include = (function() {
+var Include = (function(IncludeDeferred) {
 
-	function embedPlugin(source) {
-		eval(source);
+	function Include() {
+		IncludeDeferred.call(this);
 	}
 
-	function enableModules() {
-		if (typeof Object.defineProperty === 'undefined'){
-			console.warn('Browser do not support Object.defineProperty');
-			return;
-		}
-		Object.defineProperty(global, 'module', {
-			get: function() {
-				return global.include;
-			}
-		});
-
-		Object.defineProperty(global, 'exports', {
-			get: function() {
-				var current = global.include;
-				return (current.exports || (current.exports = {}));
-			},
-			set: function(exports) {
-				global.include.exports = exports;
-			}
-		});
-	}
+	stub_release(Include.prototype);
 	
-	function includePackage(resource, type, mix){
-		var pckg = mix.length === 1 ? mix[0] : __array_slice.call(mix);
-		
-		if (resource instanceof Resource) {
-			return resource.include(type, pckg);
-		}
-		return new Resource('js').include(type, pckg);
-	}
-	
-	function createIncluder(type) {
-		return function(){
-			return includePackage(this, type, arguments);
-		};
-	}
-
-	function Include() {}
-
-	
-	var fns = ['js', 'css', 'load', 'ajax', 'embed', 'lazy'],
-		i = 0,
-		imax = fns.length,
-		proto = Include.prototype;
-	for (; i < imax; i++){
-		proto[fns[i]] = createIncluder(fns[i]);
-	}
-	
-	proto['inject'] = proto.js;
-	
-	
-	obj_inherit(Include, {
+	obj_inherit(Include, IncludeDeferred, {
 		setCurrent: function(data) {
 
 			var resource = new Resource('js', {
@@ -234,8 +185,93 @@ var Include = (function() {
 				XHR(urls[i], onload);
 			}
 			return this;
+		},
+		
+		client: function(){
+			if (cfg.server === true) 
+				stub_freeze(this);
+			
+			return this;
+		},
+		
+		server: function(){
+			if (cfg.server !== true) 
+				stub_freeze(this);
+			
+			return this;
 		}
 	});
-
+	
+	
 	return Include;
-}());
+
+	
+	// >> FUNCTIONS
+	
+	function embedPlugin(source) {
+		eval(source);
+	}
+	
+	function enableModules() {
+		if (typeof Object.defineProperty === 'undefined'){
+			console.warn('Browser do not support Object.defineProperty');
+			return;
+		}
+		Object.defineProperty(global, 'module', {
+			get: function() {
+				return global.include;
+			}
+		});
+
+		Object.defineProperty(global, 'exports', {
+			get: function() {
+				var current = global.include;
+				return (current.exports || (current.exports = {}));
+			},
+			set: function(exports) {
+				global.include.exports = exports;
+			}
+		});
+	}
+	
+	function includePackage(resource, type, mix){
+		var pckg = mix.length === 1 ? mix[0] : __array_slice.call(mix);
+		
+		if (resource instanceof Resource) {
+			return resource.include(type, pckg);
+		}
+		return new Resource('js').include(type, pckg);
+	}
+	
+	function createIncluder(type) {
+		return function(){
+			return includePackage(this, type, arguments);
+		};
+	}
+	
+	function doNothing() {
+		return this;
+	}
+	
+	function stub_freeze(include) {
+		include.js =
+		include.css =
+		include.load =
+		include.ajax =
+		include.embed =
+		include.lazy =
+		include.inject =
+			doNothing;
+	}
+	
+	function stub_release(proto) {
+		var fns = ['js', 'css', 'load', 'ajax', 'embed', 'lazy'],
+			i = fns.length;
+		while (--i !== -1){
+			proto[fns[i]] = createIncluder(fns[i]);
+		}
+		
+		proto['inject'] = proto.js;
+	}
+	
+}(IncludeDeferred));
