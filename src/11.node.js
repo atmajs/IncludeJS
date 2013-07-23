@@ -192,7 +192,12 @@
 			return getDir(getFile(this.url));
 		},
 	
-		inject: function(pckg) {
+		inject: function() {
+			
+			var pckg = arguments.length === 1
+				? arguments[0]
+				: __array_slice.call(arguments);
+			
 			var current = this;
 			
 			current.state = current.state >= 3 ? 3 : 2;

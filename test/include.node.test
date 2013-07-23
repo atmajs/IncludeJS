@@ -74,7 +74,7 @@ UTest({
 				include
 					.instance()
 					.client()
-					.js('WANT/LOAD')
+					.js('WОNT/LOAD')
 					.done(function(){
 						assert(this.includes == null);
 						done();
