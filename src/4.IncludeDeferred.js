@@ -16,10 +16,17 @@ var IncludeDeferred = function() {
 IncludeDeferred.prototype = { /**	state observer */
 
 	on: function(state, callback, sender) {
+		if (this === sender && this.state === 0) {
+			callback(this);
+			return this;
+		}
+		
 		// this === sender in case when script loads additional
 		// resources and there are already parents listeners
 		
-		var mutator = (this.state < 3 || this === sender) ? 'unshift':'push';
+		var mutator = (this.state < 3 || this === sender)
+			? 'unshift'
+			: 'push';
 		
 		state <= this.state ? callback(this) : this.callbacks[mutator]({
 			state: state,
@@ -92,7 +99,7 @@ IncludeDeferred.prototype = { /**	state observer */
 		}
 	},
 
-	/** idefer */
+	/** assets loaded and DomContentLoaded */
 
 	ready: function(callback) {
 		var that = this;
@@ -103,13 +110,6 @@ IncludeDeferred.prototype = { /**	state observer */
 		}, this);
 	},
 
-	///////// Deprecated
-	/////////** assest loaded and window is loaded */
-	////////loaded: function(callback) {
-	////////	return this.on(4, function() {
-	////////		Events.load(callback);
-	////////	});
-	////////},
 	/** assets loaded */
 	done: function(callback) {
 		var that = this;

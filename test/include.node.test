@@ -64,5 +64,11 @@ UTest({
 			
 			done();
 		})
+	},
+	
+	'Empty' : function(done){
+		include
+			.instance()
+			.done(done);
 	}
 })
