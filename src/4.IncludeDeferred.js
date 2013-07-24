@@ -10,13 +10,13 @@
 
 var IncludeDeferred = function() {
 	this.callbacks = [];
-	this.state = 0;
+	this.state = -1;
 };
 
 IncludeDeferred.prototype = { /**	state observer */
 
 	on: function(state, callback, sender) {
-		if (this === sender && this.state === 0) {
+		if (this === sender && this.state === -1) {
 			callback(this);
 			return this;
 		}

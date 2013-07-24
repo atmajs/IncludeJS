@@ -108,7 +108,7 @@ var Resource = (function(Include, Routes, ScriptStack, CustomLoader) {
 			return this;
 		}
 
-
+		this.state = 0;
 		this.location = path_getDir(url);
 
 
