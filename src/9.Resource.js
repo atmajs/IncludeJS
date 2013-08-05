@@ -175,9 +175,38 @@ var Resource = (function(Include, Routes, ScriptStack, CustomLoader) {
 			});
 
 			return this;
+		},
+		
+		getNestedOfType: function(type){
+			return resource_getChildren(this.includes, type);
 		}
 	});
 
 	return Resource;
 
+	
+	function resource_getChildren(includes, type, out) {
+		if (includes == null) {
+			return null;
+		}
+		
+		if (out == null) {
+			out = [];
+		}
+		
+		for (var i = 0, x, imax = includes.length; i < imax; i++){
+			x = includes[i].resource;
+			
+			if (type === x.type) {
+				out.push(x);
+			}
+			
+			if (x.includes != null) {
+				resource_getChildren(x.includes, type, out);
+			}
+		}
+		
+		return out;
+	}
+	
 }(Include, Routes, ScriptStack, CustomLoader));

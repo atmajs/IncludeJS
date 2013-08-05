@@ -142,7 +142,12 @@ var Include = (function(IncludeDeferred) {
 		},
 
 		getResource: function(url, type) {
-			var id = (url[0] === '/' ? '' : '/') + url;
+			var id = url;
+			
+			if (url.charCodeAt(0) !== 47) {
+				// /
+				id = '/' + id;
+			}
 
 			if (type != null){
 				return bin[type][id];

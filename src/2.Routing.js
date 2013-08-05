@@ -32,7 +32,14 @@ var RoutesLib = function() {
 		resolve: function(namespace, template) {
 			var questionMark = template.indexOf('?'),
 				aliasIndex = template.indexOf('::'),
-				alias, path, params, route, i, x, length, arr;
+				alias,
+				path,
+				params,
+				route,
+				i,
+				x,
+				length,
+				arr;
 				
 			
 			if (aliasIndex !== -1){
