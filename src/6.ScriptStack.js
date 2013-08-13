@@ -140,10 +140,6 @@ var ScriptStack = (function() {
 				return;
 			}
 
-			if (cfg.sync === true) {
-				currentResource = null;
-			}
-
 
 			if (resource.source) {
 				resource.state = 2;

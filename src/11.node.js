@@ -4,7 +4,7 @@
 
 	var fs = require('fs'),
 		vm = require('vm'),
-		Module = global.module.constructor,
+		Module = (global.module || module).constructor,
 		globalPath,
 		includePath;
 
