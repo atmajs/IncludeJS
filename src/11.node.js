@@ -140,7 +140,7 @@
 		global.module = module;
 
 		if (isGlobalCntx !== true) {
-			source = '(function(){ ' + source + ' }())';
+			source = '(function(){ ' + source + '\n}())';
 		}
 
 		try {
