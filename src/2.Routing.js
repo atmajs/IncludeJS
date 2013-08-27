@@ -121,7 +121,6 @@ var RoutesLib = function() {
 			var key;
 
 			if (includeData == null) {
-				console.error('Include Item has no Data', type, namespace);
 				return;
 			}
 
