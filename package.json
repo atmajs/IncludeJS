@@ -2,7 +2,7 @@
 	"name": "includejs-loader",
 	"description": "Resource Loader",
 	"version": "0.6.1",
-	"homepage": "http://libjs.it/#/include",
+	"homepage": "http://atmajs.com/include",
 	"contributors":[
 	],
 	"author": "Alex Kit <source.kit@gmail.com>",
@@ -19,10 +19,10 @@
 	"main": "./lib/include.node.js",
 	"dependencies": {},
 	"devDependencies": {
-		"includejs": "~0.9.31"
+		"atma": ">0.9.0"
 	},
 	"scripts" : {
-        "test" : "node_modules/.bin/includejs test"
+        "test" : "node_modules/.bin/atma test"
     },
 	"keywords": [],
 	"engines" : {
