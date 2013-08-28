@@ -14,7 +14,7 @@ var Include = (function(IncludeDeferred) {
 			}, data.namespace, null, null, data.id);
 
 			if (resource.state !== 4) {
-				console.error("Current Resource should be loaded");
+				console.error("<include> Resource should be loaded", data);
 			}
 
 			/**@TODO - probably state shoulb be changed to 2 at this place */
