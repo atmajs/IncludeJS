@@ -21,6 +21,9 @@ var bin = {},
 	},
 	handler = {},
 	hasOwnProp = {}.hasOwnProperty,
+	emptyResponse = {
+		load: {}
+	},
 	__array_slice = Array.prototype.slice,
 	
 	XMLHttpRequest = global.XMLHttpRequest;

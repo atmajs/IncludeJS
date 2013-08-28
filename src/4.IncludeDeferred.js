@@ -155,6 +155,6 @@ IncludeDeferred.prototype = { /**	state observer */
 
 			}
 		}
-		callback(this.response);
+		callback(this.response || emptyResponse);
 	}
 };
