@@ -110,7 +110,7 @@ var Include = (function(IncludeDeferred) {
 						var container = document.querySelector('#includejs-' + id.replace(/\W/g, ''));
 						if (container == null) {
 							console.error('"%s" Data was not embedded into html', id);
-							return;
+							break;
 						}
 						resource.exports = container.innerHTML;
 						break;
