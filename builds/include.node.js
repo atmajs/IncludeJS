@@ -19,7 +19,7 @@
 	
 	// import ../src/10.export.js
 	
-	// import ../src/11.node.js
+	// import ../src/node/node.js
 
 }));
 
