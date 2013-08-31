@@ -6,7 +6,11 @@ function bin_removeDelegate(url) {
             clearTimeout(timeout);
 
         timeout = setTimeout(function() {
-            bin_load(bin_remove(url));
+            var res = bin_load(bin_remove(url));
+            
+            if (res && typeof cfg.autoreload === 'object') {
+                cfg.autoreload.fileChanged(url);
+            }
         }, 150);
     };
 }
@@ -43,7 +47,7 @@ function bin_remove(mix) {
                 delete bin[type][id];
 
                 if (type === 'load') {
-                    return bin_remove(res.parent);
+                    bin_remove(res.parent);
                 }
 
                 return res;
