@@ -36,22 +36,30 @@ var CustomLoader = (function() {
 		return (cfg.loader[extension] = new Resource('js', Routes.resolve(namespace, path), namespace));
 	}
 	
-	function doLoad_completeDelegate(callback, resource) {
+	function loader_completeDelegate(callback, resource) {
 		return function(response){
 			callback(resource, response);
 		};
 	}
 	
-	function doLoad(resource, loader, callback) {
+	function loader_process(source, resource, loader, callback) {
+		var delegate = loader_completeDelegate(callback, resource),
+			syncResponse = loader.process(source, resource, delegate);
+		
+		// match also null
+		if (typeof syncResponse !== 'undefined') {
+			callback(resource, syncResponse);
+		}
+	}
+	
+	function tryLoad(resource, loader, callback) {
+		if (typeof resource.exports === 'string') {
+			loader_process(resource.exports, resource, loader, callback);
+			return;
+		}
+		
 		XHR(resource, function(resource, response) {
-			var delegate = doLoad_completeDelegate(callback, resource),
-				syncResponse = loader.process(response, resource, delegate);
-			
-			// match also null
-			if (typeof syncResponse !== 'undefined') {
-				callback(resource, syncResponse);
-			}
-			
+			loader_process(response, resource, loader, callback);
 		});
 	}
 
@@ -61,12 +69,12 @@ var CustomLoader = (function() {
 			var loader = createLoader(resource.url);
 			
 			if (loader.process) {
-				doLoad(resource, loader, callback);
+				tryLoad(resource, loader, callback);
 				return;
 			}
 			
 			loader.done(function() {
-				doLoad(resource, loader.exports, callback);
+				tryLoad(resource, loader.exports, callback);
 			});
 		},
 		exists: function(resource) {

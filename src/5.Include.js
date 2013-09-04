@@ -93,16 +93,18 @@ var Include = (function(IncludeDeferred) {
 						namespace = _bin[key][i].namespace,
 						resource = new Resource();
 
-					resource.state = 4;
-					resource.namespace = namespace;
-					resource.type = key;
-
+					
 					if (url) {
 						if (url[0] === '/') {
 							url = url.substring(1);
 						}
 						resource.location = path_getDir(url);
 					}
+					
+					resource.state = 4;
+					resource.namespace = namespace;
+					resource.type = key;
+					resource.url = url || id;
 
 					switch (key) {
 					case 'load':
@@ -113,6 +115,15 @@ var Include = (function(IncludeDeferred) {
 							break;
 						}
 						resource.exports = container.innerHTML;
+						if (CustomLoader.exists(resource)){
+							
+							resource.state = 3;
+							CustomLoader.load(resource, function(resource, response){
+								
+								resource.exports = response;
+								resource.readystatechanged(4);
+							});
+						}
 						break;
 					}
 					
@@ -204,7 +215,10 @@ var Include = (function(IncludeDeferred) {
 				stub_freeze(this);
 			
 			return this;
-		}
+		},
+		
+		pauseStack: ScriptStack.pause,
+		resumeStack: ScriptStack.resume
 	});
 	
 	

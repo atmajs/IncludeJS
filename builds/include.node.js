@@ -9,10 +9,11 @@
 	// import ../src/utils/path.js
 	
 	// import ../src/2.Routing.js
-	// import ../src/3.Events.js 
+	// import ../src/3.Events.js
+    // import ../src/6.ScriptStack.js
+    
 	// import ../src/4.IncludeDeferred.js 
 	// import ../src/5.Include.js 
-	// import ../src/6.ScriptStack.js
 	// import ../src/7.CustomLoader.js
 	// import ../src/8.LazyModule.js
 	// import ../src/9.Resource.js
