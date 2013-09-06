@@ -1,6 +1,9 @@
 function path_getDir(url) {
 	var index = url.lastIndexOf('/');
-	return index === -1 ? '' : url.substring(index + 1, -index);
+	return index === -1
+		? ''
+		: url.substring(index + 1, -index)
+		;
 }
 
 function path_resolveCurrent() {
@@ -13,8 +16,21 @@ function path_resolveCurrent() {
 	var scripts = document.getElementsByTagName('script'),
 		last = scripts[scripts.length - 1],
 		url = last && last.getAttribute('src') || '';
-		
-	return (url[0] === '/') ? url : '/' + url;
+	
+	if (url[0] === '/') {
+		return url;
+	}
+	
+	var location = window
+		.location
+		.pathname
+		.replace(/\/[^\/]+\.\w+$/, '');
+	
+	if (location[location.length - 1] !== '/') {
+		location += '/';
+	}
+	
+	return location + url;
 }
 
 function path_win32Normalize(path){
