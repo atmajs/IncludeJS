@@ -218,7 +218,9 @@ var Include = (function(IncludeDeferred) {
 		},
 		
 		pauseStack: ScriptStack.pause,
-		resumeStack: ScriptStack.resume
+		resumeStack: ScriptStack.resume,
+		
+		allDone: ScriptStack.complete
 	});
 	
 	

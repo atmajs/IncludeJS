@@ -6,6 +6,7 @@ var ScriptStack = (function() {
 		currentResource,
 		stack = [],
 		
+		_cb_complete = [],
 		_paused;
 		
 		
@@ -27,7 +28,12 @@ var ScriptStack = (function() {
 	}
 
 	function loadByEmbedding() {
-		if (_paused || stack.length === 0) {
+		if (_paused) {
+			return;
+		}
+		
+		if (stack.length === 0){
+			trigger_complete();
 			return;
 		}
 
@@ -86,9 +92,15 @@ var ScriptStack = (function() {
 	}
 	
 	function processByEval() {
-		if (_paused || stack.length === 0) {
+		if (_paused) {
 			return;
 		}
+		
+		if (stack.length === 0){
+			trigger_complete();
+			return;
+		}
+		
 		if (currentResource != null) {
 			return;
 		}
@@ -119,6 +131,17 @@ var ScriptStack = (function() {
 		currentResource = null;
 		processByEval();
 
+	}
+	
+	
+	function trigger_complete() {
+		var i = -1,
+			imax = _cb_complete.length;
+		while (++i < imax) {
+			_cb_complete[i]();
+		}
+		
+		_cb_complete.length = 0;
 	}
 
 	
@@ -231,6 +254,14 @@ var ScriptStack = (function() {
 				: loadByEmbedding;
 				
 			fn();
+		},
+		complete: function(callback){
+			if (_paused === false && stack.length === 0) {
+				callback();
+				return;
+			}
+			
+			_cb_complete.push(callback);
 		}
 	};
 })();
