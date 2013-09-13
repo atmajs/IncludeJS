@@ -7,7 +7,7 @@ function bin_removeDelegate(url) {
 
         timeout = setTimeout(function() {
             var res = bin_load(bin_remove(url));
-            
+
             if (res && typeof cfg.autoreload === 'object') {
                 cfg.autoreload.fileChanged(url);
             }
@@ -65,23 +65,26 @@ function bin_load(resource) {
     resource.content = null;
     resource.exports = null;
 
-    return resource
-        .parent
+    var parent = resource.parent;
+    return parent
         .create(
-        resource.type,
-        resource.route,
-        resource.namespace,
-        resource.xpath);
+            resource.type,
+            resource.route,
+            resource.namespace,
+            resource.xpath
+        )
+        .on(4, parent.childLoaded);
 
 }
 
 function bin_tryReload(path, callback) {
     var res = bin_remove(path);
-    
+
     if (res == null) {
         callback && callback();
         return;
     }
-    
-    return bin_load(res).done(callback);
+
+    return bin_load(res)
+        .done(callback);
 }
