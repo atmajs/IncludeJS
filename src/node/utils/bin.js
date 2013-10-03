@@ -6,11 +6,16 @@ function bin_removeDelegate(url) {
             clearTimeout(timeout);
 
         timeout = setTimeout(function() {
-            var res = bin_load(bin_remove(url));
-
-            if (res && typeof cfg.autoreload === 'object') {
-                cfg.autoreload.fileChanged(url);
+            
+            var triggerFn;
+            if (typeof cfg.autoreload === 'object') {
+                triggerFn = function(state){
+                    state !== false && cfg.autoreload.fileChanged(url, 'include');
+                };
             }
+            
+            bin_tryReload(url, triggerFn);
+            
         }, 150);
     };
 }
@@ -45,12 +50,11 @@ function bin_remove(mix) {
             if (index !== -1 && index === id.length - url.length) {
 
                 delete bin[type][id];
-
-                if (type === 'load') {
-                    bin_remove(res.parent);
-                }
-
-                return res;
+                
+                return type === 'load'
+                    ? bin_remove(res.parent)
+                    : res
+                    ;
             }
         }
 
@@ -81,7 +85,7 @@ function bin_tryReload(path, callback) {
     var res = bin_remove(path);
 
     if (res == null) {
-        callback && callback();
+        callback && callback(false);
         return;
     }
 
