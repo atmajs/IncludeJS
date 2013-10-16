@@ -41,7 +41,10 @@ function bin_remove(mix) {
             if (isUrl === false) {
                 if (res === mix) {
                     delete bin[type][id];
-                    return res;
+                    return res.parent && res.parent.url
+                        ? bin_remove(res.parent)
+                        : res
+                        ;
                 }
                 continue;
             }
@@ -50,8 +53,7 @@ function bin_remove(mix) {
             if (index !== -1 && index === id.length - url.length) {
 
                 delete bin[type][id];
-                
-                return type === 'load'
+                return res.parent && res.parent.url
                     ? bin_remove(res.parent)
                     : res
                     ;

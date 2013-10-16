@@ -108,5 +108,15 @@
 
 		node.parentNode.replaceChild(clone, node);
 	}
+	
+	function XHR(resource, callback) {
+		var xhr = new XMLHttpRequest();
+		xhr.onreadystatechange = function() {
+			xhr.readyState === 4 && callback && callback(resource, xhr.responseText);
+		};
+
+		xhr.open('GET', typeof resource === 'object' ? resource.url : resource, true);
+		xhr.send();
+	}
 
 }(typeof window === 'undefined' ? global : window));
