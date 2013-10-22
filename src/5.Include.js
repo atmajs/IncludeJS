@@ -7,6 +7,10 @@ var Include = (function(IncludeDeferred) {
 	stub_release(Include.prototype);
 	
 	obj_inherit(Include, IncludeDeferred, {
+		
+		isBrowser: true,
+		isNode: false,
+		
 		setCurrent: function(data) {
 
 			var resource = new Resource('js', {

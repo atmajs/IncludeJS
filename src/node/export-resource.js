@@ -1,4 +1,8 @@
 obj_inherit(Resource, {
+    
+    isBrowser: false,
+    isNode: true,
+    
     bin_remove: bin_remove,
     bin_tryReload: bin_tryReload,
     path_getFile: function() {
