@@ -20,8 +20,8 @@ function bin_removeDelegate(url) {
     };
 }
 
-function bin_remove(mix) {
-    if (mix == null)
+function bin_remove(path) {
+    if (path == null)
         return;
 
     var type,
@@ -29,28 +29,13 @@ function bin_remove(mix) {
         index,
         res;
 
-    var isUrl = typeof mix === 'string',
-        url = isUrl ? mix : mix.url;
-
-
     for (type in bin) {
 
         for (id in bin[type]) {
             res = bin[type][id];
 
-            if (isUrl === false) {
-                if (res === mix) {
-                    delete bin[type][id];
-                    return res.parent && res.parent.url
-                        ? bin_remove(res.parent)
-                        : res
-                        ;
-                }
-                continue;
-            }
-
-            index = id.indexOf(url);
-            if (index !== -1 && index === id.length - url.length) {
+            index = id.indexOf(path);
+            if (index !== -1 && index === id.length - path.length) {
 
                 delete bin[type][id];
                 return res.parent && res.parent.url
@@ -61,7 +46,7 @@ function bin_remove(mix) {
         }
 
     }
-    console.warn('<include:res:remove> Resource is not in cache', url);
+    console.warn('<include:res:remove> Resource is not in cache', path);
 }
 
 function bin_load(resource) {
