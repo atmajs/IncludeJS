@@ -39,7 +39,7 @@ function bin_remove(path) {
 
                 delete bin[type][id];
                 return res.parent && res.parent.url
-                    ? bin_remove(res.parent)
+                    ? bin_remove(res.parent.url)
                     : res
                     ;
             }

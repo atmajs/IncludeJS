@@ -221,6 +221,17 @@ var Include = (function(IncludeDeferred) {
 			return this;
 		},
 		
+		use: function(){
+			if (this.parent == null) {
+				console.error('<include.use> Parent resource is undefined');
+				return;
+			}
+			
+			this._use = tree_resolveUsage(this, arguments);
+			
+			return this;
+		},
+		
 		pauseStack: ScriptStack.pause,
 		resumeStack: ScriptStack.resume,
 		
