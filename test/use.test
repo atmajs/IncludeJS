@@ -12,6 +12,7 @@ include
 					.instance('test/')
 					.js(
 						'use/a.js::a_res',
+						'use/c.js::c',
 						'use/b.js'
 					)
 					.done(function(resp){
