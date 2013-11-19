@@ -43,6 +43,11 @@ var CustomLoader = (function() {
 	}
 	
 	function loader_process(source, resource, loader, callback) {
+		if (loader.process == null) {
+			callback(resource, source);
+			return;
+		}
+		
 		var delegate = loader_completeDelegate(callback, resource),
 			syncResponse = loader.process(source, resource, delegate);
 		
@@ -58,9 +63,14 @@ var CustomLoader = (function() {
 			return;
 		}
 		
-		XHR(resource, function(resource, response) {
+		function onLoad(resource, response){
 			loader_process(response, resource, loader, callback);
-		});
+		}
+		
+		if (loader.load) 
+			return loader.load(resource, onLoad);
+		
+		XHR(resource, onLoad);
 	}
 
 	return {
@@ -73,9 +83,9 @@ var CustomLoader = (function() {
 				return;
 			}
 			
-			loader.done(function() {
+			loader.on(4, function() {
 				tryLoad(resource, loader.exports, callback);
-			});
+			}, null, 'push');
 		},
 		exists: function(resource) {
 			if (!resource.url) {

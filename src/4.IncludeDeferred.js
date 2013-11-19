@@ -15,7 +15,7 @@ var IncludeDeferred = function() {
 
 IncludeDeferred.prototype = { /**	state observer */
 
-	on: function(state, callback, sender) {
+	on: function(state, callback, sender, mutator) {
 		if (this === sender && this.state === -1) {
 			callback(this);
 			return this;
@@ -24,9 +24,12 @@ IncludeDeferred.prototype = { /**	state observer */
 		// this === sender in case when script loads additional
 		// resources and there are already parents listeners
 		
-		var mutator = (this.state < 3 || this === sender)
-			? 'unshift'
-			: 'push';
+		if (mutator == null) {
+			mutator = (this.state < 3 || this === sender)
+				? 'unshift'
+				: 'push'
+				;
+		}
 		
 		state <= this.state ? callback(this) : this.callbacks[mutator]({
 			state: state,

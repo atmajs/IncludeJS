@@ -61,7 +61,7 @@ var tree_resolveUsage;
 			}
 		}
 		
-		return use_resolveExports(resource.parent);
+		return use_resolveExports(name, resource.parent);
 	}
 	
 	
