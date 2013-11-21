@@ -24,6 +24,10 @@ var tree_resolveUsage;
 			if (name !== path) 
 				obj = obj_getProperty(obj, path);
 			
+			// if DEBUG
+			(typeof obj === 'object' && obj == null)
+				&& console.warn('<include:use> Used resource has no exports', name, resource.url);
+			// endif
 			
 			
 			use[i] = obj;
@@ -39,7 +43,7 @@ var tree_resolveUsage;
 			// if DEBUG
 			console.warn('<include:use> Not Found. Ensure to have it included before with correct alias', name);
 			// endif
-			return null;
+			return;
 		}
 		
 		
@@ -52,13 +56,9 @@ var tree_resolveUsage;
 			
 		while( ++i < imax) {
 			include = includes[i];
-			if (include.route.alias === name) {
-				exports = include.resource.exports;
-				// if DEBUG
-				exports == null && console.warn('<include:use> Used resource has no exports');
-				// endif
-				return exports;
-			}
+			
+			if (include.route.alias === name) 
+				return include.resource.exports;
 		}
 		
 		return use_resolveExports(name, resource.parent);
