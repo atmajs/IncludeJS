@@ -33,6 +33,11 @@ var Resource = (function(Include, Routes, ScriptStack, CustomLoader) {
 					break;
 			}
 		} else {
+			
+			if ('js' === type || 'embed' === type) {
+				ScriptStack.add(resource, resource.parent);
+			}
+			
 			CustomLoader.load(resource, onXHRCompleted);
 		}
 
@@ -50,7 +55,8 @@ var Resource = (function(Include, Routes, ScriptStack, CustomLoader) {
 			case 'js':
 			case 'embed':
 				resource.source = response;
-				ScriptStack.load(resource, resource.parent, resource.type === 'embed');
+				resource.state = 2;
+				ScriptStack.touch();
 				return;
 			case 'load':
 			case 'ajax':
@@ -70,7 +76,7 @@ var Resource = (function(Include, Routes, ScriptStack, CustomLoader) {
 		resource.readystatechanged(4);
 	}
 
-	var Resource = function(type, route, namespace, xpath, parent, id) {
+	var Resource = function(type, route, namespace, xpath, parent, id, priority) {
 		Include.call(this);
 		
 		this.childLoaded = fn_proxy(this.childLoaded, this);
@@ -81,11 +87,13 @@ var Resource = (function(Include, Routes, ScriptStack, CustomLoader) {
 			this.url = url = path_resolveUrl(url, parent);
 		}
 
-		this.route = route;
-		this.namespace = namespace;
+		
 		this.type = type;
 		this.xpath = xpath;
+		this.route = route;
 		this.parent = parent;
+		this.priority = priority;
+		this.namespace = namespace;
 
 		if (id == null && url) {
 			id = (url[0] === '/' ? '' : '/') + url;

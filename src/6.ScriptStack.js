@@ -149,31 +149,14 @@ var ScriptStack = (function() {
 	return {
 		load: function(resource, parent, forceEmbed) {
 
-			//console.log('LOAD', resource.url, 'parent:',parent ? parent.url : '');
-
-			var added = false;
-			if (parent) {
-				for (var i = 0, length = stack.length; i < length; i++) {
-					if (stack[i] === parent) {
-						stack.splice(i, 0, resource);
-						added = true;
-						break;
-					}
-				}
-			}
-
-			if (!added) {
-				stack.push(resource);
-			}
-
-			// was already loaded, with custom loader for example
+			this.add(resource, parent);
 
 			if (!cfg.eval || forceEmbed) {
 				loadByEmbedding();
 				return;
 			}
 
-
+			// was already loaded, with custom loader for example
 			if (resource.source) {
 				resource.state = 2;
 				processByEval();
@@ -191,6 +174,30 @@ var ScriptStack = (function() {
 				processByEval();
 			});
 		},
+		
+		add: function(resource, parent){
+			
+			if (resource.priority === 1) 
+				return stack.unshift(resource);
+			
+			
+			if (parent == null) 
+				return stack.push(resource);
+				
+			
+			var imax = stack.length,
+				i = -1
+				;
+			// move close to parent
+			while( ++i < imax){
+				if (stack[i] === parent) 
+					return stack.splice(i, 0, resource);
+			}
+			
+			// was still not added
+			stack.push(resource);
+		},
+		
 		/* Move resource in stack close to parent */
 		moveToParent: function(resource, parent) {
 			var length = stack.length,
@@ -206,11 +213,6 @@ var ScriptStack = (function() {
 			}
 
 			if (resourceIndex === -1) {
-				// this should be not the case, but anyway checked.
-				
-				// - resource can load resources in done cb, and then it will be
-				// already not in stack
-				//-console.warn('Resource is not in stack', resource);
 				return;
 			}
 
@@ -222,10 +224,6 @@ var ScriptStack = (function() {
 			}
 
 			if (parentIndex === -1) {
-				//// - should be already in stack
-				////if (parent == null) {
-				////	stack.unshift(resource);
-				////}
 				return;
 			}
 
@@ -242,19 +240,24 @@ var ScriptStack = (function() {
 		pause: function(){
 			_paused = true;
 		},
+		
 		resume: function(){
 			_paused = false;
 			
-			if (currentResource != null) {
+			if (currentResource != null) 
 				return;
-			}
 			
+			this.touch();
+		},
+		
+		touch: function(){
 			var fn = cfg.eval
 				? processByEval
-				: loadByEmbedding;
-				
+				: loadByEmbedding
+				;
 			fn();
 		},
+		
 		complete: function(callback){
 			if (_paused === false && stack.length === 0) {
 				callback();

@@ -33,7 +33,15 @@ var CustomLoader = (function() {
 			}
 		}
 
-		return (cfg.loader[extension] = new Resource('js', Routes.resolve(namespace, path), namespace));
+		return (cfg.loader[extension] = new Resource(
+			'js',
+			Routes.resolve(namespace, path),
+			namespace,
+			null,
+			null,
+			null,
+			1
+		));
 	}
 	
 	function loader_completeDelegate(callback, resource) {
