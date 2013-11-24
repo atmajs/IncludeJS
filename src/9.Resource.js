@@ -136,7 +136,7 @@ var Resource = (function(Include, Routes, ScriptStack, CustomLoader) {
 			var resource = this,
 				includes = resource.includes;
 			if (includes && includes.length) {
-				if (resource.state < 3 /* && resource.url != null */ ) {
+				if (resource.state < 3) {
 					// resource still loading/include is in process, but one of sub resources are already done
 					return;
 				}
@@ -183,6 +183,16 @@ var Resource = (function(Include, Routes, ScriptStack, CustomLoader) {
 			});
 
 			return this;
+		},
+		
+		pause: function(){
+			this.state = 2.5;
+			
+			var that = this;
+			return function(){
+				
+				that.readystatechanged(3);
+			};
 		},
 		
 		getNestedOfType: function(type){

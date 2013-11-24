@@ -75,8 +75,8 @@ var ScriptStack = (function() {
 				return;
 			}
 
-			resource.readystatechanged(3);
-
+			if (resource.state !== 2.5) 
+				resource.readystatechanged(3);
 			currentResource = null;
 			loadByEmbedding();
 		}
@@ -127,7 +127,8 @@ var ScriptStack = (function() {
 			}
 		}
 
-		resource.readystatechanged(3);
+		if (resource.state !== 2.5) 
+			resource.readystatechanged(3);
 		currentResource = null;
 		processByEval();
 
