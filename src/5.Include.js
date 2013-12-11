@@ -17,7 +17,7 @@ var Include = (function(IncludeDeferred) {
 				path: data.id
 			}, data.namespace, null, null, data.id);
 
-			if (resource.state !== 4) {
+			if (resource.state < 3) {
 				console.error("<include> Resource should be loaded", data);
 			}
 
@@ -90,13 +90,29 @@ var Include = (function(IncludeDeferred) {
 			return obj;
 		},
 		register: function(_bin) {
-			for (var key in _bin) {
-				for (var i = 0; i < _bin[key].length; i++) {
-					var id = _bin[key][i].id,
-						url = _bin[key][i].url,
-						namespace = _bin[key][i].namespace,
-						resource = new Resource();
-
+			
+			var key,
+				info,
+				infos,
+				imax,
+				i;
+			
+			for (key in _bin) {
+				infos = _bin[key];
+				imax = infos.length;
+				i = -1;
+				
+				while ( ++i < imax ) {
+					
+					info = infos[i];
+					
+					var id = info.id,
+						url = info.url,
+						namespace = info.namespace,
+						parent = info.parent && incl_getResource(info.parent, 'js'),
+						resource = new Resource(),
+						state = info.state
+						;
 					
 					if (url) {
 						if (url[0] === '/') {
@@ -105,10 +121,15 @@ var Include = (function(IncludeDeferred) {
 						resource.location = path_getDir(url);
 					}
 					
-					resource.state = 4;
+					
+					resource.state = state == null
+						? (key === 'js' ? 3 : 4)
+						: state
+						;
 					resource.namespace = namespace;
 					resource.type = key;
 					resource.url = url || id;
+					resource.parent = parent;
 
 					switch (key) {
 					case 'load':
@@ -156,25 +177,7 @@ var Include = (function(IncludeDeferred) {
 			return resource;
 		},
 
-		getResource: function(url, type) {
-			var id = url;
-			
-			if (url.charCodeAt(0) !== 47) {
-				// /
-				id = '/' + id;
-			}
-
-			if (type != null){
-				return bin[type][id];
-			}
-
-			for (var key in bin) {
-				if (bin[key].hasOwnProperty(id)) {
-					return bin[key][id];
-				}
-			}
-			return null;
-		},
+		getResource: incl_getResource,
 		getResources: function(){
 			return bin;
 		},
@@ -224,7 +227,7 @@ var Include = (function(IncludeDeferred) {
 		use: function(){
 			if (this.parent == null) {
 				console.error('<include.use> Parent resource is undefined');
-				return;
+				return this;
 			}
 			
 			this._use = tree_resolveUsage(this, arguments);
@@ -232,8 +235,8 @@ var Include = (function(IncludeDeferred) {
 			return this;
 		},
 		
-		pauseStack: ScriptStack.pause,
-		resumeStack: ScriptStack.resume,
+		pauseStack: fn_proxy(ScriptStack.pause, ScriptStack),
+		resumeStack: fn_proxy(ScriptStack.resume, ScriptStack),
 		
 		allDone: ScriptStack.complete
 	});
@@ -243,6 +246,27 @@ var Include = (function(IncludeDeferred) {
 
 	
 	// >> FUNCTIONS
+	
+	function incl_getResource(url, type) {
+		var id = url;
+		
+		if (url.charCodeAt(0) !== 47) {
+			// /
+			id = '/' + id;
+		}
+
+		if (type != null){
+			return bin[type][id];
+		}
+
+		for (var key in bin) {
+			if (bin[key].hasOwnProperty(id)) {
+				return bin[key][id];
+			}
+		}
+		return null;
+	}
+	
 	
 	function embedPlugin(source) {
 		eval(source);

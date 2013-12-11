@@ -8,7 +8,11 @@
  *			will become "{domain}/apps/script/main.js" instead of "{domain}/script/main.js"
  */
 
-var bin = {},
+var bin = {
+		js: {},
+		css: {},
+		load: {}
+	},
 	isWeb = !! (global.location && global.location.protocol && /^https?:/.test(global.location.protocol)),
 	reg_subFolder = /([^\/]+\/)?\.\.\//,
 	cfg = {
