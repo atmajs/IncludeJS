@@ -4,11 +4,7 @@
  *	``` $ atma build.js ```
  **/
 
-
-
-
-
-global.config = {
+module.exports = {
 	'settings': {
 		io: {
 			extensions: {
@@ -35,9 +31,6 @@ global.config = {
 
 	'defaults': ['import', 'jshint', 'uglify']
 };
-
-
-
 
 function JSHint() {
 

@@ -1,5 +1,9 @@
 (function(){
     
+    var npmPath,
+        atmaPath
+        ;
+    
     obj_inherit(Resource, {
         
         isBrowser: false,
@@ -57,24 +61,30 @@
                 next.paths = Module._nodeModulePaths(path_getDir(next.filename));
     
     
-                if (!globalPath) {
-                    var delimiter = process.platform === 'win32' ? ';' : ':',
-                        PATH = process.env.PATH || process.env.path;
-    
-                    if (!PATH) {
-                        console.error('PATH not defined in env', process.env);
+                if (npmPath == null) {
+                    
+                    var PATH = process.env.PATH || process.env.path,
+                        parts = PATH.split(require('path').delimiter),
+                        npmPath;
+                        
+                    var i = parts.length,
+                        rgx = /([\\\/]npm[\\\/])|([\\\/]npm$)/gi;
+                    while ( --i > -1 ){
+                        if (rgx.test(parts[i])) {
+                            npmPath = parts[i];
+                            break;
+                        }
                     }
-    
-                    var parts = PATH.split(delimiter),
-                        globalPath = ruqq.arr.first(parts, function(x) {
-                            return /([\\\/]npm[\\\/])|([\\\/]npm$)/gi.test(x);
-                        });
-    
-                    if (globalPath) {
-                        globalPath = globalPath.replace(/\\/g, '/');
-                        globalPath += (globalPath[globalPath.length - 1] !== '/' ? '/' : '') + 'node_modules';
-    
-                        includePath = io.env.applicationDir.toLocalDir() + 'node_modules';
+                        
+                        
+                    if (npmPath) {
+                        npmPath = path_combine(npmPath, 'node_modules');
+                        atmaPath = path_combine(
+                            path_getDir(
+                                path_normalize(
+                                    process.mainModule.filename
+                            )), 'node_modules'
+                        );
                     } else {
                         console.error('Could not resolve global NPM Directory from system path');
                         console.log('searched with pattern /npm in', PATH, delimiter);
@@ -82,11 +92,11 @@
                 }
     
     
-                next.paths.unshift(includePath);
-                next.paths.unshift(globalPath);
+                next.paths.unshift(atmaPath);
+                next.paths.unshift(npmPath);
     
-                module = next;
-                require = next.require.bind(next);
+                global.module = module = next;
+                global.require = require = next.require.bind(next);
             }
     
             var res = new Resource();
