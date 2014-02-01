@@ -64,7 +64,8 @@
                 if (npmPath == null) {
                     
                     var PATH = process.env.PATH || process.env.path,
-                        parts = PATH.split(require('path').delimiter),
+                        delimiter = require('path').delimiter,
+                        parts = PATH.split(delimiter),
                         npmPath;
                         
                     var i = parts.length,
@@ -86,8 +87,11 @@
                             )), 'node_modules'
                         );
                     } else {
-                        console.error('Could not resolve global NPM Directory from system path');
-                        console.log('searched with pattern /npm in', PATH, delimiter);
+                        console.warn(
+                            'Could not resolve global NPM Directory from system path (%s)',
+                            delimiter,
+                            PATH
+                        );
                     }
                 }
     
