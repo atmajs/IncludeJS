@@ -14,7 +14,21 @@ __eval = function(source, include, isGlobalCntx) {
     }
 
     try {
-        vm.runInThisContext(source, global.__filename);
+        //- vm.runInThisContext(source, global.__filename);
+        
+        if (!isGlobalCntx) {
+            var filename = global.__filename
+            module = new Module(filename, module);
+            module.paths = Module._nodeModulePaths(path_getDir(filename));
+            module.filename = filename;
+            module._compile(source, filename);
+            module.loaded = true;
+        }
+        
+        else {
+            vm.runInThisContext(source, global.__filename);
+        }
+        
     } catch(e) {
         console.error('Module Evaluation Error', include.url);
         console.error(e.stack);
