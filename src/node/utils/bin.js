@@ -34,7 +34,9 @@ var bin_removeDelegate,
         var type,
             id,
             index,
-            res;
+            res,
+            parents = []
+            ;
     
         for (type in bin) {
     
@@ -46,27 +48,41 @@ var bin_removeDelegate,
     
                     bin_clearCache(type, id);
                     
-                    return res.parent && res.parent.url
+                    parents.push(res.parent && res.parent.url
                         ? bin_remove(res.parent.url)
                         : res
-                        ;
+                    );
                 }
             }
     
         }
-        console.warn('<include:res:remove> Resource is not in cache', path);
+        
+        if (parents.length === 0) {
+            console.warn('<include:res:remove> Resource is not in cache', path);
+        }
+            
+        return parents;
     };
     
     bin_tryReload = function(path, callback) {
-        var res = bin_remove(path);
-    
-        if (res == null) {
+        var parents = bin_remove(path).filter(function(x){ return x != null; });
+        if (parents.length === 0) {
             callback && callback(false);
             return;
         }
-    
-        return bin_load(res)
-            .done(callback);
+        
+        var count = parents.length,
+            imax = imax,
+            i = -1;
+        
+        while (++i < imax) {
+            bin_load(parents[i])
+                .done(function(){
+                    
+                    if (--count === 0) 
+                        callback();
+                });
+        }
     }
 
     // PRIVATE
