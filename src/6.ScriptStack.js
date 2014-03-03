@@ -260,7 +260,7 @@ var ScriptStack = (function() {
 		},
 		
 		complete: function(callback){
-			if (_paused === false && stack.length === 0) {
+			if (_paused !== true && stack.length === 0) {
 				callback();
 				return;
 			}
