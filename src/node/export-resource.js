@@ -118,6 +118,7 @@
     
             var res = new Resource();
             res.state = 4;
+            res.location = currentUrl;
             return res;
         }
     });
