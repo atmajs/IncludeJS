@@ -108,10 +108,14 @@
                     }
                 }
     
-    
-                next.paths.unshift(atmaPath);
-                next.paths.unshift(npmPath);
-    
+                
+                if (atmaPath) 
+                    next.paths.unshift(atmaPath);
+                    
+                if (npmPath) 
+                    next.paths.unshift(npmPath);
+                    
+                
                 global.module = module = next;
                 global.require = require = next.require.bind(next);
             }
