@@ -238,7 +238,46 @@ var Include = (function(IncludeDeferred) {
 		pauseStack: fn_proxy(ScriptStack.pause, ScriptStack),
 		resumeStack: fn_proxy(ScriptStack.resume, ScriptStack),
 		
-		allDone: ScriptStack.complete
+		allDone: function(callback){
+			ScriptStack.complete(function(){
+				
+				var pending = include.getPending('js'),
+					await = pending.length;
+				if (await === 0) {
+					callback();
+					return;
+				}
+				
+				var i = -1,
+					imax = await;
+				while( ++i < imax ){
+					pending[i].on(4, check);
+				}
+				
+				function check() {
+					if (--await < 1) 
+						callback();
+				}
+			});
+		},
+		
+		getPending: function(type){
+			var resources = [],
+				res, key, id;
+			
+			for(key in bin){
+				if (type != null && type != key) 
+					continue;
+				
+				for (id in bin[type]){
+					res = bin[type][id];
+					if (res.state < 4)
+						resources.push(res);
+				}
+			}
+			
+			return resources;
+		}
 	});
 	
 	
