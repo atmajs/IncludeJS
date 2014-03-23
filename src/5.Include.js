@@ -113,6 +113,8 @@ var Include = (function(IncludeDeferred) {
 						resource = new Resource(),
 						state = info.state
 						;
+					if (! (id || url)) 
+						continue;
 					
 					if (url) {
 						if (url[0] === '/') {
@@ -269,8 +271,8 @@ var Include = (function(IncludeDeferred) {
 				if (type != null && type != key) 
 					continue;
 				
-				for (id in bin[type]){
-					res = bin[type][id];
+				for (id in bin[key]){
+					res = bin[key][id];
 					if (res.state < 4)
 						resources.push(res);
 				}
