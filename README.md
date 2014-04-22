@@ -11,7 +11,7 @@ Features:
 - Production: finally, build the application into single html, js and css @see the [Atma.Toolkit](https://github.com/atmajs/Atma.Toolkit)
 - Inline Dependency Declaration
 	
-	_No external files, as package.json or config.js_
+	_No external files, such as package.json or config.js_
 	
 - Load any javascript
 - No prerequests for module declaration. But supports also `CommonJS` and `include.exports`
@@ -47,6 +47,17 @@ Features:
 	_Scripts will be evaluated only when you needs them_
 	
 
+- Pause resource loading
+
+	```javascript
+	// pause current module
+	var resume = include.pause();
+	
+	someAsyncJob(function(){
+		// resume with exports example
+		resume({ baz: 'quux' });
+	})
+	```
 
 ----
 (c) 2014 Atma.js Project

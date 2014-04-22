@@ -189,7 +189,10 @@ var Resource = (function(Include, Routes, ScriptStack, CustomLoader) {
 			this.state = 2.5;
 			
 			var that = this;
-			return function(){
+			return function(exports){
+				
+				if (arguments.length === 1) 
+					that.exports = exports;
 				
 				that.readystatechanged(3);
 			};
