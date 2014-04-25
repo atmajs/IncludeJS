@@ -78,8 +78,7 @@
                     
                     var PATH = process.env.PATH || process.env.path,
                         delimiter = require('path').delimiter,
-                        parts = PATH.split(delimiter),
-                        npmPath;
+                        parts = PATH.split(delimiter);
                         
                     var i = parts.length,
                         rgx = /([\\\/]npm[\\\/])|([\\\/]npm$)/gi;
