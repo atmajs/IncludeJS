@@ -1,5 +1,6 @@
 
-var file_read,
+var fs_exists,
+	file_read,
     file_watch;
     
 (function(){
@@ -26,6 +27,9 @@ var file_read,
         _watchers[path] = _fs.watch(path, callback);
     };
     
+	fs_exists = function(path){
+		return _fs.existsSync(path);
+	};
     
     function _unbind(path) {
         if (_watchers[path] == null)

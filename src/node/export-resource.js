@@ -88,10 +88,22 @@
                             break;
                         }
                     }
-                        
+                    
+                    if (npmPath == null && process.platform !== 'win32') {
+                        [
+                            '/usr/lib/node_modules',
+                            '/usr/local/lib/node_modules'
+                        ].forEach(function(path){
+                            
+                            if (npmPath == null && fs_exists(path)) 
+                                npmPath = path;
+                        });
+                    }
                         
                     if (npmPath) {
-                        npmPath = path_combine(npmPath, 'node_modules');
+                        if (npmPath.indexOf('node_modules') === -1) 
+                            npmPath = path_combine(npmPath, 'node_modules');
+                            
                         atmaPath = path_combine(
                             path_getDir(
                                 path_normalize(
