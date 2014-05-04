@@ -151,19 +151,17 @@ IncludeDeferred.prototype = { /**	state observer */
 
 					var alias = route.alias || Routes.parseAlias(route),
 						obj = type === 'js'
-							? this.response :
-							(this.response[type] || (this.response[type] = {}))
+							? (this.response)
+							: (this.response[type] || (this.response[type] = {}))
 							;
 
-					if (alias) {
-						obj[alias] = resource.exports;
+					if (alias != null) {
+						obj_setProperty(obj, alias, resource.exports);
 						break;
 					}
-					
-					console.warn('Resource Alias is Not defined', resource);
+					console.warn('<includejs> Alias is undefined', resource);
 					break;
 				}
-
 			}
 		} 
 		
