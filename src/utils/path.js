@@ -79,25 +79,27 @@ var path_getDir,
 	};
 	
 	path_resolveUrl = function(url, parent) {
-		if (cfg.path && url[0] === '/') {
+		if (cfg.path && url[0] === '/') 
 			url = cfg.path + url.substring(1);
-		}
-	
+		
 		switch (url.substring(0, 5)) {
 			case 'file:':
 			case 'http:':
 				return url;
 		}
 	
-		if (url.substring(0, 2) === './') {
+		if (url.substring(0, 2) === './') 
 			url = url.substring(2);
-		}
-	
-	
+		
+		if (url[0] === '/' && parent != null && parent.base != null) 
+			url = path_combine(parent.base, url);
+		
 		if (url[0] === '/') {
+			
 			if (isWeb === false || cfg.lockedToFolder === true) {
 				url = url.substring(1);
 			}
+			
 		} else if (parent != null && parent.location != null) {
 			url = parent.location + url;
 		}
