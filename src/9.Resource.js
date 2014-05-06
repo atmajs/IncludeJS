@@ -17,6 +17,7 @@ var Resource;
 		this.parent = parent;
 		this.priority = priority;
 		this.namespace = namespace;
+		this.base = parent && parent.base;
 
 		if (id == null && url) 
 			id = (url[0] === '/' ? '' : '/') + url;

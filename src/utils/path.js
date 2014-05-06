@@ -66,15 +66,18 @@ var path_getDir,
 	};
 	
 	path_normalize = function(path) {
-		return path.replace(/\\/g, '/').replace(/\/{2,}/g, '/');
+		return path
+			.replace(/\\/g, '/')
+			// remove double slashes, but not near protocol
+			.replace(/([^:\/])\/{2,}/g, '/')
+			;
 	};
 	
 	path_win32Normalize = function(path){
 		path = path.replace(/\\/g, '/');
-		if (path.substring(0, 5) === 'file:'){
+		if (path.substring(0, 5) === 'file:')
 			return path;
-		}
-	
+		
 		return 'file:///' + path;
 	};
 	
@@ -91,15 +94,18 @@ var path_getDir,
 		if (url.substring(0, 2) === './') 
 			url = url.substring(2);
 		
-		if (url[0] === '/' && parent != null && parent.base != null) 
+		if (url[0] === '/' && parent != null && parent.base != null) {
 			url = path_combine(parent.base, url);
-		
-		if (url[0] === '/') {
-			
-			if (isWeb === false || cfg.lockedToFolder === true) {
-				url = url.substring(1);
+			switch (url.substring(0, 5)) {
+				case 'file:':
+				case 'http:':
+					return url;
 			}
+		}
 			
+		if (url[0] === '/') {
+			if (isWeb === false || cfg.lockedToFolder === true) 
+				url = url.substring(1);
 		} else if (parent != null && parent.location != null) {
 			url = parent.location + url;
 		}
