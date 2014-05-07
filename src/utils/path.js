@@ -85,22 +85,16 @@ var path_getDir,
 		if (cfg.path && url[0] === '/') 
 			url = cfg.path + url.substring(1);
 		
-		switch (url.substring(0, 5)) {
-			case 'file:':
-			case 'http:':
-				return url;
-		}
-	
+		if (reg_hasProtocol.test(url)) 
+			return path_collapse(url);
+		
 		if (url.substring(0, 2) === './') 
 			url = url.substring(2);
 		
 		if (url[0] === '/' && parent != null && parent.base != null) {
 			url = path_combine(parent.base, url);
-			switch (url.substring(0, 5)) {
-				case 'file:':
-				case 'http:':
-					return url;
-			}
+			if (reg_hasProtocol.test(url)) 
+				return path_collapse(url);
 		}
 			
 		if (url[0] === '/') {
@@ -110,12 +104,7 @@ var path_getDir,
 			url = parent.location + url;
 		}
 	
-	
-		while (url.indexOf('../') !== -1) {
-			url = url.replace(reg_subFolder, '');
-		}
-	
-		return url;
+		return path_collapse(url);
 	};
 	
 	path_isRelative = function(path) {
@@ -129,7 +118,7 @@ var path_getDir,
 				// f
 			case 104:
 				// h
-				return /^file:|https?:/.test(path) === false;
+				return reg_hasProtocol.test(path) === false;
 		}
 		
 		return true;
@@ -163,6 +152,13 @@ var path_getDir,
 		}
 		
 		return out;
+	};
+	
+	function path_collapse(url) {
+		while (url.indexOf('../') !== -1) {
+			url = url.replace(reg_subFolder, '');
+		}
+		return url;
 	}
 	
 }());
