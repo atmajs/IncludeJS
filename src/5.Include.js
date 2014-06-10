@@ -71,12 +71,12 @@ var Include = (function(IncludeDeferred) {
 			}
 			
 			if (arguments.length === 2) {
-				Routes.register(mix, arguments[1]);
+				Routes.register(mix, arguments[1], this);
 				return this;
 			}
 			
 			for (var key in mix) {
-				Routes.register(key, mix[key]);
+				Routes.register(key, mix[key], this);
 			}
 			return this;
 		},
