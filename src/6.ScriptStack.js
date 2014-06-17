@@ -167,6 +167,7 @@ var ScriptStack = (function() {
 			XHR(resource, function(resource, response) {
 				if (!response) {
 					console.error('Not Loaded:', resource.url);
+					console.error('- Initiator:', resource.parent && resource.parent.url || '<root resource>');
 				}
 
 				resource.source = response;

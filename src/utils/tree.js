@@ -37,13 +37,16 @@ var tree_resolveUsage;
 	};
 	
 	
-	function use_resolveExports(name, resource){
+	function use_resolveExports(name, resource, initiator){
 		
 		if (resource == null) {
 			// if DEBUG
-			console.warn('<include:use> Not Found. Ensure to have it included before with correct alias', name);
+			console.warn('<include> Usage Not Found:', name);
+			console.warn('- Ensure to have it included before with the correct alias')
+			console.warn('- Initiator:', initiator.url);
 			// endif
-			return;
+			
+			return null;
 		}
 		
 		
@@ -61,7 +64,7 @@ var tree_resolveUsage;
 				return include.resource.exports;
 		}
 		
-		return use_resolveExports(name, resource.parent);
+		return use_resolveExports(name, resource.parent, initiator || resource);
 	}
 	
 	
