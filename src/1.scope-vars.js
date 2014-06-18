@@ -15,7 +15,7 @@ var bin = {
 	},
 	isWeb = !! (global.location && global.location.protocol && /^https?:/.test(global.location.protocol)),
 	reg_subFolder = /([^\/]+\/)?\.\.\//,
-	reg_hasProtocol = /^file:|https?:/i,
+	reg_hasProtocol = /^(file|https?):/i,
 	cfg = {
 		path: null,
 		loader: null,

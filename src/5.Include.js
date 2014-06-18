@@ -174,7 +174,7 @@ var Include = (function(IncludeDeferred) {
 			
 			resource = new Resource();
 			resource.state = 4;
-			resource.location = path_getDir(url);
+			resource.location = path_getDir(path_normalize(url));
 			
 			return resource;
 		},
