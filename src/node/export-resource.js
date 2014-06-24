@@ -63,6 +63,10 @@
     
             return current;
         },
+        
+        embed: function(){
+            return this.js.apply(this, arguments);
+        },
     
         instance: function(currentUrl) {
             if (typeof currentUrl === 'string') {

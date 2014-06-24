@@ -20,7 +20,7 @@ var Resource;
 		this.base = parent && parent.base;
 
 		if (id == null && url) 
-			id = (url[0] === '/' ? '' : '/') + url;
+			id = (path_isRelative(url) ? '/' : '') + url;
 		
 		var resource = bin[type] && bin[type][id];
 		if (resource) {
@@ -108,19 +108,24 @@ var Resource;
 			return resource;
 		},
 		include: function(type, pckg) {
-			var that = this;
+			var that = this,
+				children = [],
+				child;
 			Routes.each(type, pckg, function(namespace, route, xpath) {
 
 				if (that.route != null && that.route.path === route.path) {
 					// loading itself
 					return;
 				}
-				
-				that
-					.create(type, route, namespace, xpath)
-					.on(4, that.childLoaded);
-
+				child = that.create(type, route, namespace, xpath);
+				children.push(child);
 			});
+			
+			var i = -1,
+				imax = children.length;
+			while ( ++i < imax ){
+				children[i].on(4, this.childLoaded);
+			}
 
 			return this;
 		},

@@ -12,10 +12,17 @@ var Include = (function(IncludeDeferred) {
 		isNode: false,
 		
 		setCurrent: function(data) {
-
-			var resource = new Resource('js', {
-				path: data.id
-			}, data.namespace, null, null, data.id);
+			var url = data.url;
+			if (url[0] === '/' && this.base)
+				url = this.base + url.substring(1);
+					
+			var resource = new Resource(
+				'js'
+				, { path: url }
+				, data.namespace
+				, null
+				, null
+				, url);
 
 			if (resource.state < 3) {
 				console.error("<include> Resource should be loaded", data);
@@ -24,7 +31,6 @@ var Include = (function(IncludeDeferred) {
 			/**@TODO - probably state shoulb be changed to 2 at this place */
 			resource.state = 3;
 			global.include = resource;
-
 		},
 		
 		cfg: function(arg) {
@@ -89,13 +95,28 @@ var Include = (function(IncludeDeferred) {
 			}
 			return obj;
 		},
+		/** @TODO - `id` property seems to be unsed and always equal to `url` */
 		register: function(_bin) {
 			
-			var key,
+			var base = this.base,
+				key,
 				info,
 				infos,
 				imax,
 				i;
+			
+			function transform(info){
+				if (base == null) 
+					return info;
+				if (info.url[0] === '/')
+					info.url = base + info.url.substring(1);
+
+				if (info.parent[0] === '/')
+					info.parent = base + info.parent.substring(1);
+				
+				info.id = info.url;
+				return info;
+			}
 			
 			for (key in _bin) {
 				infos = _bin[key];
@@ -104,7 +125,7 @@ var Include = (function(IncludeDeferred) {
 				
 				while ( ++i < imax ) {
 					
-					info = infos[i];
+					info = transform(infos[i]);
 					
 					var id = info.id,
 						url = info.url,
@@ -132,6 +153,7 @@ var Include = (function(IncludeDeferred) {
 					resource.type = key;
 					resource.url = url || id;
 					resource.parent = parent;
+					resource.base = parent && parent.base || base;
 
 					switch (key) {
 					case 'load':
@@ -179,7 +201,12 @@ var Include = (function(IncludeDeferred) {
 			return resource;
 		},
 
-		getResource: incl_getResource,
+		getResource: function(url, type){
+			if (this.base && url[0] === '/')
+				url = this.base + url.substring(1);
+			
+			return incl_getResource(url, type)
+		},
 		getResources: function(){
 			return bin;
 		},
@@ -291,11 +318,9 @@ var Include = (function(IncludeDeferred) {
 	function incl_getResource(url, type) {
 		var id = url;
 		
-		if (url.charCodeAt(0) !== 47) {
-			// /
+		if (path_isRelative(url) === true) 
 			id = '/' + id;
-		}
-
+		
 		if (type != null){
 			return bin[type][id];
 		}
