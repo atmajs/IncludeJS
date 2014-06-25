@@ -139,10 +139,9 @@ IncludeDeferred.prototype = { /**	state observer */
 				resource = x.resource;
 				route = x.route;
 
-				if (typeof resource.exports === 'undefined'){
+				if (typeof resource.exports === 'undefined')
 					continue;
-				}
-
+				
 				var type = resource.type;
 				switch (type) {
 				case 'js':
@@ -166,9 +165,20 @@ IncludeDeferred.prototype = { /**	state observer */
 		} 
 		
 		var response = this.response || emptyResponse;
-		
-		if (this._use) 
-			return callback.apply(null, [response].concat(this._use));
+		var that = this;
+		if (this._use == null && this._usage != null){
+			this._use = tree_resolveUsage(this, this._usage, function(){
+				that.state = 4;
+				that.resolve(callback);
+				that.readystatechanged(4);
+			});
+			if (this.state < 4)
+				return;
+		}
+		if (this._use) {
+			callback.apply(null, [response].concat(this._use));
+			return;
+		}
 		
 		callback(response);
 	}

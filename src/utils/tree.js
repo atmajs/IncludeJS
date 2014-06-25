@@ -3,12 +3,12 @@ var tree_resolveUsage;
 
 (function(){
 	
-	tree_resolveUsage = function(resource, usage){
+	tree_resolveUsage = function(resource, usage, next){
 		var use = [],
 			imax = usage.length,
 			i = -1,
 			
-			obj, path, name, index
+			obj, path, name, index, parent
 			;
 		while( ++i < imax ) {
 			
@@ -19,7 +19,14 @@ var tree_resolveUsage;
 				path = path.substring(index + 1);
 			}
 			
-			obj = use_resolveExports(name, resource.parent, resource);
+			parent = use_resolveParent(name, resource.parent, resource);
+			if (parent.state !== 4){
+				resource.state = 3;
+				parent.on(4, next, parent, 'push');
+				return null;
+			}
+			
+			obj = parent.exports;
 			
 			if (name !== path) 
 				obj = obj_getProperty(obj, path);
@@ -29,15 +36,13 @@ var tree_resolveUsage;
 				&& console.warn('<include:use> Used resource has no exports', name, resource.url);
 			// endif
 			
-			
 			use[i] = obj;
 		}
-		
 		return use;
 	};
 	
 	
-	function use_resolveExports(name, resource, initiator){
+	function use_resolveParent(name, resource, initiator){
 		
 		if (resource == null) {
 			// if DEBUG
@@ -68,10 +73,10 @@ var tree_resolveUsage;
 			include = includes[i];
 			alias = include.route.alias || Routes.parseAlias(include.route);
 			if (alias === name) 
-				return include.resource.exports;
+				return include.resource;
 		}
 		
-		return use_resolveExports(name, resource.parent, initiator);
+		return use_resolveParent(name, resource.parent, initiator);
 	}
 	
 	

@@ -7,6 +7,11 @@ var Include = (function(IncludeDeferred) {
 	stub_release(Include.prototype);
 	
 	obj_inherit(Include, IncludeDeferred, {
+		// Array: exports
+		_use: null,
+		
+		// Array: names
+		_usage: null,
 		
 		isBrowser: true,
 		isNode: false,
@@ -259,8 +264,7 @@ var Include = (function(IncludeDeferred) {
 				return this;
 			}
 			
-			this._use = tree_resolveUsage(this, arguments);
-			
+			this._usage = arguments;
 			return this;
 		},
 		
