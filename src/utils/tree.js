@@ -20,6 +20,9 @@ var tree_resolveUsage;
 			}
 			
 			parent = use_resolveParent(name, resource.parent, resource);
+			if (parent == null) 
+				return null;
+			
 			if (parent.state !== 4){
 				resource.state = 3;
 				parent.on(4, next, parent, 'push');
