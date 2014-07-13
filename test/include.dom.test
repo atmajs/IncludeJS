@@ -2,9 +2,9 @@ window.global = window;
 
 
 include.routes({
-	waterfall: '/utest/test/letter/waterfall/{0}/{1}.js',
-	exports: '/utest/test/letter/exports/{0}.js',
-	condition: '/utest/test/letter/condition/{0}.js',
+	waterfall: '/test/letter/waterfall/{0}/{1}.js',
+	exports: '/test/letter/exports/{0}.js',
+	condition: '/test/letter/condition/{0}.js',
 });
 
 
