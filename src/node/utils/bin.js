@@ -72,7 +72,7 @@ var bin_removeDelegate,
         }
         
         var count = parents.length,
-            imax = imax,
+            imax = count,
             i = -1;
         
         while (++i < imax) {
