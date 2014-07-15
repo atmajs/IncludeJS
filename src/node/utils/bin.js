@@ -48,10 +48,13 @@ var bin_removeDelegate,
     
                     bin_clearCache(type, id);
                     
-                    parents.push(res.parent && res.parent.url
+                    var arr = res.parent && res.parent.url
                         ? bin_remove(res.parent.url)
-                        : res
-                    );
+                        : [ res ]
+                        ;
+                    parents
+                        .push
+                        .apply(parents, arr);
                 }
             }
     
@@ -79,7 +82,7 @@ var bin_removeDelegate,
             bin_load(parents[i])
                 .done(function(){
                     
-                    if (--count === 0) 
+                    if (--count === 0 && callback) 
                         callback();
                 });
         }
