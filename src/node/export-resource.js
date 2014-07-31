@@ -68,7 +68,7 @@
             return this.js.apply(this, arguments);
         },
     
-        instance: function(currentUrl) {
+        instance: function(currentUrl, parent) {
             if (typeof currentUrl === 'string') {
     
                 var old = module,
@@ -139,6 +139,7 @@
             var res = new Resource();
             res.state = 4;
             res.location = currentUrl;
+            res.parent = parent;
             return res;
         }
     });

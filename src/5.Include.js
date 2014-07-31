@@ -190,7 +190,7 @@ var Include = (function(IncludeDeferred) {
 		 *	Create new Resource Instance,
 		 *	as sometimes it is necessary to call include. on new empty context
 		 */
-		instance: function(url) {
+		instance: function(url, parent) {
 			var resource;
 			if (url == null) {
 				resource = new Include();
@@ -202,7 +202,7 @@ var Include = (function(IncludeDeferred) {
 			resource = new Resource();
 			resource.state = 4;
 			resource.location = path_getDir(path_normalize(url));
-			
+			resource.parent = parent;
 			return resource;
 		},
 
