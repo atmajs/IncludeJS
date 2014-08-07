@@ -1,10 +1,10 @@
 {
-    "name": "includejs-loader",
+    "name": "includejs",
     "description": "Resource Loader",
     "version": "0.6.2",
     "homepage": "http://atmajs.com/include",
     "contributors": [],
-    "author": "Alex Kit <source.kit@gmail.com>",
+    "author": "Alex Kit <alex.kit@atmajs.com>",
     "repository": {
         "type": "git",
         "url": "https://github.com/tenbits/IncludeJS.git"
@@ -21,7 +21,7 @@
         "atma": ">0.9.0"
     },
     "scripts": {
-        "test": "node_modules/.bin/atma test"
+        "test": "atma test"
     },
     "keywords": [],
     "engines": {
