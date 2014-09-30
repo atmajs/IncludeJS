@@ -1,8 +1,10 @@
-var Include = (function(IncludeDeferred) {
+var Include,
+	IncludeLib = {};
+(function(IncludeDeferred) {
 
-	function Include() {
+	Include = function() {
 		IncludeDeferred.call(this);
-	}
+	};
 
 	stub_release(Include.prototype);
 	
@@ -17,18 +19,21 @@ var Include = (function(IncludeDeferred) {
 		isNode: false,
 		
 		setCurrent: function(data) {
-			var url = data.url;
-			if (url[0] === '/' && this.base)
-				url = this.base + url.substring(1);
-					
-			var resource = new Resource(
-				'js'
-				, { path: url }
-				, data.namespace
-				, null
-				, null
-				, url);
-
+			var url = data.url,
+				resource = this.getResourceById(url, 'js');
+				
+			if (resource == null) {
+				if (url[0] === '/' && this.base)
+					url = this.base + url.substring(1);
+						
+				var resource = new Resource(
+					'js'
+					, { path: url }
+					, data.namespace
+					, null
+					, null
+					, url);
+			}
 			if (resource.state < 3) {
 				console.error("<include> Resource should be loaded", data);
 			}
@@ -172,11 +177,7 @@ var Include = (function(IncludeDeferred) {
 						if (CustomLoader.exists(resource)){
 							
 							resource.state = 3;
-							CustomLoader.load(resource, function(resource, response){
-								
-								resource.exports = response;
-								resource.readystatechanged(4);
-							});
+							CustomLoader.load(resource, CustomLoader_onComplete);
 						}
 						break;
 					}
@@ -184,6 +185,10 @@ var Include = (function(IncludeDeferred) {
 					//
 					(bin[key] || (bin[key] = {}))[id] = resource;
 				}
+			}
+			function CustomLoader_onComplete(resource, response) {
+				resource.exports = response;
+				resource.readystatechanged(4);
 			}
 		},
 		/**
@@ -211,6 +216,29 @@ var Include = (function(IncludeDeferred) {
 				url = this.base + url.substring(1);
 			
 			return incl_getResource(url, type)
+		},
+		getResourceById: function(url, type){
+			var _bin = bin[type],
+				_res = _bin[url];
+			if (_res != null) 
+				return _res;
+			
+			if (this.base && url[0] === '/') {
+				_res = _bin[path_combine(this.base, url)];
+				if (_res != null) 
+					return _res;
+			}
+			if (this.base && this.location) {
+				_res = _bin[path_combine(this.base, this.location, url)];
+				if (_res != null) 
+					return _res;
+			}
+			if (this.location) {
+				_res = _bin[path_combine(this.location, url)];
+				if (_res != null) 
+					return _res;
+			}
+			return null;
 		},
 		getResources: function(){
 			return bin;
@@ -299,7 +327,7 @@ var Include = (function(IncludeDeferred) {
 				res, key, id;
 			
 			for(key in bin){
-				if (type != null && type != key) 
+				if (type != null && type !== key) 
 					continue;
 				
 				for (id in bin[key]){
@@ -310,12 +338,10 @@ var Include = (function(IncludeDeferred) {
 			}
 			
 			return resources;
-		}
+		},
+		Lib: IncludeLib
 	});
 	
-	
-	return Include;
-
 	
 	// >> FUNCTIONS
 	

@@ -18,7 +18,7 @@
 	if (typeof include !== 'undefined' && typeof include.js === 'function') {
 		// allow only one `include` per application
 		_exports.include = include;
-		_exports.includeLib = includeLib;
+		_exports.includeLib = include.Lib || _global.includeLib;
 		return;
 	}
 	

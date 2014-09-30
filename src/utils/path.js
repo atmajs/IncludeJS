@@ -161,7 +161,8 @@ var path_getDir,
 		while (url.indexOf('../') !== -1) {
 			url = url.replace(reg_subFolder, '');
 		}
-		return url;
+
+		return url.replace(/\/\.\//g, '/');
 	}
 	
 }());
