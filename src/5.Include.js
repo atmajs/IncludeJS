@@ -302,7 +302,7 @@ var Include,
 		allDone: function(callback){
 			ScriptStack.complete(function(){
 				
-				var pending = include.getPending('js'),
+				var pending = include.getPending(),
 					await = pending.length;
 				if (await === 0) {
 					callback();
@@ -312,7 +312,7 @@ var Include,
 				var i = -1,
 					imax = await;
 				while( ++i < imax ){
-					pending[i].on(4, check);
+					pending[i].on(4, check, null, 'push');
 				}
 				
 				function check() {
