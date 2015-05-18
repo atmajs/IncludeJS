@@ -6,7 +6,7 @@
 		global
 			.include
 			.instance()
-			.embed('/socket.io/socket.io.js')
+			.embed(window.location.origin + '/socket.io/socket.io.js')
 			.done(SocketIOReady);	
 	}
 	
