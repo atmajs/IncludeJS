@@ -204,7 +204,7 @@ var Include,
 				return resource;
 			}
 			
-			resource = new Resource();
+			resource = new Resource('package');
 			resource.state = 4;
 			resource.location = path_getDir(path_normalize(url));
 			resource.parent = parent;

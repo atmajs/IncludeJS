@@ -98,7 +98,7 @@ IncludeDeferred.prototype = { /**	state observer */
 			}
 		}
 
-		if (currentInclude != null){
+		if (currentInclude != null && currentInclude.type === 'js'){
 			global.include = currentInclude;
 		}
 	},
