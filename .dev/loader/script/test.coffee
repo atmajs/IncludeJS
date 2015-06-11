@@ -1,1 +1,0 @@
-window.testLog = (x) -> console.log x

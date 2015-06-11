@@ -1,6 +1,0 @@
-node_modules/
-.gitignore
-.komodotools
-*.komodoproject
-/build.*
-test/
