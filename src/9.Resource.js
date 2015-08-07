@@ -4,13 +4,13 @@ var Resource;
 
 	Resource = function(type, route, namespace, xpath, parent, id, priority) {
 		Include.call(this);
-		
+
 		this.childLoaded = fn_proxy(this.childLoaded, this);
 
 		var url = route && route.path;
-		if (url != null) 
+		if (url != null)
 			this.url = url = path_resolveUrl(url, parent);
-		
+
 		this.type = type;
 		this.xpath = xpath;
 		this.route = route;
@@ -19,15 +19,15 @@ var Resource;
 		this.namespace = namespace;
 		this.base = parent && parent.base;
 
-		if (id == null && url) 
+		if (id == null && url)
 			id = (path_isRelative(url) ? '/' : '') + url;
-		
+
 		var resource = bin[type] && bin[type][id];
 		if (resource) {
 
-			if (resource.state < 4 && type === 'js') 
+			if (resource.state < 4 && type === 'js')
 				ScriptStack.moveToParent(resource, parent);
-			
+
 			return resource;
 		}
 
@@ -42,20 +42,20 @@ var Resource;
 
 		(bin[type] || (bin[type] = {}))[id] = this;
 
-		if (cfg.version) 
+		if (cfg.version)
 			this.url += (this.url.indexOf('?') === -1 ? '?' : '&') + 'v=' + cfg.version;
-		
+
 		return process(this);
 
 	};
 
 	Resource.prototype = obj_inherit(Resource, Include, {
-		
+
 		state: null,
 		location: null,
 		includes: null,
 		response: null,
-		
+
 		url: null,
 		base: null,
 		type: null,
@@ -64,12 +64,12 @@ var Resource;
 		parent: null,
 		priority: null,
 		namespace: null,
-		
+
 		setBase: function(baseUrl){
 			this.base = baseUrl;
 			return this;
 		},
-		
+
 		childLoaded: function(child) {
 			var resource = this,
 				includes = resource.includes;
@@ -94,9 +94,9 @@ var Resource;
 				: 2;
 			this.response = null;
 
-			if (this.includes == null) 
+			if (this.includes == null)
 				this.includes = [];
-			
+
 
 			resource = new Resource(type, route, namespace, xpath, this, id);
 
@@ -120,7 +120,7 @@ var Resource;
 				child = that.create(type, route, namespace, xpath);
 				children.push(child);
 			});
-			
+
 			var i = -1,
 				imax = children.length;
 			while ( ++i < imax ){
@@ -129,37 +129,36 @@ var Resource;
 
 			return this;
 		},
-		
+
 		pause: function(){
 			this.state = 2.5;
-			
+
 			var that = this;
 			return function(exports){
-				
-				if (arguments.length === 1) 
+
+				if (arguments.length === 1)
 					that.exports = exports;
-				
+
 				that.readystatechanged(3);
 			};
 		},
-		
+
 		getNestedOfType: function(type){
 			return resource_getChildren(this.includes, type);
 		}
 	});
-	
+
 	// private
-	
+
 	function process(resource) {
 		var type = resource.type,
 			parent = resource.parent,
 			url = resource.url;
-			
+
 		if (document == null && type === 'css') {
 			resource.state = 4;
 			return resource;
 		}
-
 		if (CustomLoader.exists(resource) === false) {
 			switch (type) {
 				case 'js':
@@ -169,6 +168,7 @@ var Resource;
 				case 'ajax':
 				case 'load':
 				case 'lazy':
+				case 'mask':
 					XHR(resource, onXHRCompleted);
 					break;
 				case 'css':
@@ -182,11 +182,11 @@ var Resource;
 					break;
 			}
 		} else {
-			
+
 			if ('js' === type || 'embed' === type) {
 				ScriptStack.add(resource, resource.parent);
 			}
-			
+
 			CustomLoader.load(resource, onXHRCompleted);
 		}
 
@@ -220,31 +220,47 @@ var Resource;
 				tag.innerHTML = response;
 				document.getElementsByTagName('head')[0].appendChild(tag);
 				break;
+			case 'mask':
+				if (response) {
+					mask
+						.Module
+						.registerModule(response, { path: resource.url })
+						.done(function(module){
+							resource.exports = module.exports;
+							resource.readystatechanged(4);
+						})
+						.fail(function(error){
+							console.error(error);
+							resource.readystatechanged(4);
+						});
+					return;
+				}
+				break;
 		}
 
 		resource.readystatechanged(4);
 	}
 
 	function resource_getChildren(includes, type, out) {
-		if (includes == null) 
+		if (includes == null)
 			return null;
-		
-		if (out == null) 
+
+		if (out == null)
 			out = [];
-		
+
 		var imax = includes.length,
 			i = -1,
 			x;
 		while ( ++i < imax ){
 			x = includes[i].resource;
-			
-			if (type === x.type) 
+
+			if (type === x.type)
 				out.push(x);
-			
-			if (x.includes != null) 
+
+			if (x.includes != null)
 				resource_getChildren(x.includes, type, out);
 		}
 		return out;
 	}
-	
+
 }(Include, Routes, ScriptStack, CustomLoader));

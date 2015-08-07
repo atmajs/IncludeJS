@@ -26,5 +26,15 @@
     "keywords": [],
     "engines": {
         "node": "~0.8.9"
+    },
+    "atma": {
+        "plugins": [
+            "atma-loader-babel"
+        ],
+        "settings": {
+            "atma-loader-babel": {
+                "extension": ["es6", "test"]
+            }
+        }
     }
 }

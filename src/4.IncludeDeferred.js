@@ -21,17 +21,17 @@ IncludeDeferred.prototype = { /**	state observer */
 			callback(this);
 			return this;
 		}
-		
+
 		// this === sender in case when script loads additional
 		// resources and there are already parents listeners
-		
+
 		if (mutator == null) {
 			mutator = (this.state < 3 || this === sender)
 				? 'unshift'
 				: 'push'
 				;
 		}
-		
+
 		state <= this.state ? callback(this) : this.callbacks[mutator]({
 			state: state,
 			callback: callback
@@ -141,13 +141,13 @@ IncludeDeferred.prototype = { /**	state observer */
 
 				if (typeof resource.exports === 'undefined')
 					continue;
-				
+
 				var type = resource.type;
 				switch (type) {
 				case 'js':
 				case 'load':
 				case 'ajax':
-
+				case 'mask':
 					var alias = route.alias || Routes.parseAlias(route),
 						obj = type === 'js'
 							? (this.response)
@@ -155,15 +155,15 @@ IncludeDeferred.prototype = { /**	state observer */
 							;
 
 					if (alias != null) {
-						obj_setProperty(obj, alias, resource.exports);
+						obj[ alias ] = resource.exports;
 						break;
 					}
 					console.warn('<includejs> Alias is undefined', resource);
 					break;
 				}
 			}
-		} 
-		
+		}
+
 		var response = this.response || emptyResponse;
 		var that = this;
 		if (this._use == null && this._usage != null){
@@ -179,7 +179,7 @@ IncludeDeferred.prototype = { /**	state observer */
 			callback.apply(null, [response].concat(this._use));
 			return;
 		}
-		
+
 		callback(response);
 	}
 };

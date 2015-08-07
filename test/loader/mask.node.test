@@ -1,0 +1,7 @@
+include
+	.mask('../letter/letter.mask')
+	.done(function(resp){
+		var compo = mask.getHandler('Letter');
+		notEq_(compo, null);
+		notEq_(resp.mask.letter.Letter, null);
+	});

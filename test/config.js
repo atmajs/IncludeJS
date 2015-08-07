@@ -3,7 +3,7 @@ module.exports = {
 	suites: {
 		'node': {
 			env: [
-				'lib/include.node.js::include'
+				'lib/include.node.test.js::include'
 			],
 			tests: 'test/**.node.test'
 		},
@@ -11,7 +11,7 @@ module.exports = {
 		'dom': {
 			exec: 'dom',
 			env: [
-				'lib/include.js'
+				'lib/include.test.js'
 			],
 			tests: 'test/**.dom.test'
 		}
