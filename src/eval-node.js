@@ -1,7 +1,9 @@
+var vm = require('vm');
+var Module = (global.module || module).constructor;
 
-__eval = function(source, include, isGlobalCntx) {
+function __eval (source, include, isGlobalCntx) {
     module.exports = {};
-    
+
     global.include = include;
     global.require = require;
     global.exports = module.exports;
@@ -14,8 +16,6 @@ __eval = function(source, include, isGlobalCntx) {
     }
 
     try {
-        //- vm.runInThisContext(source, global.__filename);
-        
         if (!isGlobalCntx) {
             var filename = global.__filename
             module = new Module(filename, module);
@@ -24,24 +24,21 @@ __eval = function(source, include, isGlobalCntx) {
             module._compile(source, filename);
             module.loaded = true;
         }
-        
+
         else {
             vm.runInThisContext(source, global.__filename);
         }
-        
+
     } catch(e) {
         console.error('Module Evaluation Error', include.url);
         console.error(e.stack);
     }
-    
-    
-    
+
     if (include.exports == null) {
         var exports = module.exports;
-        
+
         if (typeof exports !== 'object' || Object.keys(exports).length) {
             include.exports = module.exports;
         }
     }
-
 };
