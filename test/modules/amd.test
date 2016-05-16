@@ -1,0 +1,35 @@
+UTest({
+	$before: function(){
+		include = testable
+			.include
+			.cfg('amd', true)
+			.instance('/test/modules/amd.test');
+	},
+	'include should work with enabled amd': function (done) {
+		include
+			.js('../letter/amd/a.js::Module')
+			.done(resp => {
+				eq_(resp.Module.a, 'a');
+				done();
+			});
+	},
+	'should load modules `a`': function(done) {
+		global.require(['../letter/amd/a.js'], function(aExports){
+			eq_(aExports.a, 'a');
+			done();
+		});
+	},
+	'should load modules `b` and `c` via `b`': function(done) {
+		global.require(['../letter/amd/b.js'], function(bExports){
+			eq_(bExports.b, 'b');
+			eq_(bExports.c, 'c');
+			done();
+		});
+	},
+	'should load with node module resolver': function (done) {
+		global.require(['foo'], function(fooExports){
+			eq_(fooExports.foo, 'Foo');
+			done();
+		});
+	},
+})

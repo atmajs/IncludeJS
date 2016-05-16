@@ -15,8 +15,8 @@ var Include,
 		// Array: names
 		_usage: null,
 
-		isBrowser: true,
-		isNode: false,
+		isBrowser: isBrowser,
+		isNode: isNode,
 
 		setCurrent: function(data) {
 			var url = data.url,
@@ -50,22 +50,7 @@ var Include,
 				for (key in arg) {
 					value = arg[key];
 
-					switch(key){
-						case 'loader':
-							for(var x in value){
-								CustomLoader.register(x, value[x]);
-							}
-							break;
-						case 'modules':
-							if (value === true){
-								enableModules();
-							}
-							break;
-						default:
-							cfg[key] = value;
-							break;
-					}
-
+					this.cfg(key, value);
 				}
 				break;
 			case 'string':
@@ -73,7 +58,27 @@ var Include,
 					return cfg[arg];
 				}
 				if (arguments.length === 2) {
-					cfg[arg] = arguments[1];
+					var key = arguments[0],
+						value = arguments[1];
+					switch(key){
+						case 'loader':
+							for(var x in value){
+								CustomLoader.register(x, value[x]);
+							}
+							break;
+						case 'modules':
+							if (value === true) enableModules();
+							break;
+						case 'commonjs':
+							//if (value == true) CommonJS.enable();
+							break;
+						case 'amd':
+							if (value == true) Amd.enable();
+							break;
+						default:
+							cfg[key] = value;
+							break;
+					}
 				}
 				break;
 			case 'undefined':
@@ -200,13 +205,13 @@ var Include,
 			if (url == null) {
 				resource = new Include();
 				resource.state = 4;
-
 				return resource;
 			}
 
 			resource = new Resource('package');
 			resource.state = 4;
-			resource.location = path_getDir(path_normalize(url));
+			resource.url = path_resolveUrl(url, parent);
+			resource.location = path_getDir(resource.url);
 			resource.parent = parent;
 			return resource;
 		},

@@ -12,10 +12,35 @@ module.exports = {
 			}
 		}
 	},
-	'import': {
-		files: 'builds/**',
-		output: 'lib/'
-	},
+	'import': [
+		{
+			action: 'import',
+			files: [
+					'builds/include.autoreload.js',
+					'builds/include.js',
+					'builds/include.test.js'
+			],
+			output: 'lib/',
+			defines: {
+				DEBUG: true,
+				BROWSER: true,
+				NODE: false,
+			}
+		},
+		{
+			action: 'import',
+			files: [
+					'builds/include.node.js',
+					'builds/include.node.test.js'
+			],
+			output: 'lib/',
+			defines: {
+				DEBUG: true,
+				BROWSER: false,
+				NODE: true,
+			}
+		},
+	],
 	'jshint': {
 		files: ['lib/include.js'],
 		jshint: JSHint()
@@ -33,7 +58,7 @@ module.exports = {
 };
 
 function JSHint() {
-	
+
 	var options = {
 			"bitwise": false,
 			"camelcase": false,

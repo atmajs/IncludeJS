@@ -5,12 +5,22 @@ var Resource;
 	Resource = function(type, route, namespace, xpath, parent, id, priority) {
 		Include.call(this);
 
-		this.childLoaded = fn_proxy(this.childLoaded, this);
-
 		var url = route && route.path;
-		if (url != null)
-			this.url = url = path_resolveUrl(url, parent);
+		if (url != null) {
+			url = PathResolver.resolveBasic(url, type, parent);
+		}
+		if (id == null && url) {
+			id = (path_isRelative(url) ? '/' : '') + url;
+		}
+		var resource = bin[type] && bin[type][id];
+		if (resource) {
+			if (resource.state < 4 && type === 'js') {
+				ScriptStack.moveToParent(resource, parent);
+			}
+			return resource;
+		}
 
+		this.url = url;
 		this.type = type;
 		this.xpath = xpath;
 		this.route = route;
@@ -18,18 +28,7 @@ var Resource;
 		this.priority = priority;
 		this.namespace = namespace;
 		this.base = parent && parent.base;
-
-		if (id == null && url)
-			id = (path_isRelative(url) ? '/' : '') + url;
-
-		var resource = bin[type] && bin[type][id];
-		if (resource) {
-
-			if (resource.state < 4 && type === 'js')
-				ScriptStack.moveToParent(resource, parent);
-
-			return resource;
-		}
+		this.childLoaded = fn_proxy(this.childLoaded, this);
 
 		if (url == null) {
 			this.state = 3;
@@ -42,11 +41,21 @@ var Resource;
 
 		(bin[type] || (bin[type] = {}))[id] = this;
 
-		if (cfg.version)
-			this.url += (this.url.indexOf('?') === -1 ? '?' : '&') + 'v=' + cfg.version;
+		if (PathResolver.isNpm(this.url) === false) {
+			process(this);
+			return this;
+		}
 
-		return process(this);
-
+		var self = this;
+		PathResolver.resolveNpm(this.url, this.type, this.parent, function(error, url){
+			if (error) {
+				self.readystatechanged(4);
+				return;
+			}
+			self.url = url;
+			process(self);
+		});
+		return this;
 	};
 
 	Resource.prototype = obj_inherit(Resource, Include, {

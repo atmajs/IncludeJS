@@ -7,10 +7,10 @@
 			.include
 			.instance()
 			.embed(window.location.origin + '/socket.io/socket.io.js')
-			.done(SocketIOReady);	
+			.done(socketIOReady);	
 	}
 	
-	function SocketIOReady() {
+	function socketIOReady() {
 		if (!global.io) {
 			return;
 		}
@@ -88,11 +88,10 @@
 			if (href.indexOf('?') !== -1) 
 				href = href.substring(0, href.indexOf('?'));
 			
-
-			if (path.toLowerCase().indexOf(href.toLowerCase()) !== -1) {
-
+			var lPath = path.toLowerCase(),
+				rPath = href.toLowerCase();
+			if (lPath.indexOf(rPath) !== -1 || rPath.indexOf(lPath) !== -1) {
 				reloadTag(x, 'href');
-
 				break;
 			}
 		}

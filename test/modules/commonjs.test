@@ -1,0 +1,28 @@
+UTest({
+	'include should work with enabled modules': function (done) {
+		include = testable
+			.include
+			.cfg('commonjs', true)
+			.instance('/test/modules/commonjs.test');
+
+		include
+			.js('../letter/commonjs/a.js::Module')
+			.done(resp => {
+				eq_(resp.Module.a, 'a');
+				done();
+			});
+	},
+	'should load modules `a`, `b` and `c` via `b`': function() {
+		include = testable
+			.include
+			.cfg('commonjs', true)
+			.instance('/test/modules/commonjs.test');
+
+		var aExports = require('../letter/commonjs/a.js');
+		eq_(aExports.a, 'a');
+
+		var bExports = require('../letter/commonjs/b.js');
+		eq_(bExports.b, 'b');
+		eq_(bExports.c, 'c');
+	}
+})

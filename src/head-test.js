@@ -15,13 +15,7 @@
 		_exports = root || _global;
 	}
 
-	if (typeof include !== 'undefined' && typeof include.js === 'function') {
-		/** FORCE replace include in globals for test */
-		// allow only one `include` per application
-		// _exports.include = include;
-		// _exports.includeLib = include.Lib || _global.includeLib;
-		// return;
-	}
+	_global.testable = _exports = {};
 
 	factory(_global, _exports, _global.document);
 

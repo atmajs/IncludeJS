@@ -13,7 +13,7 @@ var bin = {
 		css: {},
 		load: {}
 	},
-	isWeb = !! (global.location && global.location.protocol && /^https?:/.test(global.location.protocol)),
+	isWeb = !! (typeof location !== 'undefined' && location.protocol && /^https?:/.test(location.protocol)),
 	reg_subFolder = /([^\/]+\/)?\.\.\//,
 	reg_hasProtocol = /^(file|https?):/i,
 	cfg = {
@@ -30,7 +30,13 @@ var bin = {
 		load: {}
 	},
 	__array_slice = Array.prototype.slice,
-	
+
 	XMLHttpRequest = global.XMLHttpRequest;
 
-	
+//#if (BROWSER)
+var isBrowser = true, isNode = false;
+//#endif
+
+//#if (NODE)
+var isBrowser = false, isNode = true;
+//#endif

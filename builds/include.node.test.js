@@ -18,6 +18,9 @@
 	// import ../src/8.LazyModule.js
 	// import ../src/9.Resource.js
 
+	// import ../src/modules/exports.js
+	// import ../src/PathResolver.js
+	
 	// import ../src/10.export.js
 
 	// import ../src/node/node.js

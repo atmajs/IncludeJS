@@ -5,11 +5,11 @@ var ScriptStack = (function() {
 	var head,
 		currentResource,
 		stack = [],
-		
+
 		_cb_complete = [],
 		_paused;
-		
-		
+
+
 	function loadScript(url, callback) {
 		//console.log('load script', url);
 		var tag = document.createElement('script');
@@ -23,7 +23,7 @@ var ScriptStack = (function() {
 		} else {
 			tag.onload = tag.onerror = callback;
 		}
-		
+
 		;(head || (head = document.getElementsByTagName('head')[0])).appendChild(tag);
 	}
 
@@ -31,7 +31,7 @@ var ScriptStack = (function() {
 		if (_paused) {
 			return;
 		}
-		
+
 		if (stack.length === 0){
 			trigger_complete();
 			return;
@@ -75,7 +75,7 @@ var ScriptStack = (function() {
 				return;
 			}
 
-			if (resource.state !== 2.5) 
+			if (resource.state !== 2.5)
 				resource.readystatechanged(3);
 			currentResource = null;
 			loadByEmbedding();
@@ -90,62 +90,86 @@ var ScriptStack = (function() {
 
 		loadScript(resource.url, resourceLoaded);
 	}
-	
+
 	function processByEval() {
 		if (_paused) {
 			return;
 		}
-		
 		if (stack.length === 0){
 			trigger_complete();
 			return;
 		}
-		
 		if (currentResource != null) {
 			return;
 		}
-
 		var resource = stack[0];
-
 		if (resource.state < 2) {
 			return;
 		}
 
 		currentResource = resource;
-
-		resource.state = 1;
+		currentResource.state = 1;
 		global.include = resource;
 
-		//console.log('evaling', resource.url, stack.length);
 		__eval(resource.source, resource);
 
-		for (var i = 0, x, length = stack.length; i < length; i++) {
-			x = stack[i];
-			if (x === resource) {
-				stack.splice(i, 1);
-				break;
-			}
-		}
+		stackRemove(resource);
 
-		if (resource.state !== 2.5) 
+		if (resource.state !== 2.5) {
 			resource.readystatechanged(3);
+		}
 		currentResource = null;
 		processByEval();
-
 	}
-	
-	
+
+	function processByEvalSync() {
+		if (_paused) {
+			return;
+		}
+		if (stack.length === 0){
+			trigger_complete();
+			return;
+		}
+
+		var resource = stack.shift();
+		if (resource.state < 2) {
+			return;
+		}
+
+		currentResource = resource;
+		currentResource.state = 3;
+		global.include = resource;
+
+		__eval(resource.source, resource);
+		resource.readystatechanged(3);
+
+		currentResource = null;
+		processByEvalSync();
+	}
+
+	function stackRemove(resource) {
+		var imax = stack.length,
+			i = -1;
+		while (++i < imax) {
+			if (stack[i] === resource) {
+				stack.splice(i, 1);
+				return;
+			}
+		}
+	}
+
+
 	function trigger_complete() {
 		var i = -1,
 			imax = _cb_complete.length;
 		while (++i < imax) {
 			_cb_complete[i]();
 		}
-		
+
 		_cb_complete.length = 0;
 	}
 
-	
+
 
 	return {
 		load: function(resource, parent, forceEmbed) {
@@ -173,33 +197,37 @@ var ScriptStack = (function() {
 				resource.source = response;
 				resource.state = 2;
 
+				if (cfg.sync) {
+					processByEvalSync();
+					return;
+				}
 				processByEval();
 			});
 		},
-		
+
 		add: function(resource, parent){
-			
-			if (resource.priority === 1) 
+
+			if (resource.priority === 1)
 				return stack.unshift(resource);
-			
-			
-			if (parent == null) 
+
+
+			if (parent == null)
 				return stack.push(resource);
-				
-			
+
+
 			var imax = stack.length,
 				i = -1
 				;
 			// move close to parent
 			while( ++i < imax){
-				if (stack[i] === parent) 
+				if (stack[i] === parent)
 					return stack.splice(i, 0, resource);
 			}
-			
+
 			// was still not added
 			stack.push(resource);
 		},
-		
+
 		/* Move resource in stack close to parent */
 		moveToParent: function(resource, parent) {
 			var length = stack.length,
@@ -238,20 +266,20 @@ var ScriptStack = (function() {
 
 
 		},
-		
+
 		pause: function(){
 			_paused = true;
 		},
-		
+
 		resume: function(){
 			_paused = false;
-			
-			if (currentResource != null) 
+
+			if (currentResource != null)
 				return;
-			
+
 			this.touch();
 		},
-		
+
 		touch: function(){
 			var fn = cfg.eval
 				? processByEval
@@ -259,13 +287,13 @@ var ScriptStack = (function() {
 				;
 			fn();
 		},
-		
+
 		complete: function(callback){
 			if (_paused !== true && stack.length === 0) {
 				callback();
 				return;
 			}
-			
+
 			_cb_complete.push(callback);
 		}
 	};
