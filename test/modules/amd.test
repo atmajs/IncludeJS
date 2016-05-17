@@ -34,7 +34,7 @@ UTest({
 		});
 	},
 	'should load with node module resolver with package.json': function (done) {
-		global.require(['foo'], function(fooExports){
+		global.require(['foo_amd'], function(fooExports){
 			eq_(fooExports.foo, 'Foo');
 			done();
 		});

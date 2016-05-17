@@ -70,7 +70,7 @@ var Include,
 							if (value === true) enableModules();
 							break;
 						case 'commonjs':
-							//if (value == true) CommonJS.enable();
+							if (value == true) CommonJS.enable();
 							break;
 						case 'amd':
 							if (value == true) Amd.enable();

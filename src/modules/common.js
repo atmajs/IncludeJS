@@ -1,12 +1,11 @@
 var CommonJS;
 (function(){
-	var nativeRequire = isNode ? null : global.require;
 	CommonJS = {
 		exports: null,
 		require: function(path){
-			if (path.charCodeAt(0) !== 46 && nativeRequire != null) {
+			if (path.charCodeAt(0) !== 46 && __requireNative != null) {
 				// .
-				return nativeRequire(path);
+				return __requireNative(path);
 			}
 
 			var currentSync = cfg.sync;
@@ -25,7 +24,7 @@ var CommonJS;
 			return exports;
 		},
 		enable: function () {
-			if (typeof nativeRequire === 'function') {
+			if (typeof __requireNative === 'function') {
 				return;
 			}
 
@@ -40,6 +39,9 @@ var CommonJS;
 	}
 
 	function enableExports() {
+		if (typeof module != 'undefined') {
+			return;
+		}
 		if (typeof Object.defineProperty === 'undefined'){
 			console.warn('Browser do not support Object.defineProperty');
 			return;
