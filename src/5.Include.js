@@ -75,6 +75,9 @@ var Include,
 						case 'amd':
 							if (value == true) Amd.enable();
 							break;
+						case 'map':
+							PathResolver.map(value);
+							break;
 						default:
 							cfg[key] = value;
 							break;
@@ -207,8 +210,7 @@ var Include,
 				resource.state = 4;
 				return resource;
 			}
-
-			resource = new Resource('package');
+			resource = new Resource('js');
 			resource.state = 4;
 			resource.url = path_resolveUrl(url, parent);
 			resource.location = path_getDir(resource.url);

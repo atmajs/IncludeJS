@@ -10,7 +10,7 @@ var Amd;
 	var enable;
 	(function () {
 		enable = function(){
-			global.define = global.require = function(a, b, c){
+			var define = global.define = function(a, b, c){
 				var i = arguments.length, args = new Array(i);
 				while (--i > -1) args[i] = arguments[i];
 
@@ -18,6 +18,15 @@ var Amd;
 				var module = global.include;
 				fn(module, a, b, c);
 			};
+			__includeRequire = global.require = function(){
+				if (isNode && __nativeRequire && arguments.length === 1) {
+					return __nativeRequire.apply(null, arguments);
+				}
+				return define.apply(null, arguments);
+			};
+			if (typeof require !== 'undefined') {
+				require = __includeRequire;
+			}
 		};
 		var patterns = [
 			[ [isExports], function(module, exports){
@@ -70,12 +79,8 @@ var Amd;
 				module.exports = getExports(exports, arr);
 				return;
 			}
-
-			module.js(deps.linked).done(function(resp){
-				for(var key in resp) {
-					var i = +key;
-					arr[i] = resp[key];
-				}
+			module.require(deps.linked).done(function(resp){
+				readResp(arr, resp);
 				module.exports = getExports(exports, arr);
 			});
 		}
@@ -138,6 +143,21 @@ var Amd;
 				global.include.exports = exports;
 			}
 		});
+	}
+
+	function readResp(arr, resp) {
+		var digit = /^\d+$/;
+		for(var key in resp) {
+			var val = resp[key];
+			if (val == null) {
+				continue;
+			}
+			if (key === 'load' || key === 'ajax') {
+				readResp(arr, val);
+				continue;
+			}
+			arr[+key] = val;
+		}
 	}
 
 }());

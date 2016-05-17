@@ -26,7 +26,14 @@ UTest({
 			done();
 		});
 	},
-	'should load with node module resolver': function (done) {
+	'should load json and text': function(done) {
+		global.require(['../letter/amd/d.json', '../letter/amd/e.txt'], function(d, e){
+			eq_(d.letter, 'd');
+			eq_(e, 'letter: e');
+			done();
+		});
+	},
+	'should load with node module resolver with package.json': function (done) {
 		global.require(['foo'], function(fooExports){
 			eq_(fooExports.foo, 'Foo');
 			done();

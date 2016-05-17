@@ -1,7 +1,7 @@
 var PathResolver;
 (function(){
 	PathResolver = {
-		config: function(map){
+		map: function(map){
 			for(var key in map) {
 				_map[key] = map;
 			}
@@ -94,7 +94,6 @@ var PathResolver;
 		if (hasExt(path)) {
 			return path;
 		}
-		logger.log('Add'.red.bold, path, type, hasExt(path));
 		var ext = _ext[type];
 		if (ext == null) {
 			console.warn('Extension is not defined for ' + type);

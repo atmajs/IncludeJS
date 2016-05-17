@@ -40,7 +40,6 @@ var Resource;
 		this.location = path_getDir(url);
 
 		(bin[type] || (bin[type] = {}))[id] = this;
-
 		if (PathResolver.isNpm(this.url) === false) {
 			process(this);
 			return this;
@@ -121,7 +120,6 @@ var Resource;
 				children = [],
 				child;
 			Routes.each(type, pckg, function(namespace, route, xpath) {
-
 				if (that.route != null && that.route.path === route.path) {
 					// loading itself
 					return;
@@ -136,6 +134,16 @@ var Resource;
 				children[i].on(4, this.childLoaded);
 			}
 
+			return this;
+		},
+		require: function(arr) {
+			this.exports = {};
+			this.includes = [];
+
+			var pckg = res_groupByType(arr);
+			for(var key in pckg) {
+				this.include(key, pckg[key]);
+			}
 			return this;
 		},
 
@@ -204,7 +212,7 @@ var Resource;
 
 	function onXHRCompleted(resource, response) {
 		if (!response) {
-			console.warn('Resource cannt be loaded', resource.url);
+			console.warn('Resource can`t be loaded', resource.url);
 			//- resource.readystatechanged(4);
 			//- return;
 		}
@@ -231,6 +239,10 @@ var Resource;
 				break;
 			case 'mask':
 				if (response) {
+					var mask = global.mask;
+					if (mask == null) {
+						mask = global.require('mask');
+					}
 					mask
 						.Module
 						.registerModule(response, { path: resource.url })
