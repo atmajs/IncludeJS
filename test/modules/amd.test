@@ -1,6 +1,6 @@
 UTest({
 	$before: function(){
-		include = testable
+		include = includeModule
 			.include
 			.cfg('amd', true)
 			.instance('/test/modules/amd.test');

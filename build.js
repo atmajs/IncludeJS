@@ -18,7 +18,7 @@ module.exports = {
 			files: [
 					'builds/include.autoreload.js',
 					'builds/include.js',
-					'builds/include.test.js'
+					'builds/include.module.js'
 			],
 			output: 'lib/',
 			defines: {
@@ -31,7 +31,7 @@ module.exports = {
 			action: 'import',
 			files: [
 					'builds/include.node.js',
-					'builds/include.node.test.js'
+					'builds/include.node.module.js'
 			],
 			output: 'lib/',
 			defines: {

@@ -2,10 +2,10 @@ var CommonJS;
 (function(){
 	CommonJS = {
 		exports: null,
-		require: function(path){
-			if (path.charCodeAt(0) !== 46 && __requireNative != null) {
+		require: function commonjs(path){
+			if (path.charCodeAt(0) !== 46 && __nativeRequire != null) {
 				// .
-				return __requireNative(path);
+				return __nativeRequire(path);
 			}
 
 			var currentSync = cfg.sync;
@@ -24,7 +24,7 @@ var CommonJS;
 			return exports;
 		},
 		enable: function () {
-			if (typeof __requireNative === 'function') {
+			if (typeof __nativeRequire === 'function') {
 				return;
 			}
 
@@ -39,7 +39,7 @@ var CommonJS;
 	}
 
 	function enableExports() {
-		if (typeof module != 'undefined') {
+		if (typeof module !== 'undefined') {
 			return;
 		}
 		if (typeof Object.defineProperty === 'undefined'){

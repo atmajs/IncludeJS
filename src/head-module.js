@@ -5,17 +5,17 @@
 
 	if (typeof exports !== 'undefined' && (root === exports || root == null)){
 		// raw nodejs module
-    	_global = _exports = global;
+    	_exports = exports;
     }
 
 	if (_global == null) {
 		_global = typeof window === 'undefined' ? global : window;
 	}
 	if (_exports == null) {
-		_exports = root || _global;
+		_exports = {};
 	}
 
-	_global.testable = _exports = {};
+	_global.includeModule = _exports;
 
 	factory(_global, _exports, _global.document);
 

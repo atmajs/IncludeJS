@@ -18,7 +18,7 @@ var Amd;
 				var module = global.include;
 				fn(module, a, b, c);
 			};
-			__includeRequire = global.require = function(){
+			__includeRequire = global.require = function amd(){
 				if (isNode && __nativeRequire && arguments.length === 1) {
 					return __nativeRequire.apply(null, arguments);
 				}
@@ -66,7 +66,7 @@ var Amd;
 		}
 		function define(module, name, dependencies, exports) {
 			if (name != null) {
-				_bin.js[name] = module;
+				bin.js[name] = module;
 			}
 			if (dependencies == null) {
 				module.exports = getExports(exports);

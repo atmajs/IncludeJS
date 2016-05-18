@@ -28,7 +28,7 @@ var res_groupByType;
 			arr = pckg[type] = [];
 		}
 		arr.push(path);
-	};
+	}
 	var _types = {
 		'js': 'js',
 		'es6': 'js',

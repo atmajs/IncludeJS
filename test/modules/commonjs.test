@@ -1,10 +1,11 @@
 UTest({
-	'include should work with enabled modules': function (done) {
-		include = testable
+	$before: function(){
+		include = includeModule
 			.include
 			.cfg('commonjs', true)
 			.instance('/test/modules/commonjs.test');
-
+	},
+	'include should work with enabled modules': function (done) {
 		include
 			.js('../letter/commonjs/a.js::Module')
 			.done(resp => {
@@ -13,11 +14,6 @@ UTest({
 			});
 	},
 	'should load modules `a`, `b` and `c` via `b`': function() {
-		include = testable
-			.include
-			.cfg('commonjs', true)
-			.instance('/test/modules/commonjs.test');
-
 		var aExports = global.require('../letter/commonjs/a.js');
 		eq_(aExports.a, 'a');
 

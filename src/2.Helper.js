@@ -22,7 +22,7 @@ var Helper = { /** TODO: improve url handling*/
 			if (xhr.readyState !== 4) {
 				return;
 			}
-			if (xhr.status != 200) {
+			if (xhr.status !== 200) {
 				callback(xhr.status);
 				return;
 			}

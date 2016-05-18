@@ -1,15 +1,17 @@
 window.global = window;
 
-
-include.routes({
-	waterfall: '/test/letter/waterfall/{0}/{1}.js',
-	exports: '/test/letter/exports/{0}.js',
-	condition: '/test/letter/condition/{0}.js',
-});
-
-
-
 UTest({
+	$before: function() {
+		include = includeModule
+			.include
+			.instance('/test/include.dom.test');
+
+		include.routes({
+			waterfall: '/test/letter/waterfall/{0}/{1}.js',
+			exports: '/test/letter/exports/{0}.js',
+			condition: '/test/letter/condition/{0}.js',
+		});
+	},
 	'Waterfall': function(done) {
 
 		global.letters = {};
@@ -64,7 +66,7 @@ UTest({
 			deepEq(resp, {
 				Letter: 'b'
 			}, 'Condition load failed');
-			
+
 			done();
 		})
 	}
