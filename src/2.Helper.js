@@ -13,7 +13,12 @@ var Helper = { /** TODO: improve url handling*/
 			xhr.readyState === 4 && callback && callback(resource, xhr.responseText);
 		};
 
-		xhr.open('GET', typeof resource === 'object' ? resource.url : resource, cfg.sync === true ? false : true);
+		var url = typeof resource === 'object' ? resource.url : resource;
+		var async = cfg.sync === true ? false : true;
+		if (isBrowser && cfg.version) {
+			url = (url.indexOf('?') === -1 ? '?' : '&') + 'v=' + cfg.version;
+		}
+		xhr.open('GET', url, async);
 		xhr.send();
 	},
 	XHR_LOAD = function (url, callback) {

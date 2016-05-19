@@ -11,9 +11,6 @@ var PathResolver;
 				return path_;
 			}
 			var path = path_resolveUrl(map(path_), parent);
-			if (cfg.version) {
-				path = (path.indexOf('?') === -1 ? '?' : '&') + 'v=' + cfg.version;
-			}
 			return ensureExtension(path, type);
 		},
 		isNpm: isNodeModuleResolution,

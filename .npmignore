@@ -1,6 +1,10 @@
 node_modules/
 .gitignore
+.npmignore
+.travis.yml
 .komodotools
 *.komodoproject
-/build.*
-test/
+/builds/
+/test/
+/src/
+/.dev/

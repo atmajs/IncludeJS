@@ -43,51 +43,8 @@ var Include,
 			global.include = resource;
 		},
 
-		cfg: function(arg) {
-			switch (typeof arg) {
-			case 'object':
-				var key, value;
-				for (key in arg) {
-					value = arg[key];
-
-					this.cfg(key, value);
-				}
-				break;
-			case 'string':
-				if (arguments.length === 1) {
-					return cfg[arg];
-				}
-				if (arguments.length === 2) {
-					var key = arguments[0],
-						value = arguments[1];
-					switch(key){
-						case 'loader':
-							for(var x in value){
-								CustomLoader.register(x, value[x]);
-							}
-							break;
-						case 'modules':
-							if (value === true) enableModules();
-							break;
-						case 'commonjs':
-							if (value === true) CommonJS.enable();
-							break;
-						case 'amd':
-							if (value === true) Amd.enable();
-							break;
-						case 'map':
-							PathResolver.map(value);
-							break;
-						default:
-							cfg[key] = value;
-							break;
-					}
-				}
-				break;
-			case 'undefined':
-				return cfg;
-			}
-			return this;
+		cfg: function(a, b) {
+			return cfg.call(this, a, b);
 		},
 		routes: function(mix) {
 			if (mix == null) {

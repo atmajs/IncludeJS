@@ -10,7 +10,7 @@ var Resource;
 			url = PathResolver.resolveBasic(url, type, parent);
 		}
 		if (id == null && url) {
-			id = (path_isRelative(url) ? '/' : '') + url;
+			id = url;
 		}
 		var resource = bin[type] && bin[type][id];
 		if (resource) {
