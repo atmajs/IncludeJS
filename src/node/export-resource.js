@@ -143,11 +143,18 @@
 
             }
 
-            var res = new Resource();
-            res.state = 4;
-            res.location = path_getDir(currentUrl);
-            res.parent = parent;
-            return res;
+            var resource;
+			if (currentUrl == null) {
+				resource = new Include();
+				resource.state = 4;
+				return resource;
+			}
+			resource = new Resource('js');
+			resource.state = 4;
+			resource.url = path_resolveUrl(currentUrl, parent);
+			resource.location = path_getDir(resource.url);
+			resource.parent = parent;
+			return resource;
         }
     });
 

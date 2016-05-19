@@ -68,7 +68,7 @@ var PathResolver;
 		return /\.[\w]{1,8}($|\?)/.test(path);
 	}
 	function isNodeModuleResolution(path){
-		return /^([\w\-]+)(\/[^\/]+)*$/.test(path);
+		return /^([\w\-]+)(\/[\w\-_]+)*$/.test(path);
 	}
 	function nodeModuleResolve(current_, path, cb){
 		var name = /^([\w\-]+)/.exec(path)[0];

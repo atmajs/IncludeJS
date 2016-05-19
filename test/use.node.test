@@ -1,27 +1,21 @@
+UTest({
 
+	$before () {
+		include = includeModule
+			.include
+			.instance('/test/use.node.test');
+	},
 
-include
-	.inject('/lib/include.node.js')
-	.done(function(){
-		
-		UTest({
-			
-			use: function(done){
-						
-				include
-					.instance('test/')
-					.js(
-						'use/a.js::a_res',
-						'use/c.js::c',
-						'use/b.js'
-					)
-					.done(function(resp){
-						eq(resp.b, 'ab');
-						
-						done();
-					});
-			}
-		})
-
-		
-	})
+	'should load script with `use` feature': function(done){
+		include
+			.js(
+				'use/a.js::a_res',
+				'use/c.js::c',
+				'use/b.js'
+			)
+			.done(function(resp){
+				eq(resp.b, 'ab');
+				done();
+			});
+	}
+});

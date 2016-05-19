@@ -30,19 +30,19 @@ var cfg,
 				return this[a];
 			}
 			if (aType === 'string' && b != null) {
-				set(a, b);
+				set(this, a, b);
 				return ctx;
 			}
 			if (aType === 'object' && b == null) {
 				for (var key in a) {
-					set(key, a[key]);
+					set(this, key, a[key]);
 				}
 			}
 			return ctx;
 		},
 	};
 
-	function set(key, value) {
+	function set(cfg, key, value) {
 		switch(key){
 			case 'loader':
 				for(var x in value){
@@ -68,10 +68,10 @@ var cfg,
 				PathResolver.configExt({ types: value });
 				return;
 		}
-		if (key in this === false) {
+		if ((key in cfg) === false) {
 			console.warn('Not supported config', key);
 		}
-		this[key] = value;
+		cfg[key] = value;
 	}
 
 	cfg = new Config;

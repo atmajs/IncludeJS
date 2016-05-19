@@ -8,6 +8,9 @@ var bin,
 			bin.all[id] = resource;
 		},
 		get: function(type, id) {
+			if (id == null) {
+				return;
+			}
 			var x = bin[type][id];
 			return x || bin.all[id];
 		}

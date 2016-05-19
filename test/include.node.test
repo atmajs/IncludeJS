@@ -1,12 +1,16 @@
-
-include.routes({
-	waterfall: 'letter/waterfall/{0}/{1}.js',
-	exports: 'letter/exports/{0}.js',
-	condition: 'letter/condition/{0}.js',
-});
-
-
 UTest({
+	$before () {
+		include = includeModule
+			.include
+			.instance('/test/include.node.test');
+
+		include.routes({
+			waterfall: 'letter/waterfall/{0}/{1}.js',
+			exports: 'letter/exports/{0}.js',
+			condition: 'letter/condition/{0}.js',
+		});
+
+	},
 	'Waterfall': function(done) {
 		global.letters = {};
 
@@ -38,15 +42,15 @@ UTest({
 			done();
 		});
 	},
-	'Exports': function(done) {		
+	'Exports': function(done) {
 		include.js({
 			exports: ['a::A', 'b::B']
 		}).done(function(resp) {
-			
+
 			deepEq(resp.A, {
 				a: 'a'
 			}, 'Response from a.js is not "a"');
-			
+
 			deepEq(resp.B, {
 				b: 'b',
 				c: 'c'
@@ -59,18 +63,18 @@ UTest({
 		include.js({
 			condition: 'a?letter=b::Letter'
 		}).done(function(resp){
-			
+
 			assert(resp.Letter == 'b', 'Condition load failed');
-			
+
 			done();
 		})
 	},
-	
+
 	'Empty' : function(done){
 		include
 			.instance()
 			.done(function(){
-				
+
 				include
 					.instance()
 					.client()
@@ -78,10 +82,10 @@ UTest({
 					.done(function(){
 						assert(this.includes == null);
 						done();
-					})	
-				
+					})
+
 			});
-			
-			
+
+
 	}
 })
