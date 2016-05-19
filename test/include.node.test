@@ -71,20 +71,18 @@ UTest({
 	},
 
 	'Empty' : function(done){
-		include
-			.instance()
-			.done(function(){
+		include.instance().done(() => {
 
-				include
-					.instance()
+			var self = include.instance();
+
+				self
 					.client()
 					.js('WОNT/LOAD')
-					.done(function(){
-						assert(this.includes == null);
+					.done(() => {
+						deepEq_(self.includes, null);
 						done();
-					})
-
-			});
+					});
+		});
 
 
 	}
