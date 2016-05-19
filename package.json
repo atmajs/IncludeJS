@@ -34,7 +34,7 @@
     ],
     "settings": {
       "atma-loader-babel": {
-        "extension": [
+        "extensions": [
           "es6",
           "test"
         ]

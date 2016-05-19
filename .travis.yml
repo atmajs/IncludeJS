@@ -10,5 +10,8 @@ before_script:
  
 script:
   - "npm test"
- 
+  
 language: node_js
+
+node_js:
+  - "5.6.0"
