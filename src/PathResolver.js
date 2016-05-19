@@ -1,9 +1,19 @@
 var PathResolver;
 (function(){
 	PathResolver = {
-		map: function(map){
+		configMap: function(map){
 			for(var key in map) {
 				_map[key] = map;
+			}
+		},
+		configExt: function(config){
+			var def = config.def,
+				types = config.types;
+			for (var key in def) {
+				_ext[key] = def[key];
+			}
+			for(var key in types) {
+				_extTypes[key] = types[key];
 			}
 		},
 		resolveBasic: function(path_, type, parent) {
@@ -14,6 +24,7 @@ var PathResolver;
 			return ensureExtension(path, type);
 		},
 		isNpm: isNodeModuleResolution,
+		getType: getTypeForPath,
 		resolveNpm: function(path_, type, parent, cb){
 			var path = map(path_);
 			if (path.indexOf('.') > -1) {
@@ -38,6 +49,17 @@ var PathResolver;
 		'js': 'js',
 		'css': 'css',
 		'mask': 'mask'
+	};
+	var _extTypes = {
+		'js': 'js',
+		'es6': 'js',
+		'ts': 'js',
+		'css': 'css',
+		'less': 'css',
+		'scss': 'css',
+		'mask': 'mask',
+		'json': 'load',
+		'yml': 'load'
 	};
 	function map(path) {
 		return _map[path] || path;
@@ -97,6 +119,18 @@ var PathResolver;
 			return path;
 		}
 		return path + '.' + ext;
+	}
+	function getTypeForPath(path){
+		var match = /\.([\w]{1,8})($|\?)/.exec(path);
+		if (match === null) {
+			return _ext.js;
+		}
+		var ext = match[1];
+		var type = _extTypes[ext];
+		if (type == null) {
+			throw Error('Unknown type for extension: ' + ext);
+		}
+		return type;
 	}
 
 }());

@@ -12,13 +12,14 @@ var bin,
 			return x || bin.all[id];
 		}
 	};
-	
+
 	bin = {
 		js: {},
 		css: {},
 		load: {},
 		ajax: {},
 		embed: {},
+		mask: {},
 
 		all: {},
 	};

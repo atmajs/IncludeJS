@@ -59,7 +59,13 @@ var cfg,
 				if (value === true) Amd.enable();
 				return;
 			case 'map':
-				PathResolver.map(value);
+				PathResolver.configMap(value);
+				return;
+			case 'extentionDefault':
+				PathResolver.configExt({ def: value });
+				return;
+			case 'extentionTypes':
+				PathResolver.configExt({ types: value });
 				return;
 		}
 		if (key in this === false) {
