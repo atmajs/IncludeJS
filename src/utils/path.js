@@ -95,7 +95,7 @@ var path_getDir,
 				return path_collapse(url);
 			}
 		}
-		if (url[0] === '/' && cfg.path) {
+		if (url[0] === '/' && cfg.path && url.indexOf(cfg.path) !== 0) {
 			url = cfg.path + url.substring(1);
 			if (reg_hasProtocol.test(url)) {
 				return path_collapse(url);

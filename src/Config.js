@@ -75,4 +75,27 @@ var cfg,
 	}
 
 	cfg = new Config;
+
+	function enableModules() {
+		if (typeof Object.defineProperty === 'undefined'){
+			console.warn('Browser do not support Object.defineProperty');
+			return;
+		}
+		Object.defineProperty(global, 'module', {
+			get: function() {
+				return global.include;
+			}
+		});
+
+		Object.defineProperty(global, 'exports', {
+			get: function() {
+				var current = global.include;
+				return (current.exports || (current.exports = {}));
+			},
+			set: function(exports) {
+				global.include.exports = exports;
+			}
+		});
+	}
+
 }());
