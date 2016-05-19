@@ -1,9 +1,4 @@
-var bin = {
-		js: {},
-		css: {},
-		load: {}
-	},
-	isWeb = !! (typeof location !== 'undefined' && location.protocol && /^https?:/.test(location.protocol)),
+var isWeb = !! (typeof location !== 'undefined' && location.protocol && /^https?:/.test(location.protocol)),
 	reg_subFolder = /([^\/]+\/)?\.\.\//,
 	reg_hasProtocol = /^(file|https?):/i,
 	handler = {},

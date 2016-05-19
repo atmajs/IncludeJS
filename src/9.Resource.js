@@ -12,7 +12,7 @@ var Resource;
 		if (id == null && url) {
 			id = url;
 		}
-		var resource = bin[type] && bin[type][id];
+		var resource = Bin.get(type, id);
 		if (resource) {
 			if (resource.state < 4 && type === 'js') {
 				ScriptStack.moveToParent(resource, parent);
@@ -20,6 +20,7 @@ var Resource;
 			return resource;
 		}
 
+		this.id = id;
 		this.url = url;
 		this.type = type;
 		this.xpath = xpath;
@@ -39,7 +40,7 @@ var Resource;
 		this.state = 0;
 		this.location = path_getDir(url);
 
-		(bin[type] || (bin[type] = {}))[id] = this;
+		Bin.add(type, id, resource);
 		if (PathResolver.isNpm(this.url) === false) {
 			process(this);
 			return this;
