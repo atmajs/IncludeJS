@@ -18,6 +18,9 @@ var Helper = { /** TODO: improve url handling*/
 		if (isBrowser && cfg.version) {
 			url = (url.indexOf('?') === -1 ? '?' : '&') + 'v=' + cfg.version;
 		}
+		if (url[0] === '/' && cfg.lockedToFolder === true) {
+			url = url.substring(1);
+		}
 		xhr.open('GET', url, async);
 		xhr.send();
 	},

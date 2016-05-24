@@ -96,16 +96,16 @@ var path_getDir,
 			}
 		}
 		if (url[0] === '/' && cfg.path && url.indexOf(cfg.path) !== 0) {
-			url = cfg.path + url.substring(1);
+			url = path_combine(cfg.path, url);
 			if (reg_hasProtocol.test(url)) {
 				return path_collapse(url);
 			}
 		}
 		if (url[0] !== '/' && parent != null && parent.location != null) {
-			url = parent.location + url;
+			url = path_combine(parent.location, url);
 		}
-		if (url[0] === '/' && (isWeb === false || cfg.lockedToFolder === true)) {
-			url = url.substring(1);
+		if (url[0] !== '/' && reg_hasProtocol.test(url) === false) {
+			url = '/' + url;
 		}
 		return path_collapse(url);
 	};
