@@ -40,7 +40,7 @@ var Resource;
 		this.state = 0;
 		this.location = path_getDir(url);
 
-		Bin.add(type, id, resource);
+		Bin.add(type, id, this);
 		if (PathResolver.isNpm(this.url) === false) {
 			process(this);
 			return this;
