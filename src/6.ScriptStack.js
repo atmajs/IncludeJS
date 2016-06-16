@@ -11,7 +11,13 @@ var ScriptStack = (function() {
 
 
 	function loadScript(url, callback) {
-		//console.log('load script', url);
+		if (cfg.version) {
+			url = (url.indexOf('?') === -1 ? '?' : '&') + 'v=' + cfg.version;
+		}
+		if (url[0] === '/' && cfg.lockedToFolder === true) {
+			url = url.substring(1);
+		}
+
 		var tag = document.createElement('script');
 		tag.type = 'text/javascript';
 		tag.src = url;
@@ -23,8 +29,10 @@ var ScriptStack = (function() {
 		} else {
 			tag.onload = tag.onerror = callback;
 		}
-
-		;(head || (head = document.getElementsByTagName('head')[0])).appendChild(tag);
+		if (head == null) {
+			head = document.getElementsByTagName('head')[0];
+		}
+		head.appendChild(tag);
 	}
 
 	function loadByEmbedding() {
