@@ -12,7 +12,7 @@ var ScriptStack = (function() {
 
 	function loadScript(url, callback) {
 		if (cfg.version) {
-			url = (url.indexOf('?') === -1 ? '?' : '&') + 'v=' + cfg.version;
+			url += (url.indexOf('?') === -1 ? '?' : '&') + 'v=' + cfg.version;
 		}
 		if (url[0] === '/' && cfg.lockedToFolder === true) {
 			url = url.substring(1);
