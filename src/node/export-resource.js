@@ -126,10 +126,10 @@
 
 
                 if (atmaPath)
-                    next.paths.unshift(atmaPath);
+                    next.paths.push(atmaPath);
 
                 if (npmPath)
-                    next.paths.unshift(npmPath);
+                    next.paths.push(npmPath);
 
 
                 global.module = module = next;
