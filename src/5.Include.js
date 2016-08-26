@@ -172,6 +172,7 @@ var Include,
 			resource.url = path_resolveUrl(url, parent);
 			resource.location = path_getDir(resource.url);
 			resource.parent = parent;
+			InstanceStack.add(resource);
 			return resource;
 		},
 
@@ -291,7 +292,7 @@ var Include,
 				res, key, id;
 
 			for(key in bin){
-				if (type != null && type !== key)
+				if (key === 'all' || (type != null && type !== key))
 					continue;
 
 				for (id in bin[key]){

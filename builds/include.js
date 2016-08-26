@@ -16,6 +16,7 @@
 	// import ../src/2.Routing.js
 	// import ../src/3.Events.js
     // import ../src/6.ScriptStack.js
+    // import ../src/InstanceStack.js
 
 	// import ../src/4.IncludeDeferred.js
 	// import ../src/5.Include.js
