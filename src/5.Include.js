@@ -172,7 +172,9 @@ var Include,
 			resource.url = path_resolveUrl(url, parent);
 			resource.location = path_getDir(resource.url);
 			resource.parent = parent;
-			InstanceStack.add(resource);
+			if (cfg.sync !== true) {
+				InstanceStack.add(resource);
+			}
 			return resource;
 		},
 
