@@ -102,7 +102,7 @@ var Include,
 
 					info = transform(infos[i]);
 
-					var id = info.id,
+					var id = info.url,
 						url = info.url,
 						namespace = info.namespace,
 						parent = info.parent && incl_getResource(info.parent, 'js'),
@@ -133,7 +133,7 @@ var Include,
 					switch (key) {
 					case 'load':
 					case 'lazy':
-						var container = document.querySelector('#includejs-' + id.replace(/\W/g, ''));
+						var container = document.querySelector('[data-bundler-path="/' + url + '"]');
 						if (container == null) {
 							console.error('"%s" Data was not embedded into html', id);
 							break;
