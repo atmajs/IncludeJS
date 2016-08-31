@@ -7,6 +7,7 @@ var Resource;
 
 		var url = route && route.path;
 		if (url != null) {
+			url = path_normalize(url);
 			url = PathResolver.resolveBasic(url, type, parent);
 		}
 		if (id == null && url) {

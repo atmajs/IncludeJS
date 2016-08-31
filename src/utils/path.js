@@ -66,11 +66,16 @@ var path_getDir,
 	};
 
 	path_normalize = function(path) {
-		return path
+		var path_ = path
 			.replace(/\\/g, '/')
 			// remove double slashes, but not near protocol
 			.replace(/([^:\/])\/{2,}/g, '$1/')
 			;
+		// use triple slashes by file protocol
+		if (/^file:\/\/[^\/]/.test(path_)) {
+			path_ = path_.replace('file://', 'file:///');
+		}
+		return path_;
 	};
 
 	path_win32Normalize = function(path){
