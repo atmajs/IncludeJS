@@ -12,6 +12,10 @@ var bin,
 				return;
 			}
 			var x = bin[type][id];
+			if (x == null && /^https?:\//.test(id) && typeof location !== 'undefined') {
+				var path = id.replace(location.origin, '');
+				x = bin[type][path];
+			}
 			return x || bin.all[id];
 		}
 	};
