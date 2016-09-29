@@ -53,7 +53,8 @@ var InstanceStack;
 	}
 
 	(function(){
-		var i = _fns_count;
+		var i = _fns_count,
+			slice_ = Array.prototype.slice;
 		while (--i > -1) {
 			var name = _fns[i];
 			Bag.prototype[name] = create_addToBackFn(_fns[i]);
@@ -61,9 +62,8 @@ var InstanceStack;
 
 		function create_addToBackFn(name) {
 			return function(){
-				var args = Array.from(arguments);
+				var args = slice_.call(arguments);
 				this.arr.push([name, args]);
-
 				return this.include;
 			};	
 		}
