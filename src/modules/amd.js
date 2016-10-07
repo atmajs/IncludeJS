@@ -69,19 +69,19 @@ var Amd;
 				bin.js[name] = module;
 			}
 			if (dependencies == null) {
-				module.exports = getExports(exports);
+				module.exports = getExports(exports) || module.exports;
 				return;
 			}
 			var deps = getDepsInfo(dependencies, module);
 			var arr = deps.array;
 			var linked = deps.linked;
 			if (linked.length === 0) {
-				module.exports = getExports(exports, arr);
+				module.exports = getExports(exports, arr) || module.exports;
 				return;
 			}
 			module.require(deps.linked).done(function(resp){
 				readResp(arr, resp);
-				module.exports = getExports(exports, arr);
+				module.exports = getExports(exports, arr) || module.exports;
 			});
 		}
 		function getExports(mix, args) {
@@ -107,10 +107,8 @@ var Amd;
 		}
 		var StaticResolvers = {
 			'module': function(module) { return module },
-			'exports': function(module) { return module.exports },
-			'require': function(module) {
-				return CommonJS.require;
-			}
+			'exports': function(module) { return module.exports = {} },
+			'require': function(module) { return CommonJS.require }
 		};
 		function isString(x) {
 			return typeof x === 'string';

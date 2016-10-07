@@ -19,6 +19,7 @@ var cfg,
 		lockedToFolder: false,
 		sync: false,
 		eval: document == null,
+		es6Exports: false,
 
 		call: function(ctx, a, b){
 			if (a == null) {

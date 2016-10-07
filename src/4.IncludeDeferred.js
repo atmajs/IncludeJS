@@ -155,7 +155,11 @@ IncludeDeferred.prototype = { /**	state observer */
 							;
 
 					if (alias != null) {
-						obj[ alias ] = resource.exports;
+						var exp = resource.exports;
+						if (cfg.es6Exports && (exp != null && typeof exp === 'object')) {
+							exp = exp.default || exp;
+						}						
+						obj[ alias ] = exp;
 						break;
 					}
 					console.warn('<includejs> Alias is undefined', resource);
