@@ -139,7 +139,9 @@ var Resource;
 			return this;
 		},
 		require: function(arr) {
-			this.exports = {};
+			if (this.exports == null) {
+				this.exports = {};
+			}
 			this.includes = [];
 
 			var pckg = res_groupByType(arr);

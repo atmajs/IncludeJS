@@ -1,4 +1,3 @@
-	
 var JSONParser = {
 	process: function(source, res){
 		try {

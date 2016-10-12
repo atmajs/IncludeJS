@@ -1,9 +1,11 @@
 var CustomLoader = (function() {
 
 	// import loader/json.js
+	// import loader/load.js
 
 	cfg.loader = {
-		json : JSONParser
+		json : JSONParser,
+		load: LoadBundleParser
 	};
 
 	function loader_isInstance(x) {

@@ -1,5 +1,9 @@
 var Include,
-	IncludeLib = {};
+	IncludeLib = {
+		loadBags: [
+			document
+		]
+	};
 (function(IncludeDeferred) {
 
 	Include = function() {
@@ -133,12 +137,18 @@ var Include,
 					switch (key) {
 					case 'load':
 					case 'lazy':
-						var container = document.querySelector('[data-bundler-path="/' + url + '"]');
-						if (container == null) {
+						var query = '[data-bundler-path="/' + url + '"]';
+						var bags = IncludeLib.loadBags,
+							i = bags.length, el;
+						while( --i > -1 && el == null){
+							if (bags[i] == null) continue;
+							el = bags[i].querySelector(query);
+						}
+						if (el == null) {
 							console.error('"%s" Data was not embedded into html', id);
 							break;
 						}
-						resource.exports = container.innerHTML;
+						resource.exports = el.innerHTML;
 						if (CustomLoader.exists(resource)){
 
 							resource.state = 3;
