@@ -139,10 +139,11 @@ var Include,
 					case 'lazy':
 						var query = '[data-bundler-path="/' + url + '"]';
 						var bags = IncludeLib.loadBags,
-							i = bags.length, el;
-						while( --i > -1 && el == null){
-							if (bags[i] == null) continue;
-							el = bags[i].querySelector(query);
+							j = bags.length, 
+							el = null;
+						while( --j > -1 && el == null){
+							if (bags[j] == null) continue;
+							el = bags[j].querySelector(query);
 						}
 						if (el == null) {
 							console.error('"%s" Data was not embedded into html', id);
