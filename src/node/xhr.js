@@ -11,6 +11,8 @@ XMLHttpRequest.prototype = {
         } else if (this.url[0] === '/'){
             this.url = this.url.substring(1);
         }
+        var q = this.url.indexOf('?');
+        if (q !== -1) this.url = this.url.substring(0, q);
 
         var that = this;
         file_read(this.url, function(err, data) {
