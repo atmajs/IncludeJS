@@ -1,6 +1,5 @@
 function __eval(source, include) {
 	"use strict";
-	var iparams = include && include.route.params;
 	/* if !DEBUG
 	try {
 	*/

@@ -58,9 +58,7 @@ var ScriptStack = (function() {
 		resource.state = 1;
 
 		global.include = resource;
-		global.iparams = resource.route.params;
-
-
+		
 		function resourceLoaded(e) {
 
 

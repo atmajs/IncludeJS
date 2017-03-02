@@ -33,11 +33,9 @@ var Routes,
 			 *	@param {String} template = Example: 'scroller/scroller.min?ui=black'
 			 */
 			resolve: function(namespace, template) {
-				var questionMark = template.indexOf('?'),
-					aliasIndex = template.indexOf('::'),
+				var aliasIndex = template.indexOf('::'),
 					alias,
 					path,
-					params,
 					route,
 					i,
 					x,
@@ -49,17 +47,6 @@ var Routes,
 					template = template.substring(0, aliasIndex);
 				}
 
-				if (questionMark !== -1) {
-					arr = template.substring(questionMark + 1).split('&');
-					params = {};
-
-					for (i = 0, length = arr.length; i < length; i++) {
-						x = arr[i].split('=');
-						params[x[0]] = x[1];
-					}
-
-					template = template.substring(0, questionMark);
-				}
 
 				template = template.split('/');
 				route = routes[namespace];
@@ -67,7 +54,7 @@ var Routes,
 				if (route == null){
 					return {
 						path: template.join('/'),
-						params: params,
+						params: null,
 						alias: alias
 					};
 				}
@@ -99,7 +86,7 @@ var Routes,
 				}
 				return {
 					path: path,
-					params: params,
+					params: null,
 					alias: alias
 				};
 			},
