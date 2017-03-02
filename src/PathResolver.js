@@ -118,7 +118,10 @@ var PathResolver;
 			console.warn('Extension is not defined for ' + type);
 			return path;
 		}
-		return path + '.' + ext;
+		var i = path.indexOf('?');
+		if (i === -1) return path + '.' + ext;
+
+		return path.substring(0, i) + '.' + ext + path.substring(i);
 	}
 	function getTypeForPath(path){
 		var match = /\.([\w]{1,8})($|\?)/.exec(path);
