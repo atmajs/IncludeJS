@@ -175,8 +175,6 @@ var ScriptStack = (function() {
 		_cb_complete.length = 0;
 	}
 
-
-
 	return {
 		load: function(resource, parent, forceEmbed) {
 
@@ -211,8 +209,8 @@ var ScriptStack = (function() {
 			});
 		},
 
-		add: function(resource, parent){
-
+		add: function(resource, parent) {
+			
 			if (resource.priority === 1)
 				return stack.unshift(resource);
 

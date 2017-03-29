@@ -38,68 +38,56 @@ IncludeDeferred.prototype = { /**	state observer */
 		});
 		return this;
 	},
+	hasPendingChildren: function() {
+		var arr = this.includes;
+		if (arr == null) {
+			return false;
+		}
+		var imax = arr.length,
+			i = -1;
+		while (++i < imax) {
+			if (arr[i].resource.state !== 4) {
+				return true;
+			}
+		}
+		return false;
+	},
 	readystatechanged: function(state) {
 
-		var i, length, x, currentInclude;
-
-		if (state > this.state) {
+		if (this.state < state) {
 			this.state = state;
 		}
 
 		if (this.state === 3) {
-			var includes = this.includes;
-
-			if (includes != null && includes.length) {
-				for (i = 0; i < includes.length; i++) {
-					if (includes[i].resource.state !== 4) {
-						return;
-					}
-				}
+			if (this.hasPendingChildren()) {
+				return;
 			}
-
 			this.state = 4;
 		}
-
-		i = 0;
-		length = this.callbacks.length;
-
-		if (length === 0){
+		
+		var currentState = this.state,
+			cbs = this.callbacks,
+			imax = cbs.length,
+			i = -1;
+		
+		if (imax === 0){
 			return;
 		}
-
-		//do not set asset resource to global
-		if (this.type === 'js' && this.state === 4) {
-			currentInclude = global.include;
-			global.include = this;
-		}
-
-		for (; i < length; i++) {
-			x = this.callbacks[i];
+		
+		while(++i < imax) {
+			var x = cbs[i];
 			if (x == null || x.state > this.state) {
 				continue;
 			}
 
-			this.callbacks.splice(i,1);
+			cbs.splice(i,1);
 			length--;
 			i--;
+			x.callback(this);
 
-			/* if (!DEBUG)
-			try {
-			*/
-				x.callback(this);
-			/* if (!DEBUG)
-			} catch(error){
-				console.error(error.toString(), 'file:', this.url);
-			}
-			*/
-
-			if (this.state < 4){
+			if (this.state < currentState) {
 				break;
 			}
-		}
-
-		if (currentInclude != null && currentInclude.type === 'js'){
-			global.include = currentInclude;
 		}
 	},
 

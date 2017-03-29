@@ -18,9 +18,13 @@ var bin,
 			}
 			if (x == null && cfg.lockedToFolder) {
 				var path = path_getDir(location.pathname);
-				id = path_combine('/', id.replace(path, ''));
-				x = bin[type][id] || bin.all[id];
-			}			
+				var sub = path_combine('/', id.replace(path, ''));
+				x = bin[type][sub] || bin.all[sub];
+			}
+			if (x == null && isBrowser && id[0] === '/') {
+				var path = path_combine(global.location.origin, id);
+				x = bin[type][path] || bin.all[path];
+			}
 			return x || bin.all[id];
 		}
 	};

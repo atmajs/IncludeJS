@@ -33,6 +33,11 @@
       "atma-loader-babel"
     ],
     "settings": {
+      "io": {
+        "extensions": {
+          "js": ["condcomments:read", "importer:read"]
+        }
+      },
       "atma-loader-babel": {
         "extensions": [
           "es6",
