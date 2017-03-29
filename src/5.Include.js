@@ -21,6 +21,7 @@ var Include,
 
 		isBrowser: isBrowser,
 		isNode: isNode,
+		isRoot: false,
 
 		setCurrent: function(data) {
 			var url = data.url,
@@ -175,6 +176,7 @@ var Include,
 			var resource;
 			if (url == null) {
 				resource = new Include();
+				resource.isRoot = true;
 				resource.state = 4;
 				return resource;
 			}
@@ -183,9 +185,7 @@ var Include,
 			resource.url = path_resolveUrl(url, parent);
 			resource.location = path_getDir(resource.url);
 			resource.parent = parent;
-			if (cfg.sync !== true) {
-				//InstanceStack.add(resource);
-			}
+			resource.isRoot = true;
 			return resource;
 		},
 

@@ -173,7 +173,7 @@ IncludeDeferred.prototype = { /**	state observer */
 		}
 
 		var before = null;
-		if (this.type === 'js') {
+		if (this.type === 'js' && this.isRoot !== true) {
 			before = global.include = this;
 		}
 		callback(response);
