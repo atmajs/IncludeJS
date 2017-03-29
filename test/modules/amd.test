@@ -14,6 +14,13 @@ UTest({
 			});
 	},
 	'should load modules `a`': function(done) {
+		include
+			.js('../letter/amd/a.js::Module')
+			.done(resp => {
+				eq_(resp.Module.a, 'a');
+				done();
+			});
+			return;
 		global.require(['../letter/amd/a.js'], function(aExports){
 			eq_(aExports.a, 'a');
 			done();
