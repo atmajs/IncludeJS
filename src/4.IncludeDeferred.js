@@ -80,8 +80,8 @@ IncludeDeferred.prototype = { /**	state observer */
 				continue;
 			}
 
-			cbs.splice(i,1);
-			length--;
+			cbs.splice(i, 1);
+			imax--;
 			i--;
 			x.callback(this);
 
@@ -172,6 +172,13 @@ IncludeDeferred.prototype = { /**	state observer */
 			return;
 		}
 
+		var before = null;
+		if (this.type === 'js') {
+			before = global.include = this;
+		}
 		callback(response);
+		if (before != null) {
+			global.include = before;	
+		}
 	}
 };

@@ -46,7 +46,6 @@ UTest({
 		include.js({
 			exports: ['a::A', 'b::B']
 		}).done(function(resp) {
-
 			deepEq(resp.A, {
 				a: 'a'
 			}, 'Response from a.js::A is not "a" |');
