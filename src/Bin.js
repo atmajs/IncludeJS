@@ -3,14 +3,16 @@ var bin,
 (function(){
 
 	Bin = {
-		add: function(type, id, resource) {
+		add: function(type, id_, resource) {
+			var id = normalizeId(id_);
 			bin[type][id] = resource;
 			bin.all[id] = resource;
 		},
-		get: function(type, id) {
-			if (id == null) {
+		get: function(type, id_) {
+			if (id_ == null) {
 				return;
 			}
+			var id = normalizeId(id_);
 			var x = bin[type][id];
 			if (x == null && /^https?:\//.test(id) && typeof location !== 'undefined') {
 				id = id.replace(location.origin, '');
@@ -39,4 +41,14 @@ var bin,
 
 		all: {},
 	};
+
+
+	function normalizeId(id_) {
+		var id = id_;
+		var q = id.indexOf('?');
+		if (q !== -1)
+			id = id.substring(0, q);
+
+		return id.toLowerCase();
+	}
 }());

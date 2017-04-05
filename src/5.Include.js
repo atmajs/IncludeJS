@@ -159,8 +159,7 @@ var Include,
 						break;
 					}
 
-					//
-					(bin[key] || (bin[key] = {}))[id] = resource;
+					Bin.add(key, id, resource);
 				}
 			}
 			function CustomLoader_onComplete(resource, response) {
@@ -196,23 +195,22 @@ var Include,
 			return incl_getResource(url, type)
 		},
 		getResourceById: function(url, type){
-			var _bin = bin[type],
-				_res = _bin[url];
+			var _res = Bin.get(type, url);
 			if (_res != null)
 				return _res;
 
 			if (this.base && url[0] === '/') {
-				_res = _bin[path_combine(this.base, url)];
+				_res = Bin.get(type, path_combine(this.base, url));
 				if (_res != null)
 					return _res;
 			}
 			if (this.base && this.location) {
-				_res = _bin[path_combine(this.base, this.location, url)];
+				_res = Bin.get(type, path_combine(this.base, this.location, url));
 				if (_res != null)
 					return _res;
 			}
 			if (this.location) {
-				_res = _bin[path_combine(this.location, url)];
+				_res = Bin.get(path_combine(this.location, url));
 				if (_res != null)
 					return _res;
 			}
@@ -330,12 +328,12 @@ var Include,
 			id = '/' + id;
 
 		if (type != null){
-			return bin[type][id];
+			return Bin.get(type, id);
 		}
 
 		for (var key in bin) {
 			if (bin[key].hasOwnProperty(id)) {
-				return bin[key][id];
+				return Bin.get(key, id);
 			}
 		}
 		return null;
