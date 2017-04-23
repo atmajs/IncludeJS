@@ -110,7 +110,7 @@ var Include,
 					var id = info.url,
 						url = info.url,
 						namespace = info.namespace,
-						parent = info.parent && incl_getResource(info.parent, 'js'),
+						parent = info.parent && Bin.find(info.parent),
 						resource = new Resource(),
 						state = info.state
 						;
@@ -192,7 +192,7 @@ var Include,
 			if (this.base && url[0] === '/')
 				url = this.base + url.substring(1);
 
-			return incl_getResource(url, type)
+			return this.getResourceById(url, type);
 		},
 		getResourceById: function(url, type){
 			var _res = Bin.get(type, url);
@@ -320,26 +320,7 @@ var Include,
 
 
 	// >> FUNCTIONS
-
-	function incl_getResource(url, type) {
-		var id = url;
-
-		if (path_isRelative(url) === true)
-			id = '/' + id;
-
-		if (type != null){
-			return Bin.get(type, id);
-		}
-
-		for (var key in bin) {
-			if (bin[key].hasOwnProperty(id)) {
-				return Bin.get(key, id);
-			}
-		}
-		return null;
-	}
-
-
+	
 	function embedPlugin(source) {
 		eval(source);
 	}

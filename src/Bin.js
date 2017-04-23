@@ -8,6 +8,18 @@ var bin,
 			bin[type][id] = resource;
 			bin.all[id] = resource;
 		},
+		find: function (url) {
+			var id = path_isRelative(url) 
+				? '/' + url
+				: url;
+			for (var type in bin) {
+				var x = Bin.get(type, id);
+				if (x != null) {
+					return x;
+				}
+			}
+			return null;
+		},
 		get: function(type, id_) {
 			if (id_ == null) {
 				return;
@@ -44,7 +56,7 @@ var bin,
 
 
 	function normalizeId(id_) {
-		var id = id_;
+		var id = id_;		
 		var q = id.indexOf('?');
 		if (q !== -1)
 			id = id.substring(0, q);
