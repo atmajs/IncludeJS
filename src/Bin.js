@@ -24,6 +24,9 @@ var bin,
 			if (id_ == null) {
 				return;
 			}
+			if (type == null) {
+				return Bin.find(id_);
+			}
 			var id = normalizeId(id_);
 			var x = bin[type][id];
 			if (x == null && /^https?:\//.test(id) && typeof location !== 'undefined') {
