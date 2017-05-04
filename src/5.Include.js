@@ -219,6 +219,9 @@ var Include,
 		getResources: function(){
 			return bin;
 		},
+		removeFromCache: function(path){
+			Bin.remove(path);
+		},
 
 		plugin: function(pckg, callback) {
 

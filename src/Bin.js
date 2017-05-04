@@ -12,13 +12,29 @@ var bin,
 			var id = path_isRelative(url) 
 				? '/' + url
 				: url;
-			for (var type in bin) {
-				var x = Bin.get(type, id);
+			for (var type_ in bin) {
+				var x = Bin.get(type_, id);
 				if (x != null) {
 					return x;
 				}
 			}
 			return null;
+		},
+		remove: function (url) {
+			var resource = Bin.find(url);
+			if (resource == null) {
+				return;
+			}
+			for (var type_ in bin) {
+				clear(bin[type_], resource)
+			}
+			function clear (hash, x) {
+				for (var key in hash) {
+					if (hash[key] === x) {
+						hash[key] = null;
+					}
+				}
+			}
 		},
 		get: function(type, id_) {
 			if (id_ == null) {

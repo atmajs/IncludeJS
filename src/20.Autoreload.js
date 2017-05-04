@@ -76,18 +76,8 @@
 				});
 				return;
 			}
-
-			var bin = include.getResources();
-			clear(bin.load, path);
-			clear(bin.all, path);			
-			function clear (hash, path) {
-				for (var key in hash) {
-					if (key.indexOf(path) !== -1) {						
-						delete hash[key];
-					}
-				}
-			}
-
+			include.removeFromCache(path);
+			
 			var reloader = mask.Module.reload;
 			if (reloader == null) {
 				global.location.reload();
