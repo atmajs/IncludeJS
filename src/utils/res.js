@@ -4,7 +4,7 @@ var res_groupByType;
 		var pckg = {}, imax = arr.length, i = -1;
 		while (++i < imax) {
 			var path = arr[i];
-			var type = PathResolver.getTypeForPath(path);
+			var type = PathResolver.getType(path);
 			append(pckg, type, path);
 		}
 		return pckg;
