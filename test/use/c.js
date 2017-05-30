@@ -1,3 +1,0 @@
-include.exports = {
-	letter: 'c'
-};
