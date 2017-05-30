@@ -124,7 +124,7 @@ var PathResolver;
 		return path.substring(0, i) + '.' + ext + path.substring(i);
 	}
 	function getTypeForPath(path){
-		var match = /\.([\w]{1,8})($|\?)/.exec(path);
+		var match = /\.([\w]{1,8})($|\?|:)/.exec(path);
 		if (match === null) {
 			return _ext.js;
 		}
