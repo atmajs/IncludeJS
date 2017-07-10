@@ -42,7 +42,7 @@
                 bundle.on(4, function() {
 
                     var remove = 1;
-                    var index = ruqq.arr.indexOf(current.includes, function(res){
+                    var index = arr_indexOf(current.includes, function(res){
                         return res.resource === bundle;
                     });
                     if (index === -1){

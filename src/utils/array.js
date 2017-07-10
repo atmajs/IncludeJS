@@ -34,3 +34,13 @@ function arr_ensure(obj, xpath) {
 	key = arr[imax];
 	return obj[key] || (obj[key] = []);
 }
+
+function arr_indexOf (arr, fn) {
+	if(arr == null) return -1;
+	var imax = arr.length,
+		i = -1;
+	while(++i < imax) {
+		if (fn(arr[i], i)) return i;
+	}
+	return -1;
+}
