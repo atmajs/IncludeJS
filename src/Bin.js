@@ -6,7 +6,6 @@ var bin,
 		add: function(type, id_, resource) {
 			var id = normalizeId(id_);
 			bin[type][id] = resource;
-			bin.all[id] = resource;
 		},
 		find: function (url) {
 			var id = path_isRelative(url) 
@@ -47,18 +46,18 @@ var bin,
 			var x = bin[type][id];
 			if (x == null && /^https?:\//.test(id) && typeof location !== 'undefined') {
 				id = id.replace(location.origin, '');
-				x = bin[type][id] || bin.all[id];
+				x = bin[type][id];
 			}
 			if (x == null && cfg.lockedToFolder) {
 				var path = path_getDir(location.pathname);
 				var sub = path_combine('/', id.replace(path, ''));
-				x = bin[type][sub] || bin.all[sub];
+				x = bin[type][sub];
 			}
 			if (x == null && isBrowser && id[0] === '/') {
 				var path = path_combine(global.location.origin, id);
-				x = bin[type][path] || bin.all[path];
+				x = bin[type][path];
 			}
-			return x || bin.all[id];
+			return x;
 		}
 	};
 
@@ -68,9 +67,7 @@ var bin,
 		load: {},
 		ajax: {},
 		embed: {},
-		mask: {},
-
-		all: {},
+		mask: {}
 	};
 
 
