@@ -87,11 +87,12 @@ var PathResolver;
 					catch (error) {}
 				}
 				if (error != null || json == null) {
-					var next = current.replace(/[^\/]+$/, '');
+					var next = current.replace(/[^\/]+\/?$/, '');
 					if (next === current) {
 						cb('Not found');
 						return;
 					}
+					current = next;
 					check();
 					return;
 				}
