@@ -17,7 +17,6 @@ XMLHttpRequest.prototype = {
         var that = this;
         file_read(this.url, function(err, data) {
             if (err) {
-                console.error('[IncludeJS] File error', err.code, err.path);
                 that.status = 500;
                 data = '';
             } else {
