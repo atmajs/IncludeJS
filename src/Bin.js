@@ -49,7 +49,9 @@ var bin,
 				x = bin[type][id];
 			}
 			if (x == null && cfg.lockedToFolder) {
-				var path = path_getDir(location.pathname);
+				var path = /^file:/.test(id)
+					? path_getDir(location.href) 
+					: path_getDir(location.pathname);
 				var sub = path_combine('/', id.replace(path, ''));
 				x = bin[type][sub];
 			}
