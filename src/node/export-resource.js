@@ -28,7 +28,7 @@
             this.state = this.state >= 3 ? 3 : 2;
 
             var current = this,
-                bundle = current.create()
+                bundle = current.create('js').resource
                 ;
 
             bundle.url = this.url;

@@ -46,6 +46,9 @@ IncludeDeferred.prototype = { /**	state observer */
 		var imax = arr.length,
 			i = -1;
 		while (++i < imax) {
+			if (arr[i].isCyclic) {
+				continue;
+			}
 			if (arr[i].resource.state !== 4) {
 				return true;
 			}
