@@ -32,6 +32,10 @@ var Resource;
 		this.base = parent && parent.base;
 		this.childLoaded = fn_proxy(this.childLoaded, this);
 
+		if (type == null) {
+			this.state = 3;
+			return this;
+		}
 		if (url == null) {
 			this.state = 3;
 			this.url = path_resolveCurrent();
