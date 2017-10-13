@@ -39,8 +39,7 @@ var Resource;
 		if (url == null) {
 			this.state = 3;
 			this.url = path_resolveCurrent();
-			this.location = path_getDir(this.url);
-			Bin.add(type, this.url, this);
+			this.location = path_getDir(this.url);			
 			return this;
 		}
 
