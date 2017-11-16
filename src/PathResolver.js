@@ -74,7 +74,7 @@ var PathResolver;
 		var name = /^([\w\-]+)/.exec(path)[0];
 		var resource = path.substring(name.length + 1);
 		if (resource && hasExt(resource) === false) {
-			resource += '.' + _ext.js;
+			resource += '.js';
 		}
 		var current = current_.replace(/[^\/]+\.[\w]{1,8}$/, '');
 		function check(){
@@ -101,11 +101,11 @@ var PathResolver;
 					return;
 				}
 				if (json.main) {
-					cb(null, path_combine(nodeModules, json.main));
+					combineMain(nodeModules, json.main, cb);
 					return;
 				}
 
-				cb(null, nodeModules + 'index.' + _ext.js);
+				cb(null, path_combine(nodeModules, 'index.js'));
 			});
 		}
 		check();
@@ -132,6 +132,29 @@ var PathResolver;
 		var ext = match[1];
 		var type = _extTypes[ext];
 		return type || 'load';
+	}
+	
+	function combineMain (dir, fileName, cb) {
+		var path = path_combine(dir, fileName);
+		if (hasExt(path)) {
+			cb(null, path);
+			return;
+		}
+		var url = path + '.js';
+		XHR_LOAD(url, function(error, text){
+			if (error == null) {
+				cb(null, url);
+				return;
+			}
+			url = path + '/index.js';
+			XHR_LOAD(url, function(error, text){
+				if (error == null) {
+					cb(null, url);
+					return;
+				}
+				cb('Entry File does not exist: ' + fileName + ' in ' + dir);
+			});
+		});
 	}
 
 }());
