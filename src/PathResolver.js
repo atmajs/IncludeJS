@@ -42,6 +42,9 @@ var PathResolver;
 				path += '.' + _ext[type];
 			}
 			cb(null, path);
+		},
+		isNodeNative: function (path) {
+			return _nodeBuiltIns.indexOf(path) !== -1;
 		}
 	};
 	var _map = {};
@@ -61,6 +64,45 @@ var PathResolver;
 		'json': 'load',
 		'yml': 'load'
 	};
+	var _nodeBuiltIns = [
+		"assert",
+		"async_hooks",
+		"buffer",
+		"child_process",
+		"cluster",
+		"console",
+		"constants",
+		"crypto",
+		"dgram",
+		"dns",
+		"domain",
+		"events",
+		"fs",
+		"http",
+		"http2",
+		"https",
+		"inspector",
+		"module",
+		"net",
+		"os",
+		"path",
+		"perf_hooks",
+		"process",
+		"punycode",
+		"querystring",
+		"readline",
+		"repl",
+		"stream",
+		"string_decoder",
+		"timers",
+		"tls",
+		"tty",
+		"url",
+		"util",
+		"v8",
+		"vm",
+		"zlib"
+	];
 	function map(path) {
 		return _map[path] || path;
 	}

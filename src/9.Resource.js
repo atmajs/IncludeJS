@@ -51,6 +51,11 @@ var Resource;
 			process(this);
 			return this;
 		}
+		if (isNode === true && PathResolver.isNodeNative(this.url)) {
+			this.exports = __nativeRequire(this.url);
+			this.readystatechanged(4);
+			return this;
+		}
 
 		var self = this;
 		PathResolver.resolveNpm(this.url, this.type, this.parent, function(error, url){
