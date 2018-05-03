@@ -52,7 +52,7 @@ var bin,
 				var path = /^file:/.test(id)
 					? path_getDir(location.href) 
 					: path_getDir(location.pathname);
-				var sub = path_combine('/', id.replace(path, ''));
+				var sub = path_combine('/', id.replace(path.toLowerCase(), ''));
 				x = bin[type][sub];
 			}
 			if (x == null && isBrowser && id[0] === '/') {

@@ -10,13 +10,17 @@ var cfg,
 	 *		will become "{domain}/apps/script/main.js" instead of "{domain}/script/main.js"
 	*/
 
+	var isFileProtocol = document 
+		&& document.location 
+		&& document.location.protocol === 'file:'
+
 	Config = function() {};
 	Config.prototype = {
 
 		path: null,
 		loader: null,
 		version: null,
-		lockedToFolder: false,
+		lockedToFolder: isFileProtocol,
 		sync: false,
 		eval: document == null,
 		es6Exports: false,

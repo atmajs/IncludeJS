@@ -1,7 +1,7 @@
 {
   "name": "includejs",
   "description": "Resource Loader",
-  "version": "0.12.66",
+  "version": "0.12.67",
   "homepage": "http://atmajs.com/include",
   "contributors": [],
   "author": "Alex Kit <alex.kit@atmajs.com>",
@@ -22,7 +22,8 @@
     "atma-loader-babel": "^1.0.21"
   },
   "scripts": {
-    "test": "atma test"
+    "test": "atma test",
+    "build": "atma"
   },
   "keywords": [],
   "engines": {
