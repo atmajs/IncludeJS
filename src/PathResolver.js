@@ -110,7 +110,7 @@ var PathResolver;
 		return _map[path] || path;
 	}
 	function hasExt(path) {
-		return /\.[\w]{1,8}($|\?)/.test(path);
+		return /\.[\w]{1,8}($|\?|#)/.test(path);
 	}
 	function isNodeModuleResolution(path){
 		return /^([\w\-]+)(\/[\w\-_]+)*$/.test(path);

@@ -3,7 +3,7 @@ var LoadBundleParser = {
 		var div = document.createElement('div');
 		div.innerHTML = source;
 		IncludeLib.loadBags.push(div);
-		return null;
+		return source;
 	}
 };
 
