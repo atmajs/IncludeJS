@@ -1,7 +1,11 @@
+
+let includeModule = require('../lib/include.node.module.js');
+let include = null;
+
 UTest({
 	$before () {
 		include = includeModule
-			.include
+			.includeLib
 			.instance('/test/include.node.test');
 
 		include.routes({
@@ -79,7 +83,7 @@ UTest({
 					.client()
 					.js('WОNT/LOAD')
 					.done(() => {
-						deepEq_(self.includes, null);
+						deepEq_(self.includes, []);
 						done();
 					});
 		});

@@ -1,50 +1,145 @@
 {
-  "name": "includejs",
-  "description": "Resource Loader",
-  "version": "0.12.70",
-  "homepage": "http://atmajs.com/include",
-  "contributors": [],
-  "author": "Alex Kit <alex.kit@atmajs.com>",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/tenbits/IncludeJS.git"
-  },
-  "bugs": {
-    "url": "https://github.com/tenbits/IncludeJS/issues"
-  },
-  "licenses": [
-    "MIT"
-  ],
-  "main": "./lib/include.node.js",
-  "dependencies": {},
-  "devDependencies": {
-    "atma": ">0.9.0",
-    "atma-loader-babel": "^1.0.21"
-  },
-  "scripts": {
-    "test": "atma test",
-    "build": "atma"
-  },
-  "keywords": [],
-  "engines": {
-    "node": "~0.8.9"
-  },
-  "atma": {
-    "plugins": [
-      "atma-loader-babel"
+    "name": "includejs",
+    "description": "Resource Loader",
+    "version": "0.15.0",
+    "homepage": "http://atmajs.com/include",
+    "contributors": [],
+    "author": "Alex Kit <alex.kit@atmajs.com>",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/tenbits/IncludeJS.git"
+    },
+    "bugs": {
+        "url": "https://github.com/tenbits/IncludeJS/issues"
+    },
+    "licenses": [
+        "MIT"
     ],
-    "settings": {
-      "io": {
-        "extensions": {
-          "js": ["condcomments:read", "importer:read"]
+    "main": "./lib/include.node.js",
+    "dependencies": {
+        "atma-io-middleware-condcomments": "^1.2.6",
+        "atma-io-middleware-importer": "^1.1.30",
+        "atma-loader-ts": "^1.1.11"
+    },
+    "devDependencies": {
+        "@types/node": "^10.3.0",
+        "app-bundler": "0.0.52",
+        "atma": "^0.10.95",
+        "maskjs": "^0.64.57"
+    },
+    "scripts": {
+        "test": "atma test",
+        "build": "app-bundler",
+        "watch": "app-bundler --watch"
+    },
+    "keywords": [],
+    "engines": {
+        "node": "~0.8.9"
+    },
+    "atma": {
+        "plugins": [
+            "atma-io-middleware-condcomments",
+            "atma-io-middleware-importer",
+            "atma-loader-ts"
+        ],
+        "settings": {
+            "atma-io-middleware-condcomments": {},
+            "atma-io-middleware-importer": {},
+            "atma-loader-ts": {}
         }
-      },
-      "atma-loader-babel": {
-        "extensions": [
-          "es6",
-          "test"
-        ]
-      }
+    },
+    "app-bundler": {
+        "apps": {
+            "browser-default": {
+                "outputMain": "lib/include.js",
+                "package": {
+                    "moduleWrapperCustomPath": "./src/umd/head-browser.js"
+                },
+                "settings": {
+                    "atma-io-middleware-condcomments": {
+                        "defines": {
+                            "BROWSER": true
+                        }
+                    }
+                },
+                "copyFiles": {
+                    "src/Autoreload.js": "lib/include.autoreload.js"
+                }
+            },
+            "browser-module": {
+                "outputMain": "lib/include.module.js",
+                "package": {
+                    "moduleWrapperCustomPath": "./src/umd/head-module-browser.js"
+                },
+                "settings": {
+                    "atma-io-middleware-condcomments": {
+                        "defines": {
+                            "BROWSER": true
+                        }
+                    }
+                }
+            },
+            "node-default": {
+                "outputMain": "lib/include.node.js",
+                "package": {
+                    "moduleWrapperCustomPath": "./src/umd/head-node.js"
+                },
+                "settings": {
+                    "atma-io-middleware-condcomments": {
+                        "defines": {
+                            "NODE": true
+                        }
+                    }
+                }
+            },
+            "node-module": {
+                "outputMain": "lib/include.node.module.js",
+                "package": {
+                    "moduleWrapperCustomPath": "./src/umd/head-module-node.js"
+                },
+                "settings": {
+                    "atma-io-middleware-condcomments": {
+                        "defines": {
+                            "NODE": true
+                        }
+                    }
+                }
+            }
+        },
+        "common": {
+            "file": "src/export.ts",
+            "package": {
+                "module": "commonjs",
+                "moduleWrapper": "custom",
+                "commonjs": {
+                    "output": "simplified"
+                }
+            },
+            "dynamicDependencies": [
+                "vm",
+                "fs",
+                "^module$",
+                "^path$"
+            ],
+            "extensions": {
+                "io": {
+                    "type": "js"
+                }
+            },
+            "defaultExtensions": {
+                "js": "ts"
+            },
+            "middlewares": {
+                "js": [
+                    "atma-io-middleware-condcomments:read",
+                    "atma-io-middleware-importer:read"
+                ],
+                "ts": [
+                    "atma-io-middleware-condcomments:read",
+                    "atma-io-middleware-importer:read",
+                    "atma-loader-ts:read"
+                ]
+            }
+        }
     }
-  }
 }

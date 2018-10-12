@@ -1,9 +1,14 @@
+(function () {
+//let includeModule = require('../../lib/include.node.module.js');
+let include = includeTest
+	.includeLib
+	.instance(typeof __filename === 'undefined' ? '/test/modules/amd.test' : __filename)
+	.cfg('amd', true);
+
+
 UTest({
-	$before: function(){
-		include = includeModule
-			.include
-			.cfg('amd', true)
-			.instance('/test/modules/amd.test');
+	$after () {
+		include.noConflict();
 	},
 	'include should work with enabled amd': function (done) {
 		include
@@ -47,3 +52,5 @@ UTest({
 		});
 	},
 })
+
+}());
