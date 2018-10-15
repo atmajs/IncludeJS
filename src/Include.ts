@@ -27,7 +27,7 @@ export class Include extends IncludeDeferred {
 		isNode = isNode
 		isRoot = false
 
-		parent: Include
+		parent: Resource
 
 		base: string
 		location: string

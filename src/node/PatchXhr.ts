@@ -17,14 +17,8 @@ refs.XMLHttpRequest = class XMLHttpRequest {
     }
     send() {
 
-        if (this.url.indexOf('file://') !== -1) {
-            this.url = path_getFile(this.url);
-        } else if (this.url[0] === '/') {
-            this.url = this.url.substring(1);
-        }
         var q = this.url.indexOf('?');
         if (q !== -1) this.url = this.url.substring(0, q);
-
         
         file_read(this.url,  (err, data) => {
             if (err) {

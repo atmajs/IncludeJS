@@ -1,5 +1,8 @@
 import { cfg } from '../../Config'
 import * as _fs from 'fs';
+import { path_getFile } from '../../utils/path';
+
+declare var global: any;
 
 const _watchers = {};
 
@@ -8,6 +11,8 @@ export function file_read(url: string, callback) {
 		readWithAtmaIo(global.io.File, url, callback);
 		return;
 	}
+
+	url = toSystemPath(url);
 	if (cfg.sync) {
 		try {
 			var content = _fs.readFileSync(url, 'utf8');
@@ -26,7 +31,7 @@ function readWithAtmaIo (File, url, callback) {
 	if (cfg.sync) {
 		let content = File.read(url);
 		if (!content) {
-			console.error(`File read error ${url}`;
+			console.error(`File read error ${url}`);
 		}
 		callback(null, content);
 		return;
@@ -35,9 +40,10 @@ function readWithAtmaIo (File, url, callback) {
 	File.readAsync(url).then(content => callback(null, content), callback);
 }
 
-export function file_watch(path, callback) {
-	_unbind(path);
-	_watchers[path] = _fs.watch(path, callback);
+export function file_watch(url, callback) {
+	url = toSystemPath(url);
+	_unbind(url);
+	_watchers[url] = _fs.watch(url, callback);
 };
 
 export function fs_exists(path) {
@@ -52,4 +58,14 @@ function _unbind(path) {
 
 	_watchers[path].close();
 	_watchers[path] = null;
+}
+
+function toSystemPath (url) {
+	if (url.indexOf('file://') !== -1) {
+		return path_getFile(url);
+	} 
+	if (url[0] === '/') {
+		return url.substring(1);
+	}
+	return url;
 }

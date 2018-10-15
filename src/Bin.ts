@@ -1,71 +1,32 @@
-import { path_combine, path_getDir, path_isRelative } from "./utils/path";
+import { path_normalize } from "./utils/path";
 import { cfg } from './Config'
-import { isBrowser } from './global'
-import { global } from './global'
 import { ResourceType } from "./models/Type";
 import { Resource } from "./Resource";
 
-
-
+declare var global: any;
 
 export const Bin = {
-	add (type: ResourceType, id_: string, resource: Resource) {
-		const id = normalizeId(id_);
-		bin[type][id] = resource;
+	add (type: ResourceType, id: string, resource: Resource) {		
+		bin[type][normalize(id)] = resource;
 	},
 	find (url: string) {
-		var id = path_isRelative(url)
-			? '/' + url
-			: url;
-		for (var type_ in bin) {
-			var x = Bin.get(type_ as ResourceType, id);
-			if (x != null) {
-				return x;
-			}
-		}
-		return null;
-	},
+        let x = find(bin, url);
+        return x && x.resource || null;
+    },
 	remove (url: string) {
-		var resource = Bin.find(url);
-		if (resource == null) {
-			return;
-		}
-		for (var type_ in bin) {
-			clear(bin[type_], resource)
-		}
-		function clear(hash, x) {
-			for (var key in hash) {
-				if (hash[key] === x) {
-					hash[key] = null;
-				}
-			}
-		}
+        while (true) {
+            // clear if has multiple types
+            let x = find(bin, url);
+            if (x == null) break;            
+            bin[x.type][x.id] = null;
+        }
 	},
-	get (type: ResourceType, id_: string) {
-		if (id_ == null) {
-			return;
-		}
-		if (type == null) {
-			return Bin.find(id_);
-		}
-		var id = normalizeId(id_);
-		var x = bin[type][id];
-		if (x == null && /^https?:\//.test(id) && typeof location !== 'undefined') {
-			id = id.replace(location.origin, '');
-			x = bin[type][id];
-		}
-		if (x == null && cfg.lockedToFolder) {
-			let path = /^file:/.test(id)
-				? path_getDir(location.href)
-				: path_getDir(location.pathname);
-			var sub = path_combine('/', id.replace(path.toLowerCase(), ''));
-			x = bin[type][sub];
-		}
-		if (x == null && isBrowser && id[0] === '/') {
-			let path = path_combine(global.location.origin, id);
-			x = bin[type][path];
-		}
-		return x;
+	get (type: ResourceType, url: string) {
+        let x = findInType(bin, type, url);
+        if (x == null) {
+            x = find(bin, url);
+        }
+        return x && x.resource || null;	
 	}
 };
 
@@ -88,91 +49,60 @@ export function bin_removeDelegate(url) {
             clearTimeout(timeout);
 
         timeout = setTimeout(function () {
-
-            let triggerFn;
-            if (cfg.autoreload != null) {
-                triggerFn = function (state) {
-                    state !== false && cfg.autoreload.fileChanged(url, 'include');
-                };
-            }
-
-            bin_tryReload(url, triggerFn);
+            bin_tryReload(url, () => {
+                cfg.autoreload && cfg.autoreload.fileChanged(url, 'include')
+            });
 
         }, 150);
     };
 };
 
-export function bin_remove(path) {
-    if (path == null)
-        return;
-
-    var type,
-        id,
-        index,
-        res,
-        parents = []
-        ;
-
-    for (type in bin) {
-
-        for (id in bin[type]) {
-            res = bin[type][id];
-
-            index = id.indexOf(path);
-            if (index !== -1 && index === id.length - path.length) {
-
-                bin_clearCache(type, id);
-
-                var arr = res.parent && res.parent.url
-                    ? bin_remove(res.parent.url)
-                    : [res]
-                    ;
-                parents
-                    .push
-                    .apply(parents, arr);
-            }
-        }
-
+export function bin_remove(url) {
+    let x = find(bin, url);
+    if (x == null)  {
+        console.warn('<include:res:remove> Resource is not in cache', url);
+        return null;
+    } 
+    let { type, id, resource } = x;
+    if (global.io && global.io.File) {
+        global.io.File.clearCache(resource.url);
     }
-
-    if (parents.length === 0) {
-        console.warn('<include:res:remove> Resource is not in cache', path);
-    }
-
-    return parents;
+    bin[type][id] = null;  
+    let roots = clearParents(bin, resource);
+    return {
+        resource,
+        parents: roots
+    };
 };
 
 export function bin_tryReload(path, callback) {
-    var parents = bin_remove(path).filter(function (x) { return x != null; });
-    if (parents.length === 0) {
-        callback && callback(false);
+    var result = bin_remove(path);
+    if (result == null) {
+        callback(false);
         return;
     }
-
+    let { resource, parents } = result;
+    if (parents.length === 0) {
+        callback(true);
+        return;
+    }
     var count = parents.length,
         imax = count,
         i = -1;
 
     while (++i < imax) {
-        bin_load(parents[i])
-            .done(function () {
-
-                if (--count === 0 && callback)
-                    callback();
-            });
+        bin_load(resource, parents[i]).done(() => {
+            if (--count === 0) {
+                callback(true);
+            }
+        });
     }
 }
 
 // PRIVATE
 
-function bin_load(resource) {
-    if (resource == null)
-        return;
-
-    resource.content = null;
-    resource.exports = null;
-
-    var parent = resource.parent;
+function bin_load(resource: Resource, parent:Resource) {    
+    parent.exports = null;
     return parent
         .create(
             resource.type,
@@ -180,40 +110,88 @@ function bin_load(resource) {
             resource.namespace,
             resource.xpath
         )
+        .resource
         .on(4, parent.childLoaded);
 
 }
 
-function bin_clearCache(type, id) {
-    var resource = bin[type][id],
-        children = resource.includes
-        ;
-    delete bin[type][id];
-
-    if (children == null)
-        return;
-
-    children.forEach(function (child) {
-        var resource = child.resource,
-            type = resource.type,
-            id = resource.url
-            ;
-
-        if (id[0] !== '/')
-            id = '/' + id;
-
-        delete bin[type][id];
-    });
-}
-
-
-
-
-function normalizeId(id_) {
-	var id = id_;
-	var q = id.indexOf('?');
+function normalize(url) {
+	let id = path_normalize(url);
+	let q = id.indexOf('?');
 	if (q !== -1)
 		id = id.substring(0, q);
 
 	return id.toLowerCase();
+}
+function find (bins, url) {
+    if (url == null) {
+        return null;
+    }
+    url = normalize(url);
+    for (let type in bins) {
+        let x = findInType(bins, type, url);
+        if (x != null) {
+            return x;
+        }        
+    }
+    return null;
+}
+function findInType (bins, type, url) {
+    if (url == null) {
+        return null;
+    }
+    url = normalize(url);
+    let bin = bins[type];
+    for (let id in bin) {
+        if (id.indexOf(url) !== -1 || url.indexOf(id) !== -1) {
+            let resource = bin[id];
+            if (resource == null) {
+                continue;
+            }
+            return {
+                type,
+                id,
+                resource
+            };
+        }
+    }
+}
+function findParents (bins, resource: Resource) {
+    let arr = [];
+    for (let type in bins) {
+        let bin = bins[type];
+        for (let id in bin) {
+            let res: Resource = bin[id];
+            if (res == null) {
+                continue;
+            }
+            let children = res.includes;
+            if (children == null) {
+                continue;
+            }
+            for (let i = 0; i < children.length; i++) {
+                let child = children[i];
+                if (child.resource.url === resource.url) {
+                    arr.push({ resource: res, id, type });
+                    break;
+                }
+            }
+        }
+    }
+    return arr;
+}
+function clearParents (bins, resource: Resource, roots: Resource[] = [], handled: string[] = []) {
+    if (handled.indexOf(resource.url) > -1) {
+        return roots;
+    }
+    let parents = findParents(bins, resource);
+    if (parents.length === 0) {
+        roots.push(resource);
+        return roots;
+    }
+    parents.forEach(x => {
+        bins[x.type][x.id] = null;
+        handled.push(x.resource.url);
+        clearParents(bins, x.resource, roots, handled);
+    });    
 }
