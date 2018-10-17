@@ -70,18 +70,19 @@ export class Resource extends Include {
 		this.state = 0;
 		this.location = path_getDir(url);
 
-		Bin.add(type, id, this);
-		if (PathResolver.isNpm(this.url) === false) {
-			process(this);
-			return this;
-		}
-		if (isNode === true && PathResolver.isNodeNative(this.url)) {
-			this.exports = __require.nativeRequire(this.url);
+        Bin.add(type, id, this);
+
+        let isNpm = PathResolver.isNpm(this.url);
+        if (isNpm && isNode) {
+            this.exports = __require.nativeRequire(this.url);
 			this.readystatechanged(4);
 			return this;
-		}
-
-		var self = this;
+        }        
+		if (isNpm === false) {
+			process(this);
+			return this;
+        }
+		let self = this;
 		PathResolver.resolveNpm(this.url, this.type, this.parent, function (error, url) {
 			if (error) {
 				self.readystatechanged(4);

@@ -63,7 +63,6 @@ const _document = typeof document === 'undefined' ? null : document;
 
 export { _global as global, _module as module, _document as document };
 
-
 const __noConflict = {
 	require: _global.require,
 	module: _global.module,
