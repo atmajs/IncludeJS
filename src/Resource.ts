@@ -81,15 +81,14 @@ export class Resource extends Include {
 		if (isNpm === false) {
 			process(this);
 			return this;
-        }
-		let self = this;
-		PathResolver.resolveNpm(this.url, this.type, this.parent, function (error, url) {
+        }		
+		PathResolver.resolveNpm(this.url, this.type, this.parent, (error, url) => {
 			if (error) {
-				self.readystatechanged(4);
+				this.readystatechanged(4);
 				return;
 			}
-			self.url = url;
-			process(self);
+			this.url = url;
+			process(this);
 		});
 		return this;
 	}
