@@ -36,8 +36,9 @@ export class Resource extends Include {
 		}
 		if (id == null && url) {
 			id = url;
-		}
-		var resource = Bin.get(type, id);
+        }
+        
+		let resource = Bin.get(type, id);
 		if (resource) {
 			if (resource.state < 4 && type === 'js') {
 				ScriptStack.moveToParent(resource, parent);

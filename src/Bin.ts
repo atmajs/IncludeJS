@@ -143,7 +143,7 @@ function findInType (bins, type, url) {
     url = normalize(url);
     let bin = bins[type];
     for (let id in bin) {
-        if (id.indexOf(url) !== -1 || url.indexOf(id) !== -1) {
+        if (endsWith(id, url) || endsWith(url, id)) {
             let resource = bin[id];
             if (resource == null) {
                 continue;
@@ -155,6 +155,11 @@ function findInType (bins, type, url) {
             };
         }
     }
+}
+function endsWith (str: string, end: string) {
+    let sL = str.length;
+    let eL = end.length;
+    return sL >= eL && str.indexOf(end) === str.length - end.length;
 }
 function findParents (bins, resource: Resource) {
     let arr = [];
