@@ -3,6 +3,12 @@ declare var document: any;
 declare var module: any;
 declare var __eval: any;
 
+const _global = typeof global === 'undefined' ? null : global;
+const _module = typeof module === 'undefined' ? null : module;
+const _document = typeof document === 'undefined' ? null : document;
+const _require = typeof require === 'undefined' ? null : require;
+
+
 export const loadBags = [
 	document
 ];
@@ -19,17 +25,10 @@ export const emptyResponse = {
 
 
 export const __require = {
-    nativeRequire: null,
+    nativeRequire: _require,
     includeRequire: null 
 };
 
-
-if (global.require) {
-	let name = global.require.name;
-	if (name !== 'amd' && name !== 'commonjs') {
-		__require.nativeRequire = global.require;
-	}
-}
 
 let _isBrowser = false, _isNode = false;
 
@@ -57,11 +56,12 @@ export const handler = {
 	onerror: null
 };
 
-const _global = typeof global === 'undefined' ? null : global;
-const _module = typeof module === 'undefined' ? null : module;
-const _document = typeof document === 'undefined' ? null : document;
 
-export { _global as global, _module as module, _document as document };
+export { 
+    _global as global, 
+    _module as module, 
+    _document as document
+};
 
 const __noConflict = {
 	require: _global.require,
