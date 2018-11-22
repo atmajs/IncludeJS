@@ -1,6 +1,7 @@
 import { path_resolveCurrent, path_resolveUrl, path_combine } from './utils/path'
 import { Helper } from './Helper'
 import { ResourceType } from './models/Type'
+import { Routes } from './Routing';
 
 
 export const PathResolver = {
@@ -22,8 +23,17 @@ export const PathResolver = {
 	resolveBasic(path_, type, parent) {
 		if (type === 'js' && isNodeModuleResolution(path_)) {
 			return path_;
-		}
-		var path = path_resolveUrl(map(path_), parent);
+        }
+        let path = map(path_);
+        if (path[0] === '@') {
+            let i = path.indexOf('/');
+            let namespace = path.substring(0, i);
+            let template = path.substring(i + 1);
+            let info = Routes.resolve(namespace, template);
+            path = info.path;
+        }
+        
+        path = path_resolveUrl(path, parent);
 		return ensureExtension(path, type);
 	},
 	isNpm: isNodeModuleResolution,
@@ -116,10 +126,18 @@ function hasExt(path) {
 	return /\.[\w]{1,8}($|\?|#)/.test(path);
 }
 function isNodeModuleResolution(path){
-	return /^([\w\-]+)(\/[\w\-_]+)*$/.test(path);
+    let isNpm = /^(@?[\w\-]+)(\/[\w\-_]+)*$/.test(path);
+    if (isNpm === false) {
+        return false;
+    }
+    if (path[0] !== '@') {
+        return true;
+    }
+    let namespace = path.substring(0, path.indexOf('/'));
+    return Routes.routes[namespace] == null;
 }
 function nodeModuleResolve(current_, path, cb){
-	var name = /^([\w\-]+)/.exec(path)[0];
+	var name = /^(@?[\w\-]+)/.exec(path)[0];
 	var resource = path.substring(name.length + 1);
 	if (resource && hasExt(resource) === false) {
 		resource += '.js';
