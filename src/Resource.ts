@@ -11,6 +11,7 @@ import { Helper } from './Helper';
 import { LazyModule } from './LazyModule'
 import { ResourceType } from './models/Type'
 import { global } from './global'
+import { cfg } from './Config';
 
 
 export class Resource extends Include {
@@ -25,7 +26,7 @@ export class Resource extends Include {
 	exports: any
 	response: any
 
-	constructor(type = null, route = null, namespace = null, xpath = null, parent: Include = null, id = null, priority = null) {
+	constructor(type = null, route = null, namespace = null, xpath = null, parent: Resource = null, id = null, priority = null) {
 		super();
 
 
@@ -56,6 +57,8 @@ export class Resource extends Include {
 		this.namespace = namespace;
 		this.base = parent && parent.base;
 		this.childLoaded = this.childLoaded.bind(this);
+        this.response = {};
+        this.exports = {};
 
 		if (type == null) {
 			this.state = 3;
@@ -69,7 +72,8 @@ export class Resource extends Include {
 		}
 
 		this.state = 0;
-		this.location = path_getDir(url);
+        this.location = path_getDir(url);
+
 
         Bin.add(type, id, this);
 
@@ -143,17 +147,33 @@ export class Resource extends Include {
 		this.state = this.state >= 3
 			? 3
 			: 2;
-		this.response = null;
-
+		
 		if (this.includes == null) {
 			this.includes = [];
 		}
 
-		var resource = new Resource(type, route, namespace, xpath, this, id);
+        var resource = new Resource(type, route, namespace, xpath, this, id);
+        var isLazy = false;
+        if (this.url && cfg.lazy) {
+            outer: for (let str in cfg.lazy) {
+                let rgx = new RegExp(str);
+                if (rgx.test(this.url)) {
+                    let paths = cfg.lazy[str];
+                    for (let i = 0; i < paths.length; i++) {
+                        let rgxPath = new RegExp(paths[i]);
+                        if (rgxPath.test(resource.url)) {
+                            isLazy = true;
+                            break outer;
+                        }
+                    }
+                }
+            }
+        }
 		var data = {
 			resource: resource,
 			route: route,
-			isCyclic: resource.contains(this.url)
+            isCyclic: isLazy || resource.contains(this.url),
+            isLazy: isLazy
 		};
 		this.includes.push(data);
 		return data;
@@ -210,21 +230,30 @@ export class Resource extends Include {
 			that.readystatechanged(3);
 		};
 	}
-	contains(url, refCache = []) {
+	contains(url, stack: Resource[] = [], refCache = {}) {
 
-		refCache.push(this);
+        refCache[this.url] = this;
 		var arr = this.includes;
 		if (arr == null) {
 			return false;
-		}
+        }
+        stack = [...stack, this];
 		for (var i = 0; i < arr.length; i++) {
-			if (refCache.indexOf(arr[i].resource) !== -1) {
+            if (arr[i].isLazy) {
+                continue;
+            }
+			if (arr[i].resource.url in refCache) {
 				continue;
 			}
 			if (arr[i].resource.url === url) {
+                if (cfg.logCyclic) {
+                    let req = stack[0].url;
+                    let chain = stack.slice(1).map((x, i) => `${i} → ${x.url}`).join('\n');
+                    console.log(`Caution: Cyclic dependency detected. In ${url} was ${req} imported. But this looped chain found: \n${chain}`);
+                }
 				return true;
 			}
-			if (arr[i].resource.contains(url, refCache)) {
+			if (arr[i].resource.contains(url, stack, refCache)) {
 				return true;
 			}
 		}

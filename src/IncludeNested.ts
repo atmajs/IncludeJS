@@ -4,4 +4,5 @@ export interface IncludeNested {
     resource: Resource
     route: any
     isCyclic: boolean
+    isLazy: boolean
 }

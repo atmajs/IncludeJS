@@ -110,21 +110,17 @@ export class IncludeDeferred {
 				: includes.length
 				;
 
-		if (length > 0 && this.response == null){
-			this.response = {};
+		if (length > 0){
+			
+			for(var i = 0; i < length; i++){
+				var x = includes[i];
+				var resource = x.resource;
+                var route = x.route;
+                var type = resource.type;
 
-			var resource,
-				route;
-
-			for(var i = 0, x; i < length; i++){
-				x = includes[i];
-				resource = x.resource;
-				route = x.route;
-
-				if (typeof resource.exports === 'undefined')
-					continue;
-
-				var type = resource.type;
+				if (resource.exports == null) {
+                    continue;
+                }
 				switch (type) {
 				case 'js':
 				case 'load':

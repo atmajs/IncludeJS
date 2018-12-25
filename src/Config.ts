@@ -4,6 +4,7 @@ import { CommonJS } from './modules/common'
 import { Amd } from './modules/amd'
 import { JSONParser } from './loader/json'
 import { LoadBundleParser } from './loader/load'
+import { Routes } from './Routing';
 
 
 declare var global: any;
@@ -33,9 +34,14 @@ class Config {
 	eval = document == null
 
 	es6Exports = false
-	server = false
+    server = false
+    logCyclic = true
 
-	autoreload: { fileChanged: Function } = null
+    autoreload: { fileChanged: Function } = null
+    
+    lazy: {
+        [rgx: string]: string[]
+    } = null
 
 	call(ctx, a, b) {
 		if (a == null) {
@@ -83,7 +89,12 @@ function set(cfg, key, value) {
 			return;
 		case 'extentionTypes':
 			PathResolver.configExt({ types: value });
-			return;
+            return;
+        case 'routes': 
+            for (var pfx in value) {
+                Routes.register(pfx, value[pfx]);
+            }
+            return;
 	}
 	if ((key in cfg) === false) {
 		console.warn('Not supported config', key);
