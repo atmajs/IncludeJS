@@ -118,9 +118,6 @@ export class IncludeDeferred {
                 var route = x.route;
                 var type = resource.type;
 
-				if (resource.exports == null) {
-                    continue;
-                }
 				switch (type) {
 				case 'js':
 				case 'load':

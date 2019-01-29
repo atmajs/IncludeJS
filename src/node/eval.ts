@@ -43,11 +43,20 @@ export function internalEval (source: string, include, isGlobalCtx: boolean = fa
         console.error(e.stack);
     }
 
-    if (include.exports == null) {
+    if (isEmpty(include.exports)) {
         var exports = module.exports;
 
-        if (typeof exports !== 'object' || Object.keys(exports).length) {
+        if (typeof exports !== 'object' || isEmpty(exports) === false) {
             include.exports = module.exports;
         }
     }
 };
+
+function isEmpty (exports) {
+    for (var key in exports) {
+        if (key in Object.prototype === false) {
+            return false;
+        }
+    }
+    return true;
+}

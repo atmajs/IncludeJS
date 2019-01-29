@@ -1,6 +1,6 @@
 #### IncludeJS
 
-_The Resource Loader for Browsers and NodeJS_
+_The Resource Loader for Browsers and NodeJS_ with `AMD` and `CommonJS` support.
 
 [![Build Status](https://travis-ci.org/atmajs/IncludeJS.svg?branch=master)](https://travis-ci.org/atmajs/IncludeJS)
 [![NPM version](https://badge.fury.io/js/includejs.svg)](http://badge.fury.io/js/includejs)
@@ -10,7 +10,8 @@ Features:
 
 - Loads any content: scripts, styles, ajax
 - Development friendly: incremental builds are not required
-- Production: Build the application into single html, js and css @see the [Atma.Toolkit](https://github.com/atmajs/Atma.Toolkit)
+- **ES6 Imports**    
+- Production: Build the application into single html, js and css @see the [app-bundler](https://github.com/atmajs/app-bundler)
 - Inline Dependency Declaration
 	
 	_No external files, such as package.json or config.js_

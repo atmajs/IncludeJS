@@ -35,7 +35,7 @@ class Config {
 
 	es6Exports = false
     server = false
-    logCyclic = true
+    logCyclic = false
 
     autoreload: { fileChanged: Function } = null
     

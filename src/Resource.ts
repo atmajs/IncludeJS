@@ -249,7 +249,12 @@ export class Resource extends Include {
                 if (cfg.logCyclic) {
                     let req = stack[0].url;
                     let chain = stack.slice(1).map((x, i) => `${i} → ${x.url}`).join('\n');
-                    console.log(`Caution: Cyclic dependency detected. In ${url} was ${req} imported. But this looped chain found: \n${chain}`);
+                    let isDirect = stack.length <= 1;
+                    let message = `Caution: ${isDirect ? 'Direct ' : ''} cyclic dependency detected. In ${url} was ${req} imported.`
+                    if (isDirect === false) {
+                        message += ` The loop chain is: ${chain}`
+                    }
+                    console.log(message);
                 }
 				return true;
 			}
