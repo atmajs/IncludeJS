@@ -1,7 +1,7 @@
 {
     "name": "includejs",
     "description": "Resource Loader",
-    "version": "0.15.9",
+    "version": "0.15.11",
     "homepage": "http://atmajs.com/include",
     "contributors": [],
     "author": "Alex Kit <alex.kit@atmajs.com>",
@@ -30,7 +30,8 @@
     "scripts": {
         "test": "atma test",
         "build": "app-bundler",
-        "watch": "app-bundler --watch"
+        "watch": "app-bundler --watch",
+        "release": "atma bump && npm run build && git add -A && git commit -am \"bump\" && git push && npm publish"
     },
     "keywords": [],
     "engines": {
