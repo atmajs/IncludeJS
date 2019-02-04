@@ -89,8 +89,14 @@ export function path_resolveUrl(url, parent) {
             return path_collapse(url);
         }
     }
-    if (url[0] !== '/' && parent != null && parent.location != null) {
-        url = path_combine(parent.location, url);
+    if (url[0] !== '/') {
+        if (parent != null && parent.location != null) {
+            url = path_combine(parent.location, url);
+        } else {
+            let current = path_resolveCurrent();
+            let dir = path_getDir(current);
+            url = path_combine(dir, url);
+        }
     }
     if (url[0] !== '/' && reg_hasProtocol.test(url) === false) {
         url = '/' + url;
