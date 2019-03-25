@@ -24,7 +24,7 @@
     "devDependencies": {
         "@types/node": "^10.3.0",
         "app-bundler": "0.0.52",
-        "atma": "^0.10.95",
+        "atma": "^0.11.21",
         "maskjs": "^0.64.57"
     },
     "scripts": {

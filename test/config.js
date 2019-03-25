@@ -4,23 +4,22 @@ module.exports = {
 		'node': {
 			exec: 'node',
 			env: [ 'lib/include.node.module.js::includeTest' ],
-			tests: 'test/**.node.test'
+			tests: 'test/**.node.spec.ts'
 		},
 		'dom': {
 			exec: 'dom',
 			env: [ 'lib/include.module.js::includeTest' ],
-			tests: 'test/**.dom.test'
+			tests: 'test/**.dom.spec.ts'
 		},
 		'node-modules': {
 			exec: 'node',
 			env: [ 'lib/include.node.module.js::includeTest' ],
-			tests: 'test/modules/**.test'
+			tests: 'test/modules/**.spec.ts'
 		},
 		'dom-modules': {
 			exec: 'dom',
 			env: [ 'lib/include.module.js::includeTest' ],
-			tests: 'test/modules/**.test'
+			tests: 'test/modules/**.spec.ts'
 		}
 	}
-
-}
+};
