@@ -58,7 +58,7 @@ function loader_completeDelegate(callback, resource) {
 	};
 }
 
-function loader_process(source, resource, loader, callback) {
+function loader_process(source: string | any, resource: Resource, loader, callback) {
 	if (loader.process == null) {
 		callback(resource, source);
 		return;
@@ -92,8 +92,7 @@ function tryLoad(resource, loader, callback) {
 export const CustomLoader = {
 	load: function (resource, callback) {
 
-		var loader = createLoader(resource.url);
-
+		let loader = createLoader(resource.url);
 		if (loader.process) {
 			tryLoad(resource, loader, callback);
 			return;
@@ -108,9 +107,15 @@ export const CustomLoader = {
 			return false;
 		}
 
-		var ext = path_getExtension(resource.url);
-
-		return cfg.loader.hasOwnProperty(ext);
+		let ext = path_getExtension(resource.url);
+        let loader = cfg.loader[ext];
+        if (loader == null) {
+            return false;
+        }
+        if (loader.supports && loader.supports(resource) === false) {
+            return false;
+        }
+		return true;
 	},
 
 	/**

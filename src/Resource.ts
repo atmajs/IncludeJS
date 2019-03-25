@@ -39,12 +39,16 @@ export class Resource extends Include {
 			id = url;
         }
         
-		let resource = Bin.get(type, id);
+        let resource = Bin.get(type, id);
+        let isOfOtherType = false;
 		if (resource) {
-			if (resource.state < 4 && type === 'js') {
+			if (type === 'js' && resource.state < 4) {
 				ScriptStack.moveToParent(resource, parent);
-			}
-			return resource;
+            }
+            isOfOtherType = type != null && resource.type === 'load' && type !== 'load';
+            if (isOfOtherType === false) {
+                return resource;
+            }
 		}
 
 		this.id = id;
@@ -74,8 +78,11 @@ export class Resource extends Include {
 		this.state = 0;
         this.location = path_getDir(url);
 
-
         Bin.add(type, id, this);
+
+        if (isOfOtherType) {            
+            onXHRCompleted(this, resource.exports);
+        }
 
         let isNpm = PathResolver.isNpm(this.url);
         if (isNpm && isNode) {
@@ -368,7 +375,8 @@ function onXHRCompleted(resource, response) {
 			ScriptStack.touch();
 			return;
 		case 'load':
-		case 'ajax':
+        case 'ajax':
+        case 'mask':
 			resource.exports = response;
 			break;
 		case 'lazy':
@@ -380,26 +388,26 @@ function onXHRCompleted(resource, response) {
 			tag.innerHTML = response;
 			document.getElementsByTagName('head')[0].appendChild(tag);
 			break;
-		case 'mask':
-			if (response) {
-				var mask = global.mask;
-				if (mask == null) {
-					mask = global.require('maskjs');
-				}
-				mask
-					.Module
-					.registerModule(response, { path: resource.url })
-					.done(function (module) {
-						resource.exports = module.exports;
-						resource.readystatechanged(4);
-					})
-					.fail(function (error) {
-						console.error(error);
-						resource.readystatechanged(4);
-					});
-				return;
-			}
-			break;
+		// case 'mask':
+		// 	if (response) {
+		// 		var mask = global.mask;
+		// 		if (mask == null) {
+		// 			mask = global.require('maskjs');
+		// 		}
+		// 		mask
+		// 			.Module
+		// 			.registerModule(response, { path: resource.url })
+		// 			.done(function (module) {
+		// 				resource.exports = module.exports;
+		// 				resource.readystatechanged(4);
+		// 			})
+		// 			.fail(function (error) {
+		// 				console.error(error);
+		// 				resource.readystatechanged(4);
+		// 			});
+		// 		return;
+		// 	}
+		// 	break;
 	}
 
 	resource.readystatechanged(4);

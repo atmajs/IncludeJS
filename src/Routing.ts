@@ -34,13 +34,7 @@ export class RoutesCtor {
 		var questionMark = template.indexOf('?'),
 			aliasIndex = template.indexOf('::'),
 			alias,
-			path,
-			query = '',
-			route,
-			i,
-			x,
-			length,
-			arr;
+			query = '';
 
 		if (aliasIndex !== -1) {
 			alias = template.substring(aliasIndex + 2);
@@ -52,8 +46,8 @@ export class RoutesCtor {
 			template = template.substring(0, questionMark);
 		}
 
-		var slugs  = template.split('/');
-		route = this.routes[namespace];
+		let slugs  = template.split('/');
+		let route = this.routes[namespace];
 
 		if (route == null) {
 			return {
@@ -63,21 +57,19 @@ export class RoutesCtor {
 			};
 		}
 
-		path = route[0];
+		let path = route[0];
 
-		for (i = 1; i < route.length; i++) {
+		for (let i = 1; i < route.length; i++) {
 			if (i % 2 === 0) {
 				path += route[i];
 			} else {
 				/** if template provides less "breadcrumbs" than needed -
 				 * take always the last one for failed peaces */
 
-				var index = route[i] << 0;
+				let index = parseFloat(route[i]);
 				if (index > slugs.length - 1) {
 					index = slugs.length - 1;
 				}
-
-
 
 				path += slugs[index];
 

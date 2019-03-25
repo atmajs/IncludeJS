@@ -4,6 +4,7 @@ import { CommonJS } from './modules/common'
 import { Amd } from './modules/amd'
 import { JSONParser } from './loader/json'
 import { LoadBundleParser } from './loader/load'
+import { MaskLoader } from './loader/mask'
 import { Routes } from './Routing';
 
 
@@ -26,7 +27,8 @@ class Config {
 		//#if (!NODE)
 		'json': JSONParser,
 		//#endif
-		'load': LoadBundleParser,
+        'load': LoadBundleParser,
+        'mask': MaskLoader,
 	}
 	version: string
 	lockedToFolder = isFileProtocol
