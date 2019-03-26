@@ -5,7 +5,7 @@
 	let includeModule = require('../../lib/include.node.module.js');
 	let include = includeModule
 		.includeLib
-		.instance(__filename);
+		.instance(`file://${__filename}`);
 
 	
 

@@ -1,78 +1,73 @@
-(function () {
+let global = window;
+let include = includeModule
+    .include
+    .instance('/test/include.dom.test');
 
-	window.global = window;
+include.routes({
+    waterfall: '/test/letter/waterfall/{0}/{1}.js',
+    exports: '/test/letter/exports/{0}.js',
+    condition: '/test/letter/condition/{0}.js',
+});
 
-	let include = null;
+UTest({
+    $before: function() {
+       
+    },
+    'Waterfall': function(done) {
 
-	UTest({
-		$before: function() {
-			include = includeTest
-				.include
-				.instance('/test/include.dom.test');
+        global.letters = {};
 
-			include.routes({
-				waterfall: '/test/letter/waterfall/{0}/{1}.js',
-				exports: '/test/letter/exports/{0}.js',
-				condition: '/test/letter/condition/{0}.js',
-			});
-		},
-		'Waterfall': function(done) {
+        include.js({
+            waterfall: 'a'
+        }).done(function() {
+            deepEq(letters, {
+                A: {
+                    loaded: true,
+                    a: {
+                        loaded: true
+                    }
+                },
+                B: {
+                    loaded: true,
+                    b: {
+                        loaded: true
+                    }
+                },
+                C: {
+                    loaded: true,
+                    c: {
+                        loaded: true
+                    }
+                }
+            }, "Waterfall failed");
+            done();
+        });
+    },
+    'Exports': function(done) {
+        include.js({
+            exports: ['a::A', 'b::B']
+        }).done(function(resp) {
+            deepEq(resp.A, {
+                a: 'a'
+            }, 'Response from a.js::A is not "a" |');
 
-			global.letters = {};
+            deepEq(resp.B, {
+                b: 'b',
+                c: 'c'
+            }, 'Response from b.js is wrong');
 
-			include.js({
-				waterfall: 'a'
-			}).done(function() {
-				deepEq(letters, {
-					A: {
-						loaded: true,
-						a: {
-							loaded: true
-						}
-					},
-					B: {
-						loaded: true,
-						b: {
-							loaded: true
-						}
-					},
-					C: {
-						loaded: true,
-						c: {
-							loaded: true
-						}
-					}
-				}, "Waterfall failed");
-				done();
-			});
-		},
-		'Exports': function(done) {
-			include.js({
-				exports: ['a::A', 'b::B']
-			}).done(function(resp) {
-				deepEq(resp.A, {
-					a: 'a'
-				}, 'Response from a.js::A is not "a" |');
+            done();
+        });
+    },
+    'Condition': function(done) {
+        include.instance().js({
+            condition: 'a?letter=b::Letter'
+        }).done(function(resp) {
+            deepEq(resp, {
+                Letter: 'b'
+            }, 'Condition load failed');
 
-				deepEq(resp.B, {
-					b: 'b',
-					c: 'c'
-				}, 'Response from b.js is wrong');
-
-				done();
-			});
-		},
-		'Condition': function(done) {
-			include.instance().js({
-				condition: 'a?letter=b::Letter'
-			}).done(function(resp) {
-				deepEq(resp, {
-					Letter: 'b'
-				}, 'Condition load failed');
-
-				done();
-			})
-		}
-	})
-
-}());
+            done();
+        })
+    }
+})

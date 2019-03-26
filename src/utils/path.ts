@@ -31,8 +31,8 @@ export function path_getExtension(path) {
 }
 
 export function path_resolveCurrent() {
-    if (document == null) {
-        return global.module == null ? '' : path_win32Normalize(global.module.parent.filename);
+    if (document == null) {        
+        return global.module == null ? '' : path_win32Normalize(process.cwd() + '/');
     }
     var scripts = document.getElementsByTagName('script'),
         last = scripts[scripts.length - 1],
@@ -112,7 +112,7 @@ export function path_isRelative(path) {
             // /
             return false;
         case 102:
-        // f
+            // f
         case 104:
             // h
             return reg_hasProtocol.test(path) === false;
