@@ -29,6 +29,7 @@
     },
     "scripts": {
         "test": "atma test",
+        "server": "atma server",
         "build": "app-bundler",
         "watch": "app-bundler --watch",
         "release": "atma bump && npm run build && git add -A && git commit -am \"bump\" && git push && npm publish"
