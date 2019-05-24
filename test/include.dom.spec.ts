@@ -10,10 +10,8 @@ include.routes({
 });
 
 UTest({
-    $before: function() {
-       
-    },
-    'Waterfall': function(done) {
+   
+    'Waterfall' (done) {
 
         global.letters = {};
 
@@ -43,7 +41,7 @@ UTest({
             done();
         });
     },
-    'Exports': function(done) {
+    'Exports' (done) {
         include.js({
             exports: ['a::A', 'b::B']
         }).done(function(resp) {
@@ -59,7 +57,7 @@ UTest({
             done();
         });
     },
-    'Condition': function(done) {
+    'Condition' (done) {
         include.instance().js({
             condition: 'a?letter=b::Letter'
         }).done(function(resp) {
