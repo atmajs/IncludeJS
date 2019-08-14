@@ -1,7 +1,8 @@
 import { cfg } from '../Config';
-import { global } from '../global';
+import { global, document } from '../global';
 
-const reg_subFolder = /([^\/]+\/)?\.\.\//;
+const reg_subFolder = /(?<!\w+:\/+)\/[^\/]+\/\.\.\//; // /([^\/]+\/)?\.\.\//;
+const reg_dottedFolder = /\/\.\.\//;
 const reg_hasProtocol = /^(file|https?):/i;
 
 export function path_getDir(path) {
@@ -148,9 +149,17 @@ export function path_combine(...args) {
 }
 
 function path_collapse(url) {
-    while (url.indexOf('../') !== -1) {
-        url = url.replace(reg_subFolder, '');
-    }
+    let path = url;
+    do {
+        url = path;
+        path = path.replace(reg_subFolder, '/');
+    } while (path !== url)
+    
+    do {
+        url = path;
+        path = path.replace(reg_dottedFolder, '/');
+    } while (path !== url)
+    
 
-    return url.replace(/\/\.\//g, '/');
+    return path.replace(/\/\.\//g, '/');
 }

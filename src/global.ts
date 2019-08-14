@@ -10,7 +10,7 @@ const _require = typeof require === 'undefined' ? null : require;
 
 
 export const loadBags = [
-	document
+	_document
 ];
 
 export const IncludeLib = {

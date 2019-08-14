@@ -1,3 +1,4 @@
+import { document } from './global'
 import { CustomLoader, inject as initializeLoader } from './CustomLoader'
 import { PathResolver } from './PathResolver'
 import { CommonJS } from './modules/common'
