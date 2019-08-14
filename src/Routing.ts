@@ -16,8 +16,7 @@ export class RoutesCtor {
 
         if (typeof route === 'string') {
             if (path_isRelative(route)) {
-                var res = currentInclude || include, 
-                    location = res.location || path_getDir(res.url || path_resolveCurrent());
+                var location = path_getDir(path_resolveCurrent());
                 if (path_isRelative(location)) {
                     location = '/' + location;
                 }
