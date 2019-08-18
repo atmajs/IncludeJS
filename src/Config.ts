@@ -23,7 +23,8 @@ const isFileProtocol = document && document.location && document.location.protoc
 
 class Config {
 
-	path: string = ''
+    path: string = ''
+    base: string
 	loader: any = {
 		//#if (!NODE)
 		'json': JSONParser,

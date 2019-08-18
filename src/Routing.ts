@@ -1,6 +1,7 @@
-import { path_isRelative, path_getDir, path_resolveCurrent } from './utils/path'
+import { path_isRelative, path_getDir, path_resolveCurrent, path_combine } from './utils/path'
 import { ResourceType } from './models/Type';
 import { PackageArgument } from './Resource';
+import { cfg } from './Config';
 
 declare var include: any;
 
@@ -23,7 +24,11 @@ export class RoutesCtor {
                 route = location + route;
             }
             if (route[0] === '/') {
-                route = path_getDir(path_resolveCurrent()) + route;
+                let base = cfg.base;
+                if (base == null) {
+                    base = path_getDir(path_resolveCurrent());
+                }
+                route = path_combine(base, route);
             }
         }
 
