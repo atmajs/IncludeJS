@@ -1,8 +1,6 @@
 import { cfg } from '../Config';
-import { global, document } from '../global';
+import { global, document, isNode } from '../global';
 
-const reg_subFolder = /(?<!\w+:\/+)\/[^\/]+\/\.\.\//; // /([^\/]+\/)?\.\.\//;
-const reg_dottedFolder = /\/\.\.\//;
 const reg_hasProtocol = /^(file|https?):/i;
 
 export function path_getDir(path) {
@@ -29,6 +27,21 @@ export function path_getExtension(path) {
     }
 
     return path.substring(path.lastIndexOf('.', query) + 1, query);
+}
+
+export function path_resolveBase () {
+    //#if (NODE)
+    if (isNode) {
+        return path_win32Normalize(process.cwd() + '/');
+    }
+    //#endif
+    let doc = document as Document;
+    let origin = document.location.origin;
+    let path = cfg.base || '/';
+    if (cfg.lockedToFolder) {
+        path = doc.location.pathname;
+    }
+    return path_combine(origin, path, '/');
 }
 
 export function path_resolveCurrent() {
@@ -73,7 +86,7 @@ export function path_win32Normalize(path) {
 
 export function path_resolveUrl(url, parent) {
     if (reg_hasProtocol.test(url)) {
-        return path_collapse(url);
+        return Path.collapse(url);
     }
     if (url.substring(0, 2) === './') {
         url = url.substring(2);
@@ -81,13 +94,13 @@ export function path_resolveUrl(url, parent) {
     if (url[0] === '/' && parent != null && parent.base != null) {
         url = path_combine(parent.base, url);
         if (reg_hasProtocol.test(url)) {
-            return path_collapse(url);
+            return Path.collapse(url);
         }
     }
     if (url[0] === '/' && cfg.path && url.indexOf(cfg.path) !== 0) {
         url = path_combine(cfg.path, url);
         if (reg_hasProtocol.test(url)) {
-            return path_collapse(url);
+            return Path.collapse(url);
         }
     }
     if (url[0] !== '/') {
@@ -102,7 +115,7 @@ export function path_resolveUrl(url, parent) {
     if (url[0] !== '/' && reg_hasProtocol.test(url) === false) {
         url = '/' + url;
     }
-    return path_collapse(url);
+    return Path.collapse(url);
 }
 
 export function path_isRelative(path) {
@@ -148,18 +161,35 @@ export function path_combine(...args) {
     return out;
 }
 
-function path_collapse(url) {
-    let path = url;
-    do {
-        url = path;
-        path = path.replace(reg_subFolder, '/');
-    } while (path !== url)
-    
-    do {
-        url = path;
-        path = path.replace(reg_dottedFolder, '/');
-    } while (path !== url)
-    
+namespace Path {
+    const rgx_host = /^\w+:\/\/[^\/]+\//;
+    const rgx_subFolder = /\/?([^\/]+\/)?\.\.\//;
+    const rgx_dottedFolder = /\/\.\.\//;
 
-    return path.replace(/\/\.\//g, '/');
+
+    export function collapse (url: string) {
+        let host = rgx_host.exec(url);
+        if (host) {
+            url = url.replace(host[0], '');
+        }
+        let path = url;
+        do {
+            url = path;
+            path = path.replace(rgx_subFolder, '/');
+        } while (path !== url)
+
+        
+        do {
+            url = path;
+            path = path.replace(rgx_dottedFolder, '/');
+        } while (path !== url)
+
+        path = path.replace(/\/\.\//g, '/');
+
+        if (host) {
+            return host[0] + path;
+        }
+        return path;
+    }
+
 }

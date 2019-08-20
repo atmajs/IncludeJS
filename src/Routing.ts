@@ -1,4 +1,4 @@
-import { path_isRelative, path_getDir, path_resolveCurrent, path_combine } from './utils/path'
+import { path_isRelative, path_getDir, path_resolveCurrent, path_combine, path_resolveBase } from './utils/path'
 import { ResourceType } from './models/Type';
 import { PackageArgument } from './Resource';
 import { cfg } from './Config';
@@ -24,10 +24,7 @@ export class RoutesCtor {
                 route = location + route;
             }
             if (route[0] === '/') {
-                let base = cfg.base;
-                if (base == null) {
-                    base = path_getDir(path_resolveCurrent());
-                }
+                let base = path_resolveBase();
                 route = path_combine(base, route);
             }
         }
