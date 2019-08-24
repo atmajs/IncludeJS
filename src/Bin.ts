@@ -82,7 +82,7 @@ export function bin_tryReload(path, callback) {
         return;
     }
     let { resource, parents } = result;
-    if (parents.length === 0) {
+    if (parents == null || parents.length === 0) {
         callback(true);
         return;
     }
