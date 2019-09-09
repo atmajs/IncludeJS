@@ -140,8 +140,11 @@ function findInType (bins, type, url) {
     if (url == null) {
         return null;
     }
-    url = normalize(url);
     let bin = bins[type];
+    if (url in bin) {
+        return bin[url];
+    }
+    url = normalize(url);
     for (let id in bin) {
         if (endsWith(id, url) || endsWith(url, id)) {
             let resource = bin[id];
