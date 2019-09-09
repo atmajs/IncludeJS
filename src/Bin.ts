@@ -132,17 +132,21 @@ function find (bins, url) {
         let x = findInType(bins, type, url);
         if (x != null) {
             return x;
-        }        
+        }
     }
     return null;
 }
 function findInType (bins, type, url) {
-    if (url == null) {
+    if (url == null || type == null) {
         return null;
     }
     let bin = bins[type];
     if (url in bin) {
-        return bin[url];
+        return {
+            type,
+            id: url,
+            resource: bin[url]
+        };
     }
     url = normalize(url);
     for (let id in bin) {
