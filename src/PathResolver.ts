@@ -144,9 +144,9 @@ function nodeModuleResolve(current_, path, cb){
     }
     var current = current_.replace(/[^\/]+\.[\w]{1,8}$/, '');
     function check(){
-        var nodeModules = current + '/node_modules/' + name + '/';
-        var pckg = nodeModules + 'package.json';
-        Helper.XHR_LOAD(pckg, function(error, text){
+        const dir = path_combine(current, '/node_modules/', name, '/');
+        const filename = dir + 'package.json';
+        Helper.XHR_LOAD(filename, function(error, text){
             var json;
             if (text) {
                 if (typeof text === 'string') {
@@ -157,7 +157,7 @@ function nodeModuleResolve(current_, path, cb){
                 }
             }
             if (error != null || json == null) {
-                var next = current.replace(/[^\/]+\/?$/, '');
+                let next = current.replace(/[^\/]+\/?$/, '');
                 if (next === current) {
                     cb('Not found');
                     return;
@@ -167,15 +167,14 @@ function nodeModuleResolve(current_, path, cb){
                 return;
             }
             if (resource) {
-                cb(null, nodeModules + resource);
+                cb(null, path_combine(dir, resource));
                 return;
             }
             if (json.main) {
-                combineMain(nodeModules, json.main, cb);
+                combineMain(dir, json.main, cb);
                 return;
             }
-
-            cb(null, path_combine(nodeModules, 'index.js'));
+            cb(null, dir + 'index.js');
         });
     }
     check();
