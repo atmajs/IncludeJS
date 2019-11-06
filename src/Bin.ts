@@ -64,7 +64,7 @@ export function bin_remove(url) {
         return null;
     } 
     let { type, id, resource } = x;
-    if (global.io && global.io.File) {
+    if (resource != null && global.io && global.io.File) {
         global.io.File.clearCache(resource.url);
     }
     bin[type][id] = null;  
