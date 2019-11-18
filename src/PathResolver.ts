@@ -6,14 +6,14 @@ import { Routes } from './Routing';
 
 export const PathResolver = {
     configMap(map){
-        for(var key in map) {
-            _map[key] = map;
+        for(let key in map) {
+            _map[key] = map[key];
         }
     },
     configExt(config){
-        var def = config.def,
-            types = config.types;
-        for (var key in def) {
+        let def = config.def;
+        let types = config.types;
+        for (let key in def) {
             _ext[key] = def[key];
         }
         for(var key in types) {

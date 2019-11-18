@@ -99,6 +99,7 @@ export class Resource extends Include {
                 return;
             }
             this.url = url;
+            this.location = path_getDir(url);
             process(this);
         });
         return this;
