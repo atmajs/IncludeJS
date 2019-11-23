@@ -85,6 +85,7 @@ export function path_win32Normalize(path) {
 }
 
 export function path_resolveUrl(url, parent) {
+    url = path_normalize(url);
     if (reg_hasProtocol.test(url)) {
         return Path.collapse(url);
     }
