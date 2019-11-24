@@ -24,7 +24,7 @@ const isFileProtocol = document && document.location && document.location.protoc
 class Config {
 
     path: string = ''
-    base: string
+    base: string = null
 	loader: any = {
 		//#if (!NODE)
 		'json': JSONParser,
@@ -32,7 +32,7 @@ class Config {
         'load': LoadBundleParser,
         'mask': MaskLoader,
 	}
-	version: string
+	version: string = null
 	lockedToFolder = isFileProtocol
 	sync = false
 	eval = document == null
@@ -69,7 +69,7 @@ class Config {
 	}
 };
 
-function set(cfg, key, value) {
+function set(cfg: Config, key: string, value: any) {
 	switch (key) {
 		case 'loader':
 			for (var x in value) {
@@ -95,7 +95,7 @@ function set(cfg, key, value) {
 			PathResolver.configExt({ types: value });
             return;
         case 'routes': 
-            for (var pfx in value) {
+            for (let pfx in value) {
                 Routes.register(pfx, value[pfx]);
             }
             return;

@@ -13,7 +13,7 @@ export class RoutesCtor {
     /**
      *    @param route {String} = Example: '.reference/libjs/{0}/{1}.js'
      */
-    register(namespace: string, route: string | string[], currentInclude) {
+    register(namespace: string, route: string | string[]) {
 
         if (typeof route === 'string') {
             if (path_isRelative(route)) {
