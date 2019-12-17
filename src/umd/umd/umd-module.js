@@ -14,7 +14,6 @@
 	
 	factory(_global, _module, _module.exports, _global.document);
 
-	_global.include = _module.exports.include;
 	_global.includeLib = _module.exports.includeLib;
 	_global.includeModule = _module.exports;
 

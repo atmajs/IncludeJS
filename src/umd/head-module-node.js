@@ -1,1 +1,1 @@
-// import ./umd/umd.js
+// import ./umd/umd-module.js
