@@ -11,7 +11,7 @@ export const Amd = {
 declare var require: any;
 
 function enable() {
-    var define = (global.define = function(a, b, c) {
+    const define = (global.define = function(a, b, c) {
         var i = arguments.length,
             args = new Array(i);
         while (--i > -1) args[i] = arguments[i];
@@ -20,7 +20,8 @@ function enable() {
         var module = global.include;
         fn(module, a, b, c);
     });
-
+    (define as any).amd = true;
+    
     const __includeRequire = (global.require = __require.includeRequire = function amd() {
         if (isNode && __require.nativeRequire && arguments.length === 1) {
             return __require.nativeRequire.apply(null, arguments);
