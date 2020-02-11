@@ -1,7 +1,7 @@
 import { cfg } from '../Config';
-import { global, document, isNode } from '../global';
+import { global, document, isNode, isBrowser } from '../global';
 
-const reg_hasProtocol = /^(file|https?):/i;
+const reg_hasProtocol = /^[\w\-]{2,}:\/\//i;
 
 export function path_getDir(path) {
     return path.substring(0, path.lastIndexOf('/') + 1);
@@ -120,20 +120,15 @@ export function path_resolveUrl(url, parent) {
 }
 
 export function path_isRelative(path) {
-    var c = path.charCodeAt(0);
-
+    const c = path.charCodeAt(0);
     switch (c) {
+        case 46: /* . */
+            return true;
         case 47:
             // /
             return false;
-        case 102:
-            // f
-        case 104:
-            // h
-            return reg_hasProtocol.test(path) === false;
     }
-
-    return true;
+    return reg_hasProtocol.test(path) === false;
 }
 
 export function path_combine(...args) {
@@ -164,7 +159,7 @@ export function path_combine(...args) {
 
 namespace Path {
     const rgx_host = /^\w+:\/\/[^\/]+\//;
-    const rgx_subFolder = /\/?([^\/]+\/)?\.\.\//;
+    const rgx_subFolder = /\/?([^\/]+\/)\.\.\//;
     const rgx_dottedFolder = /\/\.\.\//;
 
 
@@ -179,11 +174,14 @@ namespace Path {
             path = path.replace(rgx_subFolder, '/');
         } while (path !== url)
 
-        
-        do {
-            url = path;
-            path = path.replace(rgx_dottedFolder, '/');
-        } while (path !== url)
+        //#if (BROWSER)
+        if (isBrowser) {
+            do {
+                url = path;
+                path = path.replace(rgx_dottedFolder, '/');
+            } while (path !== url);
+        }
+        //#endif
 
         path = path.replace(/\/\.\//g, '/');
 
