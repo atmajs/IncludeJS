@@ -1,3 +1,4 @@
+import { global } from './global'
 import { Include } from './Include'
 import { Bin } from './Bin'
 import { path_normalize, path_resolveCurrent, path_getDir } from './utils/path';
@@ -85,7 +86,14 @@ export class Resource extends Include {
 
         let isNpm = PathResolver.isNpm(this.url);
         if (isNpm && isNode) {
+            const before = global.include;
+            global.include = this;
+
             this.exports = __require.nativeRequire(this.url);
+            
+            if (before != null && global.include === this) {
+                global.include = before;
+            }
             this.readystatechanged(4);
             return this;
         }        
