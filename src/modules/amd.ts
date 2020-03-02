@@ -1,6 +1,6 @@
 import { bin } from '../Bin';
 import { CommonJS } from './common';
-import { isNode, global, __require } from '../global';
+import { isNode, isBrowser, global, __require } from '../global';
 import { Resource } from '../Resource';
 export const Amd = {
     enable: function() {
@@ -20,8 +20,9 @@ function enable() {
         var module = global.include;
         fn(module, a, b, c);
     });
-    (define as any).amd = true;
-    
+    if (isBrowser) {
+        (define as any).amd = true;
+    }
     const __includeRequire = (global.require = __require.includeRequire = function amd() {
         if (isNode && __require.nativeRequire && arguments.length === 1) {
             return __require.nativeRequire.apply(null, arguments);
