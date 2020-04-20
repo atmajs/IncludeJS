@@ -79,9 +79,10 @@ export function path_normalize(path) {
 
 export function path_win32Normalize(path) {
     path = path_normalize(path);
-    if (path.substring(0, 5) === 'file:') return path;
-
-    return 'file:///' + path;
+    if (path.substring(0, 5) === 'file:') {
+        return path;
+    }
+    return path_combine('file:///', path);
 }
 
 export function path_resolveUrl(url, parent) {
