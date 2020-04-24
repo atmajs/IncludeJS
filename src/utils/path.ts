@@ -89,7 +89,7 @@ export function path_toLocalFile(path: string) {
     if (isNode) {
         if (path.startsWith('file:')) {
             path = path.replace(/^file:\/+/, '');
-            if (/^\w{1,3}:/.test(path)) {
+            if (/^\w{1,3}:/.test(path) === false) {
                 path = '/' + path;
             }
             return path;
