@@ -45,7 +45,7 @@ export function path_resolveBase () {
 }
 
 export function path_resolveCurrent() {
-    if (document == null) {        
+    if (document == null) {
         return global.module == null ? '' : path_win32Normalize(process.cwd() + '/');
     }
     var scripts = document.getElementsByTagName('script'),
@@ -83,6 +83,21 @@ export function path_win32Normalize(path) {
         return path;
     }
     return path_combine('file:///', path);
+}
+export function path_toLocalFile(path: string) {
+    //#if (NODE)
+    if (isNode) {
+        if (path.startsWith('file:')) {
+            path = path.replace(/^file:\/+/, '');
+            if (/^\w{1,3}:/.test(path)) {
+                path = '/' + path;
+            }
+            return path;
+        }
+        return path_combine(process.cwd(), path);
+    }
+    //#endif
+    return path;
 }
 
 export function path_resolveUrl(url, parent) {

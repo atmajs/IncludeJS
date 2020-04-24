@@ -1,6 +1,6 @@
 import * as vm from 'vm';
 import * as Module from 'module';
-import { path_getFile, path_getDir } from '../utils/path'
+import { path_getFile, path_getDir, path_toLocalFile } from '../utils/path'
 import { global } from '../global'
 
 declare var CURRENT_MODULE: NodeModule;
@@ -15,8 +15,11 @@ export function internalEval (source: string, include, isGlobalCtx: boolean = fa
     global.include = include;
     global.require = global.require;
     global.exports = module.exports;
-    global.__filename = path_getFile(include.url);
-    global.__dirname = path_getDir(global.__filename);
+
+    //- path_getFile(include.url);//
+    let f = path_toLocalFile(include.id ?? include.url);
+    global.__filename = f;
+    global.__dirname = path_getDir(f);
     global.module = module;
 
     if (isGlobalCtx !== true) {
