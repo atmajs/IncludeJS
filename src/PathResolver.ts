@@ -129,7 +129,12 @@ function map(path) {
 function hasExt(path) {
     return /\.[\w]{1,8}($|\?|#)/.test(path);
 }
-function isNodeModuleResolution(path){
+function isNodeModuleResolution(path: string){
+    let aliasIdx = path.indexOf('::');
+    if (aliasIdx > - 1)  {
+        path = path.substring(0, aliasIdx);
+    }
+
     if (path in _npm) {
         return true;
     }
@@ -201,6 +206,11 @@ function ensureExtension(path, type) {
     return path.substring(0, i) + '.' + ext + path.substring(i);
 }
 function getTypeForPath(path: string): ResourceType {
+    let aliasIdx = path.indexOf('::');
+    if (aliasIdx > - 1)  {
+        path = path.substring(0, aliasIdx);
+    }
+
     if (isNodeModuleResolution(path)) {
         return ResourceType.Js;
     }

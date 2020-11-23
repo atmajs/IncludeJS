@@ -94,6 +94,8 @@ function set(cfg: Config, key: TConfigKey | string, value: any) {
             PathResolver.configNpm(value);
             return;
         case 'extensionDefault':
+        // typo: but back comp it
+        case 'extentionDefault':
             PathResolver.configExt({ def: value });
             return;
         case 'extentionTypes':
