@@ -38,7 +38,7 @@ export class Resource extends Include {
         if (id == null && url) {
             id = url;
         }
-        
+
         let resource = Bin.get(type, id);
         let isOfOtherType = false;
         if (resource) {
@@ -80,7 +80,7 @@ export class Resource extends Include {
 
         Bin.add(type, id, this);
 
-        if (isOfOtherType) {            
+        if (isOfOtherType) {
             onXHRCompleted(this, resource.exports);
         }
 
@@ -90,17 +90,17 @@ export class Resource extends Include {
             global.include = this;
 
             this.exports = __require.nativeRequire(this.url);
-            
+
             if (before != null && global.include === this) {
                 global.include = before;
             }
             this.readystatechanged(4);
             return this;
-        }        
+        }
         if (isNpm === false) {
             process(this);
             return this;
-        }        
+        }
         PathResolver.resolveNpm(this.url, this.type, this.parent, (error, url) => {
             if (error) {
                 this.readystatechanged(4);
@@ -162,7 +162,7 @@ export class Resource extends Include {
         this.state = this.state >= 3
             ? 3
             : 2;
-        
+
         if (this.includes == null) {
             this.includes = [];
         }
@@ -220,7 +220,7 @@ export class Resource extends Include {
 
         return this;
     }
-    require(arr) {
+    require(arr: string[]) {
         if (this.exports == null) {
             this.exports = {};
         }
@@ -283,7 +283,7 @@ export class Resource extends Include {
         return resource_getChildren(this.includes, type);
     }
 
-    
+
     js (...pckg: PackageArgument[]) {
         return this.include(ResourceType.Js, PackageExtract(pckg))
     }
@@ -333,7 +333,7 @@ function process(resource) {
         return resource;
     }
 
-    
+
     if (CustomLoader.exists(resource)) {
         if ('js' === type || 'embed' === type) {
             ScriptStack.add(resource, resource.parent);
@@ -342,7 +342,7 @@ function process(resource) {
         CustomLoader.load(resource, onXHRCompleted);
         return resource;
     }
-    
+
     switch (type) {
         case 'js':
         case 'embed':

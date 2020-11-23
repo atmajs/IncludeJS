@@ -10,13 +10,16 @@ export const PathResolver = {
             _map[key] = map[key];
         }
     },
+    configNpm(modules: string[]){
+        modules.forEach(name => _npm[name] = 1);
+    },
     configExt(config){
         let def = config.def;
         let types = config.types;
         for (let key in def) {
             _ext[key] = def[key];
         }
-        for(var key in types) {
+        for(let key in types) {
             _extTypes[key] = types[key];
         }
     },
@@ -32,21 +35,21 @@ export const PathResolver = {
             let info = Routes.resolve(namespace, template);
             path = info.path;
         }
-        
+
         path = path_resolveUrl(path, parent);
         return ensureExtension(path, type);
     },
     isNpm: isNodeModuleResolution,
     getType: getTypeForPath,
     resolveNpm(path_, type, parent, cb){
-        var path = map(path_);
+        let path = map(path_);
         if (path.indexOf('.') > -1) {
             cb(null, path);
             return;
         }
         if (type === 'js') {
             if (isNodeModuleResolution(path)) {
-                var parentsPath = parent && parent.location;
+                let parentsPath = parent && parent.location;
                 if (!parentsPath || parentsPath === '/') {
                     parentsPath = path_resolveCurrent();
                 }
@@ -63,13 +66,14 @@ export const PathResolver = {
         return _nodeBuiltIns.indexOf(path) !== -1;
     }
 };
-var _map = {};
-var _ext = {
+let _map = Object.create(null);
+let _npm = Object.create(null);
+let _ext = {
     'js': 'js',
     'css': 'css',
     'mask': 'mask'
 };
-var _extTypes: { [ext: string] : ResourceType } = {
+let _extTypes: { [ext: string] : ResourceType } = {
     'js': ResourceType.Js,
     'es6': ResourceType.Js,
     'ts': ResourceType.Js,
@@ -80,7 +84,7 @@ var _extTypes: { [ext: string] : ResourceType } = {
     'json': ResourceType.Load,
     'yml': ResourceType.Load
 };
-var _nodeBuiltIns = [
+let _nodeBuiltIns = [
     "assert",
     "async_hooks",
     "buffer",
@@ -126,6 +130,9 @@ function hasExt(path) {
     return /\.[\w]{1,8}($|\?|#)/.test(path);
 }
 function isNodeModuleResolution(path){
+    if (path in _npm) {
+        return true;
+    }
     let isNpm = /^(@?[\w\-]+)(\/[\w\-_]+)*$/.test(path);
     if (isNpm === false) {
         return false;
@@ -137,17 +144,17 @@ function isNodeModuleResolution(path){
     return Routes.routes[namespace] == null;
 }
 function nodeModuleResolve(current_, path, cb){
-    var name = /^(@?[\w\-]+)/.exec(path)[0];
-    var resource = path.substring(name.length + 1);
+    let name = /^(@?[\w\-]+)/.exec(path)[0];
+    let resource = path.substring(name.length + 1);
     if (resource && hasExt(resource) === false) {
         resource += '.js';
     }
-    var current = current_.replace(/[^\/]+\.[\w]{1,8}$/, '');
+    let current = current_.replace(/[^\/]+\.[\w]{1,8}$/, '');
     function check(){
         const dir = path_combine(current, '/node_modules/', name, '/');
         const filename = dir + 'package.json';
         Helper.XHR_LOAD(filename, function(error, text){
-            var json;
+            let json;
             if (text) {
                 if (typeof text === 'string') {
                     try { json = JSON.parse(text); }
@@ -183,33 +190,38 @@ function ensureExtension(path, type) {
     if (hasExt(path)) {
         return path;
     }
-    var ext = _ext[type];
+    let ext = _ext[type];
     if (ext == null) {
         console.warn('Extension is not defined for ' + type);
         return path;
     }
-    var i = path.indexOf('?');
+    let i = path.indexOf('?');
     if (i === -1) return path + '.' + ext;
 
     return path.substring(0, i) + '.' + ext + path.substring(i);
 }
-function getTypeForPath(path): ResourceType {
-    var match = /\.([\w]{1,8})($|\?|:)/.exec(path);
+function getTypeForPath(path: string): ResourceType {
+    if (isNodeModuleResolution(path)) {
+        return ResourceType.Js;
+    }
+    path = map(path);
+
+    let match = /\.([\w]{1,8})($|\?|:)/.exec(path);
     if (match === null) {
         return _extTypes.js;
     }
-    var ext = match[1];
-    var type = _extTypes[ext];
+    let ext = match[1];
+    let type = _extTypes[ext];
     return type || ResourceType.Load;
 }
 
 function combineMain (dir, fileName, cb) {
-    var path = path_combine(dir, fileName);
+    let path = path_combine(dir, fileName);
     if (hasExt(path)) {
         cb(null, path);
         return;
     }
-    var url = path + '.js';
+    let url = path + '.js';
     Helper.XHR_LOAD(url, function(error, text){
         if (error == null) {
             cb(null, url);
