@@ -1,9 +1,9 @@
 import { global } from '../global'
 import { Resource } from '../Resource';
 
-export const MaskLoader = {
+export const WorkerLoader = {
     supports (resource: Resource) {
-        return resource.type === 'mask'
+        return /\.worker\./i.test(resource.url);
     },
     process (response: string, resource: Resource, onComplete){
         let mask = global.mask;
@@ -22,4 +22,3 @@ export const MaskLoader = {
             });
     }
 };
-

@@ -6,7 +6,7 @@ import { Resource } from "./Resource";
 declare var global: any;
 
 export const Bin = {
-	add (type: ResourceType, id: string, resource: Resource) {		
+	add (type: ResourceType, id: string, resource: Resource) {
 		bin[type][normalize(id)] = resource;
 	},
 	find (url: string) {
@@ -17,7 +17,7 @@ export const Bin = {
         while (true) {
             // clear if has multiple types
             let x = find(bin, url);
-            if (x == null) break;            
+            if (x == null) break;
             bin[x.type][x.id] = null;
         }
 	},
@@ -26,7 +26,7 @@ export const Bin = {
         if (x == null) {
             x = find(bin, url);
         }
-        return x && x.resource || null;	
+        return x && x.resource || null;
 	}
 };
 
@@ -62,7 +62,7 @@ export function bin_remove(url) {
     if (x == null)  {
         console.warn('<include:res:remove> Resource is not in cache', url);
         return null;
-    } 
+    }
     let { type, id, resource } = x;
     if (resource == null) {
         return null;
@@ -70,7 +70,7 @@ export function bin_remove(url) {
     if (global.io && global.io.File) {
         global.io.File.clearCache(resource.url);
     }
-    bin[type][id] = null;  
+    bin[type][id] = null;
     let roots = clearParents(bin, resource);
     return {
         resource,
@@ -104,7 +104,7 @@ export function bin_tryReload(path, callback) {
 
 // PRIVATE
 
-function bin_load(resource: Resource, parent:Resource) {    
+function bin_load(resource: Resource, parent:Resource) {
     parent.exports = null;
     return parent
         .create(
@@ -206,7 +206,7 @@ function clearParents (bins, resource: Resource, roots: Resource[] = [], handled
     }
     parents.forEach(x => {
         bins[x.type][x.id] = null;
-        handled.push(x.resource.url);
         clearParents(bins, x.resource, roots, handled);
-    });    
+        handled.push(x.resource.url);
+    });
 }

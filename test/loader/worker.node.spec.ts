@@ -1,4 +1,5 @@
 
+
 let includeModule = require('../../lib/include.node.module.js');
 let include = includeModule
     .includeLib
@@ -6,9 +7,9 @@ let include = includeModule
 
 UTest({
     'loads json' (done) {
-        include.load('../letter/letter.json').done(function(resp){
-            eq_(resp.load.letter.a, 'A');
-            done();
+        include.js('../fixtures/foo.worker.ts::Foo').done(async (resp) => {
+            let result = await resp.Foo.add(2, 3);
+            done(result, 5);
         });
     }
 })
