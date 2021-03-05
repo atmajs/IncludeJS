@@ -1,7 +1,7 @@
 {
     "name": "includejs",
     "description": "Resource Loader",
-    "version": "0.15.48",
+    "version": "0.15.49",
     "homepage": "http://atmajs.com/include",
     "contributors": [],
     "author": "Alex Kit <alex.kit@atmajs.com>",
@@ -35,9 +35,6 @@
         "release": "atma bump && npm run build && git add -A && git commit -am \"bump\" && git push && npm publish"
     },
     "keywords": [],
-    "engines": {
-        "node": "~0.8.9"
-    },
     "atma": {
         "plugins": [
             "atma-io-middleware-condcomments",
