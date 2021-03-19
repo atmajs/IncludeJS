@@ -38,8 +38,11 @@ export function path_resolveBase () {
     let doc = document as Document;
     let origin = document.location.origin;
     let path = cfg.base || '/';
-    if (cfg.lockedToFolder) {
+    if (!cfg.base && cfg.lockedToFolder) {
         path = doc.location.pathname;
+        if (/\.[a-z]{1,5}$/i.test(path)) {
+            path = path.replace(/[^\\/]+$/i, '');
+        }
     }
     return path_combine(origin, path, '/');
 }
