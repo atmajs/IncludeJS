@@ -6,8 +6,13 @@ import { Routes } from './Routing';
 
 export const PathResolver = {
     configMap(map){
-        for(let key in map) {
+        for (let key in map) {
             _map[key] = map[key];
+        }
+    },
+    configRewrites (rewrites) {
+        for (let key in rewrites) {
+            _rewrites[key] = rewrites[key];
         }
     },
     configNpm(modules: string[]){
@@ -37,6 +42,11 @@ export const PathResolver = {
         }
 
         path = path_resolveUrl(path, parent);
+
+        let rewritten = rewrite(path);
+        if (rewritten != null) {
+            path = PathResolver.resolveBasic(rewritten, type, parent);
+        }
         return ensureExtension(path, type);
     },
     isNpm: isNodeModuleResolution,
@@ -68,6 +78,7 @@ export const PathResolver = {
 };
 let _map = Object.create(null);
 let _npm = Object.create(null);
+let _rewrites = Object.create(null);
 let _ext = {
     'js': 'js',
     'css': 'css',
@@ -124,7 +135,15 @@ let _nodeBuiltIns = [
     "zlib"
 ];
 function map(path) {
-    return _map[path] || path;
+    return _map[path] ?? path;
+}
+function rewrite (path: string) {
+    for (let key in _rewrites) {
+        if (path.endsWith(key)) {
+            return _rewrites[key];
+        }
+    }
+    return null;
 }
 function hasExt(path) {
     return /\.[\w]{1,8}($|\?|#)/.test(path);

@@ -90,6 +90,9 @@ function set(cfg: Config, key: TConfigKey | string, value: any) {
         case 'map':
             PathResolver.configMap(value);
             return;
+        case 'rewrite':
+            PathResolver.configRewrites(value);
+            return;
         case 'npm':
             PathResolver.configNpm(value);
             return;
