@@ -67,18 +67,21 @@ export class Include extends IncludeDeferred {
         cfg (a, b) {
             return cfg.call(this, a, b);
         }
+
+        routes (path: string, mapping: string | string[])
+        routes (routes: { [path: string ]: string | string[] })
         routes (mix) {
             if (mix == null) {
                 return Routes.getRoutes();
             }
 
             if (arguments.length === 2) {
-                Routes.register(mix, arguments[1], this);
+                Routes.register(mix, arguments[1]);
                 return this;
             }
 
             for (var key in mix) {
-                Routes.register(key, mix[key], this);
+                Routes.register(key, mix[key]);
             }
             return this;
         }
@@ -156,7 +159,7 @@ export class Include extends IncludeDeferred {
                     case 'lazy':
                         var query = '[data-bundler-path="/' + url + '"]';
                         var bags = IncludeLib.loadBags,
-                            j = bags.length, 
+                            j = bags.length,
                             el = null;
                         while( --j > -1 && el == null){
                             if (bags[j] == null) continue;
@@ -346,7 +349,7 @@ export class Include extends IncludeDeferred {
 
             return resources;
         }
-        
+
 
         js (...args) {
             return new Resource(ResourceType.Js).js(...args)
@@ -374,7 +377,7 @@ export class Include extends IncludeDeferred {
         }
 
 
-        
+
         bin_tryReload = bin_tryReload
         bin_remove = bin_remove
 
@@ -382,12 +385,12 @@ export class Include extends IncludeDeferred {
 
 
     // >> FUNCTIONS
-    
+
     function embedPlugin(source) {
         eval(source);
     }
 
-    
+
     function doNothing() {
         return this;
     }

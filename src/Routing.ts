@@ -15,6 +15,13 @@ export class RoutesCtor {
      */
     register(namespace: string, route: string | string[]) {
 
+        if (namespace.endsWith('/*')) {
+            // like TS paths, '@foo/*': [ 'foo/ts/*' ]
+            let ns = namespace.replace('/*', '');
+            let path = typeof route === 'string' ? route : route[0];
+            this.register(ns, path.replace('*', '{0}'));
+            return;
+        }
         if (typeof route === 'string') {
             if (path_isRelative(route)) {
                 var location = path_getDir(path_resolveCurrent());
