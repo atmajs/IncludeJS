@@ -1,5 +1,5 @@
 import { global } from './global'
-import { Include } from './Include'
+import { IIncludeOptions, Include } from './Include'
 import { Bin } from './Bin'
 import { path_normalize, path_resolveCurrent, path_getDir } from './utils/path';
 import { PathResolver } from './PathResolver';
@@ -12,7 +12,7 @@ import { Helper } from './Helper';
 import { LazyModule } from './LazyModule'
 import { ResourceType } from './models/Type'
 import { cfg } from './Config';
-
+import { document } from './global'
 
 export class Resource extends Include {
 
@@ -21,16 +21,16 @@ export class Resource extends Include {
     namespace: string
     xpath: string
     priority: number
+    options: IIncludeOptions
     route: any
 
     exports: any
     response: any
 
-    constructor(type = null, route = null, namespace = null, xpath = null, parent: Resource = null, id = null, priority = null) {
+    constructor(type = null, route = null, namespace = null, xpath = null, parent: Resource = null, id = null, priority = null, opts: IIncludeOptions = null) {
         super();
 
-
-        var url = route && route.path;
+        let url = route?.path;
         if (url != null) {
             url = path_normalize(url);
             url = PathResolver.resolveBasic(url, type, parent);
@@ -63,6 +63,7 @@ export class Resource extends Include {
         this.childLoaded = this.childLoaded.bind(this);
         this.response = {};
         this.exports = {};
+        this.options = opts;
 
         if (type == null) {
             this.state = 3;
@@ -122,11 +123,11 @@ export class Resource extends Include {
     }
 
     hasPendingChildren() {
-        var arr = this.includes;
+        let arr = this.includes;
         if (arr == null) {
             return false;
         }
-        var imax = arr.length,
+        let imax = arr.length,
             i = -1;
         while (++i < imax) {
             if (arr[i].isCyclic) {
@@ -140,14 +141,14 @@ export class Resource extends Include {
     }
 
     childLoaded(child) {
-        var includes = this.includes;
+        let includes = this.includes;
         if (includes && includes.length) {
             if (this.state < 3) {
                 // resource still loading/include is in process, but one of sub resources are already done
                 return;
             }
-            for (var i = 0; i < includes.length; i++) {
-                var data = includes[i];
+            for (let i = 0; i < includes.length; i++) {
+                let data = includes[i];
                 if (data.isCyclic) {
                     continue;
                 }
@@ -158,7 +159,7 @@ export class Resource extends Include {
         }
         this.readystatechanged(4);
     }
-    create(type: ResourceType, route = null, namespace = null, xpath = null, id = null) {
+    create(type: ResourceType, route = null, namespace = null, xpath = null, id = null, options: IIncludeOptions = null) {
         this.state = this.state >= 3
             ? 3
             : 2;
@@ -167,8 +168,8 @@ export class Resource extends Include {
             this.includes = [];
         }
 
-        var resource = new Resource(type, route, namespace, xpath, this, id);
-        var isLazy = false;
+        let resource = new Resource(type, route, namespace, xpath, this, id, null, options);
+        let isLazy = false;
         if (this.url && cfg.lazy) {
             outer: for (let str in cfg.lazy) {
                 let rgx = new RegExp(str);
@@ -184,7 +185,7 @@ export class Resource extends Include {
                 }
             }
         }
-        var data = {
+        let data = {
             resource: resource,
             route: route,
             isCyclic: isLazy || resource.contains(this.url),
@@ -193,24 +194,23 @@ export class Resource extends Include {
         this.includes.push(data);
         return data;
     }
-    include (type: ResourceType, pckg: PackageArgument) {
-        var children = [],
-            child;
+    include (type: ResourceType, pckg: PackageArgument, options: IIncludeOptions) {
+        let children = [];
+        let child;
 
         Routes.each(type, pckg, (namespace, route, xpath) => {
             if (this.route != null && this.route.path === route.path) {
                 // loading itself
                 return;
             }
-            child = this.create(type, route, namespace, xpath);
+            child = this.create(type, route, namespace, xpath, null, options);
             children.push(child);
         });
 
-
-        var i = -1,
-            imax = children.length;
+        let i = -1;
+        let imax = children.length;
         while (++i < imax) {
-            var x = children[i];
+            let x = children[i];
             if (x.isCyclic) {
                 this.childLoaded(x.resource);
                 continue;
@@ -220,15 +220,15 @@ export class Resource extends Include {
 
         return this;
     }
-    require(arr: string[]) {
+    require(arr: string[], options?: IIncludeOptions) {
         if (this.exports == null) {
             this.exports = {};
         }
         this.includes = [];
 
-        var pckg = res_groupByType(arr);
-        for (var key in pckg) {
-            this.include(key as ResourceType, pckg[key]);
+        let pckg = res_groupByType(arr);
+        for (let key in pckg) {
+            this.include(key as ResourceType, pckg[key], options);
         }
         return this;
     }
@@ -236,24 +236,23 @@ export class Resource extends Include {
     pause() {
         this.state = 2.5;
 
-        var that = this;
+        const that = this;
         return function (exports) {
-
-            if (arguments.length === 1)
+            if (arguments.length === 1) {
                 that.exports = exports;
-
+            }
             that.readystatechanged(3);
         };
     }
     contains(url, stack: Resource[] = [], refCache = {}) {
 
         refCache[this.url] = this;
-        var arr = this.includes;
+        let arr = this.includes;
         if (arr == null) {
             return false;
         }
         stack = [...stack, this];
-        for (var i = 0; i < arr.length; i++) {
+        for (let i = 0; i < arr.length; i++) {
             if (arr[i].isLazy) {
                 continue;
             }
@@ -285,28 +284,28 @@ export class Resource extends Include {
 
 
     js (...pckg: PackageArgument[]) {
-        return this.include(ResourceType.Js, PackageExtract(pckg))
+        return this.include(ResourceType.Js, PackageExtract(pckg), null)
     }
     inject (...pckg: PackageArgument[]) {
-        return this.include(ResourceType.Js, PackageExtract(pckg))
+        return this.include(ResourceType.Js, PackageExtract(pckg), null)
     }
     css (...pckg: PackageArgument[]) {
-        return this.include(ResourceType.Css, PackageExtract(pckg))
+        return this.include(ResourceType.Css, PackageExtract(pckg), null)
     }
     load (...pckg: PackageArgument[]) {
-        return this.include(ResourceType.Load, PackageExtract(pckg))
+        return this.include(ResourceType.Load, PackageExtract(pckg), null)
     }
     ajax (...pckg: PackageArgument[]) {
-        return this.include(ResourceType.Ajax, PackageExtract(pckg))
+        return this.include(ResourceType.Ajax, PackageExtract(pckg), null)
     }
     embed (...pckg: PackageArgument[]) {
-        return this.include(ResourceType.Embed, PackageExtract(pckg))
+        return this.include(ResourceType.Embed, PackageExtract(pckg), null)
     }
     lazy (...pckg: PackageArgument[]) {
-        return this.include(ResourceType.Lazy, PackageExtract(pckg))
+        return this.include(ResourceType.Lazy, PackageExtract(pckg), null)
     }
     mask (...pckg: PackageArgument[]) {
-        return this.include(ResourceType.Mask, PackageExtract(pckg))
+        return this.include(ResourceType.Mask, PackageExtract(pckg), null)
     }
 
     path_getFile: Function
@@ -324,9 +323,7 @@ function PackageExtract(pckg: any[]): PackageArgument {
 // private
 
 function process(resource) {
-    var type = resource.type,
-        parent = resource.parent,
-        url = resource.url;
+    let { type, url, parent } = resource;
 
     if (document == null && type === 'css') {
         resource.state = 4;
@@ -357,7 +354,7 @@ function process(resource) {
         case 'css':
             resource.state = 4;
 
-            var tag = document.createElement('link');
+            let tag = document.createElement('link');
             tag.href = url;
             tag.rel = "stylesheet";
             tag.type = "text/css";
@@ -374,7 +371,6 @@ function onXHRCompleted(resource, response) {
         //- resource.readystatechanged(4);
         //- return;
     }
-
     switch (resource.type) {
         case 'js':
         case 'embed':
@@ -391,14 +387,14 @@ function onXHRCompleted(resource, response) {
             LazyModule.create(resource.xpath, response);
             break;
         case 'css':
-            var tag = document.createElement('style');
+            let tag = document.createElement('style');
             tag.type = "text/css";
             tag.innerHTML = response;
             document.getElementsByTagName('head')[0].appendChild(tag);
             break;
         // case 'mask':
         //     if (response) {
-        //         var mask = global.mask;
+        //         let mask = global.mask;
         //         if (mask == null) {
         //             mask = global.require('maskjs');
         //         }
@@ -425,7 +421,7 @@ function resource_getChildren(includes, type, out = []) {
     if (includes == null)
         return null;
 
-    var imax = includes.length,
+    let imax = includes.length,
         i = -1,
         x;
     while (++i < imax) {

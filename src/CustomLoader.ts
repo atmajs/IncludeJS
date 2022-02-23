@@ -3,140 +3,150 @@ import { Resource } from './Resource';
 import { Routes } from './Routing';
 import { Helper } from './Helper';
 import { Config } from './Config';
+import { WorkerLoader } from './worker/WorkerLoader';
+import { IIncludeOptions } from './Include';
 
 
 /** GLOBAL */
 declare var include: any;
 
 let cfg: Config = null;
+let workerLoader = new WorkerLoader();
 
-export function inject (cfg_: Config) {
-	cfg = cfg_;
+export function inject(cfg_: Config) {
+    cfg = cfg_;
 };
 
 function loader_isInstance(x) {
-	if (typeof x === 'string')
-		return false;
+    if (typeof x === 'string')
+        return false;
 
-	return typeof x.ready === 'function' || typeof x.process === 'function';
+    return typeof x.ready === 'function' || typeof x.process === 'function';
 }
 
-function createLoader(url) {
-	var extension = path_getExtension(url),
-		loader = cfg.loader[extension];
+function createLoader(url: string, options: IIncludeOptions) {
+    if (workerLoader.supports(url) && options?.skipWorker !== true) {
+        return workerLoader;
+    }
 
-	if (loader_isInstance(loader)) {
-		return loader;
-	}
+    let extension = path_getExtension(url);
+    let loader = cfg.loader[extension];
 
-	var path = loader,
-		namespace;
+    if (loader_isInstance(loader)) {
+        return loader;
+    }
 
-	if (typeof path === 'object') {
-		// is route {namespace: path}
-		for (var key in path) {
-			namespace = key;
-			path = path[key];
-			break;
-		}
-	}
+    let path = loader;
+    let namespace;
 
-	return (cfg.loader[extension] = new Resource(
-		'js',
-		Routes.resolve(namespace, path),
-		namespace,
-		null,
-		null,
-		null,
-		1
-	));
+    if (typeof path === 'object') {
+        // is route {namespace: path}
+        for (var key in path) {
+            namespace = key;
+            path = path[key];
+            break;
+        }
+    }
+
+    return (cfg.loader[extension] = new Resource(
+        'js',
+        Routes.resolve(namespace, path),
+        namespace,
+        null,
+        null,
+        null,
+        1
+    ));
 }
 
 function loader_completeDelegate(callback, resource) {
-	return function (response) {
-		callback(resource, response);
-	};
+    return function (response) {
+        callback(resource, response);
+    };
 }
 
 function loader_process(source: string | any, resource: Resource, loader, callback) {
-	if (loader.process == null) {
-		callback(resource, source);
-		return;
-	}
+    if (loader.process == null) {
+        callback(resource, source);
+        return;
+    }
 
-	var delegate = loader_completeDelegate(callback, resource),
-		syncResponse = loader.process(source, resource, delegate);
+    let delegate = loader_completeDelegate(callback, resource);
+    let syncResponse = loader.process(source, resource, delegate);
 
-	// match also null
-	if (typeof syncResponse !== 'undefined') {
-		callback(resource, syncResponse);
-	}
+    // match also null
+    if (typeof syncResponse !== 'undefined') {
+        callback(resource, syncResponse);
+    }
 }
 
-function tryLoad(resource, loader, callback) {
-	if (typeof resource.exports === 'string') {
-		loader_process(resource.exports, resource, loader, callback);
-		return;
-	}
+function tryLoad(resource: Resource, loader, callback) {
+    if (typeof resource.exports === 'string') {
+        loader_process(resource.exports, resource, loader, callback);
+        return;
+    }
 
-	function onLoad(resource, response) {
-		loader_process(response, resource, loader, callback);
-	}
-
-	if (loader.load)
-		return loader.load(resource, onLoad);
-
-	Helper.XHR(resource, onLoad);
+    function onLoad(resource, response) {
+        loader_process(response, resource, loader, callback);
+    }
+    if (loader.load) {
+        return loader.load(resource, onLoad);
+    }
+    Helper.XHR(resource, onLoad);
 }
 
 export const CustomLoader = {
-	load: function (resource, callback) {
+    load(resource: Resource, callback) {
 
-		let loader = createLoader(resource.url);
-		if (loader.process) {
-			tryLoad(resource, loader, callback);
-			return;
-		}
+        let loader = createLoader(resource.url, resource.options);
+        if (loader.process) {
+            tryLoad(resource, loader, callback);
+            return;
+        }
 
-		loader.on(4, function () {
-			tryLoad(resource, loader.exports, callback);
-		}, null, 'push');
-	},
-	exists: function (resource) {
-		if (!resource.url) {
-			return false;
-		}
+        loader.on(4, function () {
+            tryLoad(resource, loader.exports, callback);
+        }, null, 'push');
+    },
+    exists(resource: Resource) {
+        if (!resource.url) {
+            return false;
+        }
 
-		let ext = path_getExtension(resource.url);
+        if (workerLoader.supports(resource.url) && resource.options?.skipWorker !== true) {
+            return true;
+        }
+
+        let ext = path_getExtension(resource.url);
         let loader = cfg.loader[ext];
         if (loader == null) {
             return false;
         }
-        if (loader.supports && loader.supports(resource) === false) {
+        if (loader.supports?.(resource) === false) {
             return false;
         }
-		return true;
-	},
+        return true;
+    },
 
-	/**
-	 *	IHandler:
-	 *	{ process: function(content) { return _handler(content); }; }
-	 *
-	 *	Url:
-	 *	 path to IHandler
-	 */
-	register: function (extension, handler) {
-		if (typeof handler === 'string') {
-			
-			let resource = include;
-			if (resource.location == null) {
-				resource = {
-					location: path_getDir(path_resolveCurrent())
-				};
-			}
-			handler = path_resolveUrl(handler, resource);
-		}
-		cfg.loader[extension] = handler;
-	}
+    /**
+     *    IHandler:
+     *    { process (content) { return _handler(content); }; }
+     *
+     *    Url:
+     *     path to IHandler
+     */
+    register(extension, handler) {
+        if (typeof handler === 'string') {
+
+            let resource = include;
+            if (resource.location == null) {
+                resource = {
+                    location: path_getDir(path_resolveCurrent())
+                };
+            }
+            handler = path_resolveUrl(handler, resource);
+        }
+        cfg.loader[extension] = handler;
+    }
 };
 

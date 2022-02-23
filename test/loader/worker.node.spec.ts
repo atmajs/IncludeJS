@@ -1,16 +1,18 @@
 
 
-let includeModule = require('../../lib/include.node.module.js');
+//let includeModule = require('../../lib/include.node.module.js');
+import * as includeModule from '../../src/export'
+
+
 let include = includeModule
     .includeLib
     .instance(`file://${__filename}`);
 
 UTest({
-    'loads json' (done) {
-        include.js('../fixtures/foo.worker.ts::Foo').done(async (resp) => {
-            let result = await resp.Foo.add(2, 3);
-            done(result, 5);
-        });
+    async 'loads json' () {
+        let resp = await include.js('../fixtures/foo.worker.ts::Foo')
+        let result = await resp.Foo.FooWorker.add(2, 3);
+        eq_(result, 5);
     }
 })
 

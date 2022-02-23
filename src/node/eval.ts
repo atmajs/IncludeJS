@@ -1,13 +1,17 @@
-import * as vm from 'vm';
-import * as Module from 'module';
-import { path_getFile, path_getDir, path_toLocalFile } from '../utils/path'
-import { global } from '../global'
+import { path_getDir, path_toLocalFile } from '../utils/path'
+import { global, include } from '../global'
+
+const Module = require("module")
+const vm = require("vm");
 
 declare var CURRENT_MODULE: NodeModule;
 
-
+if (typeof CURRENT_MODULE === 'undefined') {
+    global.CURRENT_MODULE = include;
+}
 
 let currentModule: NodeModule = CURRENT_MODULE;
+
 
 export function internalEval (source: string, include, isGlobalCtx: boolean = false) {
     let module = currentModule;

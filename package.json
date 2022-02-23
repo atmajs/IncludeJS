@@ -1,7 +1,7 @@
 {
     "name": "includejs",
     "description": "Resource Loader",
-    "version": "0.15.52",
+    "version": "0.16.0",
     "homepage": "http://atmajs.com/include",
     "contributors": [],
     "author": "Alex Kit <alex.kit@atmajs.com>",
@@ -31,6 +31,7 @@
         "test": "atma test",
         "server": "atma server",
         "build": "app-bundler",
+        "build:worker": "app-bundler --app node-worker",
         "watch": "app-bundler --watch",
         "release": "atma bump && npm run build && git add -A && git commit -am \"bump\" && git push && npm publish"
     },
@@ -117,6 +118,20 @@
                         }
                     }
                 }
+            },
+            "node-worker": {
+                "file": "src/export-worker-host.ts",
+                "outputMain": "lib/include.node-worker-host.js",
+                "package": {
+                    "moduleWrapperCustomPath": "./src/umd/head-node-worker.js"
+                },
+                "settings": {
+                    "atma-io-middleware-condcomments": {
+                        "defines": {
+                            "NODE": true
+                        }
+                    }
+                }
             }
         },
         "common": {
@@ -132,7 +147,9 @@
                 "vm",
                 "fs",
                 "^module$",
-                "^path$"
+                "^path$",
+                "^worker_threads$",
+                "include.node.module.js$"
             ],
             "extensions": {
                 "io": {

@@ -81,7 +81,7 @@ function getFn(patterns, args) {
     return emptyFn;
 }
 function emptyFn() {}
-function define(module, name, dependencies, exports) {
+function define(module, name, dependencies: string[], exports) {
     if (name != null) {
         bin.js[name] = module;
     }

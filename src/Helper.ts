@@ -9,24 +9,29 @@ export const Helper = { /** TODO: improve url handling*/
     },
 
     XHR(resource, callback) {
-        var xhr = new refs.XMLHttpRequest();
+        let xhr = new refs.XMLHttpRequest();
         xhr.onreadystatechange = function () {
-            xhr.readyState === 4 && callback && callback(resource, xhr.responseText);
+            if (xhr.readyState === 4) {
+                callback?.(resource, xhr.responseText);
+            }
         };
 
-        var url = typeof resource === 'object' ? resource.url : resource;
-        var async = cfg.sync === true ? false : true;
+        let url = typeof resource === 'object' ? resource.url : resource;
+        let async = cfg.sync === true ? false : true;
         if (isBrowser && cfg.version) {
             url += (url.indexOf('?') === -1 ? '?' : '&') + 'v=' + cfg.version;
         }
         if (url[0] === '/' && cfg.lockedToFolder === true) {
             url = url.substring(1);
         }
+        xhr.on('error', err => {
+            resource.error = err;
+        });
         xhr.open('GET', url, async);
         xhr.send();
     },
     XHR_LOAD(url, callback) {
-        var xhr = new refs.XMLHttpRequest();
+        let xhr = new refs.XMLHttpRequest();
         xhr.onreadystatechange = function () {
             if (xhr.readyState !== 4) {
                 return;

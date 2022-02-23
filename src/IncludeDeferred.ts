@@ -103,6 +103,9 @@ export class IncludeDeferred {
     done(callback: Function) {
         return this.on(State.AllCompleted, () => this.resolve(callback), this);
     }
+    then(onComplete, onError) {
+        this.done(onComplete);
+    }
     resolve(callback: Function) {
         var includes = this.includes,
             length = includes == null

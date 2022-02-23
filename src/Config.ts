@@ -40,6 +40,7 @@ class Config {
     es6Exports = false
     server = false
     logCyclic = false
+    workerSuffix = 'worker'
 
     autoreload: { fileChanged: Function } = null
 
@@ -67,6 +68,7 @@ class Config {
         }
         return ctx;
     }
+
 };
 
 type TConfigKey = 'loader' | 'modules' | 'commonjs' | 'amd' | 'map' | 'npm' | 'extensionDefault' | 'extentionTypes' | 'routes' ;

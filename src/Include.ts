@@ -8,7 +8,7 @@ import { path_getDir, path_resolveUrl, path_combine } from './utils/path'
 import { CustomLoader } from './CustomLoader'
 import { Helper } from './Helper'
 import { ScriptStack } from './ScriptStack';
-import { Resource } from './Resource';
+import { PackageArgument, Resource } from './Resource';
 import { global, noConflict } from './global'
 
 declare var include: any;
@@ -19,6 +19,9 @@ export interface IIncludeData {
     url: string
     namespace: string
     aliases?: string[]
+}
+export interface IIncludeOptions {
+    skipWorker?: boolean
 }
 
 export class Include extends IncludeDeferred {
@@ -190,19 +193,18 @@ export class Include extends IncludeDeferred {
          *    Create new Resource Instance,
          *    as sometimes it is necessary to call include. on new empty context
          */
-        instance (url, parent) {
+        instance (url: string, parent?: Resource) {
             return Include.instance(url, parent);
         }
 
-        static instance (url, parent) {
-            var resource;
+        static instance (url: string, parent?: Resource) {
             if (url == null) {
-                resource = new Include();
+                let resource = new Include();
                 resource.isRoot = true;
                 resource.state = 4;
                 return resource;
             }
-            resource = new Resource('js');
+            let resource = new Resource('js');
             resource.state = 4;
             resource.url = path_resolveUrl(url, parent);
             resource.location = path_getDir(resource.url);
@@ -374,6 +376,9 @@ export class Include extends IncludeDeferred {
         }
         mask (...args) {
             return new Resource(ResourceType.Js).mask(...args)
+        }
+        include (type: ResourceType, pckg: PackageArgument, options: IIncludeOptions) {
+            return new Resource(ResourceType.Js).include(type, pckg, options);
         }
 
 

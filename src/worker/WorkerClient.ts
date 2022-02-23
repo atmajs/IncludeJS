@@ -1,5 +1,6 @@
 import { global } from '../global'
 import { Worker } from 'worker_threads'
+import { IWorkerMessage } from './IWorkerMessage';
 
 
 export class WorkerWrapper {
@@ -14,7 +15,7 @@ export class WorkerWrapper {
         let scriptExportsMeta = await this.worker.call('loadScript', {
             filename
         });
-
+        console.log('scriptExportsMeta', scriptExportsMeta);
         return WorkerRpcProxyUtils.wrapExportsMeta(this, filename, scriptExportsMeta);
     }
     async call(filename: string, accessorPath: string, ...args) {
@@ -56,19 +57,20 @@ namespace WorkerRpcProxyUtils {
             let exp = exports[key];
             let path = accessorPath ? `${accessorPath}.${key}` : key;
             if (exp.type === 'function') {
-                obj[key] = WorkerRpcProxyUtils.createMethod(worker, filename, path);
+                obj[key] = createMethod(worker, filename, path);
                 continue;
             }
             if (exp.type === 'class') {
-                obj[key] = WorkerRpcProxyUtils.createClass(worker, filename, key);
+                obj[key] = createClass(worker, filename, key);
                 continue;
             }
             if (exp.type === 'object') {
-                obj[key] = WorkerRpcProxyUtils.createObject(worker, filename, key, exp.object);
+                obj[key] = createObject(worker, filename, key, exp.object);
                 continue;
             }
             throw new Error(`Exported type is unsupported`);
         }
+        return obj;
     }
 }
 
@@ -76,13 +78,17 @@ export class WorkerClientNode {
 
     child: Worker
     timeoutMs: number
-    awaiters: { [id: string]: { promise: Dfr, timestamp } } = Object.create(null)
+    awaiters: { [id: string]: { promise: DfrWrapped, timestamp } } = Object.create(null)
 
     constructor (workerFilename?: string) {
 
         const { Worker } = global.require('worker_threads');
 
-        let path = workerFilename ?? `/node_modules/includejs/lib/include.node.worker.js`;
+        let cwd = process.cwd();
+        let host = `include.node-worker-host.js`;
+        let isDev = /(include|includejs)$/.test(cwd);
+
+        let path = workerFilename ?? (isDev ? `${cwd}/lib/${host}` : `${cwd}/node_modules/includejs/lib/${host}`);
         this.child = new Worker(path);
 
         this.child.on('message', (resp: { id, data?, error? }) => {
@@ -101,14 +107,15 @@ export class WorkerClientNode {
 
 
     call<T = any>(method: string, ...args): Promise<T> {
-        let promise = new Dfr;
+        console.log('CALLING', method);
+        let promise = new DfrWrapped;
         let id = (Math.round(Math.random() * 10 ** 10)) + '' + Date.now();
         this.awaiters[id] = {
             timestamp: Date.now(),
             promise
         };
 
-        this.child.postMessage({
+        this.child.postMessage( <IWorkerMessage> {
             id,
             method,
             args
@@ -116,7 +123,7 @@ export class WorkerClientNode {
         if (this.timeoutMs) {
             setTimeout(() => this.checkTimeout(), this.timeoutMs);
         }
-        return promise as any;
+        return promise.promise;
     }
 
     checkTimeout () {
@@ -152,7 +159,7 @@ export class WorkerClientNode {
 }
 
 
-class Dfr<T = any> {
+class DfrWrapped<T = any> {
     resolve
     reject
     promise: Promise<T>

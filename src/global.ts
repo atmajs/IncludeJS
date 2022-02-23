@@ -7,26 +7,26 @@ const _global = typeof global === 'undefined' ? null : global;
 const _module = typeof module === 'undefined' ? null : module;
 const _document = typeof document === 'undefined' ? null : document;
 const _require = typeof require === 'undefined' ? null : require;
-
+const _include = global?.include;
 
 export const loadBags = [
-	_document
+    _document
 ];
 
 export const IncludeLib = {
-	loadBags,
-	
+    loadBags,
+
 };
 
 
 export const emptyResponse = {
-	load: {}
+    load: {}
 };
 
 
 export const __require = {
     nativeRequire: _require,
-    includeRequire: null 
+    includeRequire: null
 };
 
 
@@ -48,32 +48,33 @@ export const isNode = _isNode;
 export const isWeb = !! (typeof location !== 'undefined' && location.protocol && /^https?:/.test(location.protocol));
 
 export const refs = {
-	XMLHttpRequest: global.XMLHttpRequest,
-	evaluate: typeof __eval !== 'undefined' ? __eval : null 
+    XMLHttpRequest: global.XMLHttpRequest,
+    evaluate: typeof __eval !== 'undefined' ? __eval : null
 };
 
 export const handler = {
-	onerror: null
+    onerror: null
 };
 
 
-export { 
-    _global as global, 
-    _module as module, 
-    _document as document
+export {
+    _global as global,
+    _module as module,
+    _document as document,
+    _include as include,
 };
 
 const __noConflict = {
-	require: _global.require,
-	module: _global.module,
-	include: _global.include,
-	exports: _global.exports
+    require: _global.require,
+    module: _global.module,
+    include: _global.include,
+    exports: _global.exports
 };
 
 export function noConflict () {
-	for (let key in __noConflict) {
-		try {
-			_global[key] = __noConflict[key];
-		} catch (error) {}
-	}
+    for (let key in __noConflict) {
+        try {
+            _global[key] = __noConflict[key];
+        } catch (error) {}
+    }
 }
