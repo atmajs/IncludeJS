@@ -24,7 +24,7 @@ export const Helper = { /** TODO: improve url handling*/
         if (url[0] === '/' && cfg.lockedToFolder === true) {
             url = url.substring(1);
         }
-        xhr.on('error', err => {
+        xhr.addEventListener('error', err => {
             resource.error = err;
         });
         xhr.open('GET', url, async);

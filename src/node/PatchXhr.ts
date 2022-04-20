@@ -43,4 +43,7 @@ refs.XMLHttpRequest = class XMLHttpRequest {
             }
         });
     }
+    addEventListener(event, cb) {
+        this.on(event, cb);
+    }
 };
