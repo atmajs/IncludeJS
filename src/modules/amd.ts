@@ -37,25 +37,25 @@ var patterns = [
     [
         [isExports],
         function(module, exports) {
-            define(module, null, null, exports);
+            _define(module, null, null, exports);
         },
     ],
     [
         [isString, isExports],
         function(module, name, exports) {
-            define(module, name, null, exports);
+            _define(module, name, null, exports);
         },
     ],
     [
         [isString, isArray, isExports],
         function(module, name, dependencies, exports) {
-            define(module, name, dependencies, exports);
+            _define(module, name, dependencies, exports);
         },
     ],
     [
         [isArray, isExports],
         function(module, dependencies, exports) {
-            define(module, null, dependencies, exports);
+            _define(module, null, dependencies, exports);
         },
     ],
 ];
@@ -81,7 +81,7 @@ function getFn(patterns, args) {
     return emptyFn;
 }
 function emptyFn() {}
-function define(module, name, dependencies: string[], exports) {
+function _define(module, name, dependencies: string[], exports) {
     if (name != null) {
         bin.js[name] = module;
     }

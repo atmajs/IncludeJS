@@ -11,8 +11,9 @@ import { bin } from '../Bin'
 import * as Module from 'module'
 
 
-var npmPath,
-    atmaPath;
+let npmPath;
+let atmaPath;
+let moduleRoot: Module;
 
 Resource.prototype.path_getFile = function() {
     return path_getFile(this.url);
@@ -73,10 +74,14 @@ Resource.prototype.embed = function() {
 Resource.prototype.instance = function(currentUrl, parent) {
     if (typeof currentUrl === 'string') {
 
-        let old = global.module,
-            next = new Module(currentUrl, old);
+        moduleRoot ??= global.module;
 
-        next.filename = path_getFile(currentUrl);
+        let path = currentUrl === '' || currentUrl === '/'
+            ? moduleRoot.id
+            : currentUrl;
+        let next = new Module(path, moduleRoot);
+
+        next.filename = path_getFile(path);
         next.paths = (Module as any)._nodeModulePaths(path_getDir(next.filename));
 
 
@@ -127,11 +132,12 @@ Resource.prototype.instance = function(currentUrl, parent) {
         }
 
 
-        if (atmaPath)
+        if (atmaPath) {
             next.paths.push(atmaPath);
-
-        if (npmPath)
+        }
+        if (npmPath) {
             next.paths.push(npmPath);
+        }
 
 
         global.module = module = next;

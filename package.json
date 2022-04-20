@@ -1,7 +1,7 @@
 {
     "name": "includejs",
     "description": "Resource Loader",
-    "version": "0.16.1",
+    "version": "0.16.2",
     "homepage": "http://atmajs.com/include",
     "contributors": [],
     "author": "Alex Kit <alex.kit@atmajs.com>",
@@ -22,9 +22,9 @@
     },
     "devDependencies": {
         "@types/node": "^10.3.0",
-        "app-bundler": "0.0.77",
-        "atma": "^0.12.20",
-        "atma-loader-ts": "^1.1.12",
+        "app-bundler": "^0.1.2",
+        "atma": "^0.15.12",
+        "atma-loader-ts": "^1.1.18",
         "maskjs": "^0.64.57"
     },
     "scripts": {
