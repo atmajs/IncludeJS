@@ -3,56 +3,55 @@ import { cfg } from './Config'
 import { ResourceType } from "./models/Type";
 import { Resource } from "./Resource";
 
-declare var global: any;
+declare let global: any;
 
 export const Bin = {
-	add (type: ResourceType, id: string, resource: Resource) {
-		bin[type][normalize(id)] = resource;
-	},
-	find (url: string) {
+    add (type: ResourceType, id: string, resource: Resource) {
+        bin[type][normalize(id)] = resource;
+    },
+    find (url: string) {
         let x = find(bin, url);
         return x && x.resource || null;
     },
-	remove (url: string) {
+    remove (url: string) {
         while (true) {
             // clear if has multiple types
             let x = find(bin, url);
             if (x == null) break;
             bin[x.type][x.id] = null;
         }
-	},
-	get (type: ResourceType, url: string) {
+    },
+    get (type: ResourceType, url: string) {
         let x = findInType(bin, type, url);
         if (x == null) {
             x = find(bin, url);
         }
         return x && x.resource || null;
-	}
+    }
 };
 
 export const bin = {
-	js: {},
-	css: {},
-	load: {},
-	ajax: {},
-	embed: {},
-	mask: {}
+    js: {},
+    css: {},
+    load: {},
+    ajax: {},
+    embed: {},
+    mask: {}
 };
 
 
 
 export function bin_removeDelegate(url) {
     // use timeout as sys-file-change event is called twice
-    var timeout;
+    let timeout;
     return function () {
-        if (timeout)
+        if (timeout) {
             clearTimeout(timeout);
-
+        }
         timeout = setTimeout(function () {
             bin_tryReload(url, () => {
                 cfg.autoreload && cfg.autoreload.fileChanged(url, 'include')
             });
-
         }, 150);
     };
 };
@@ -79,7 +78,7 @@ export function bin_remove(url) {
 };
 
 export function bin_tryReload(path, callback) {
-    var result = bin_remove(path);
+    let result = bin_remove(path);
     if (result == null) {
         callback(false);
         return;
@@ -89,7 +88,7 @@ export function bin_tryReload(path, callback) {
         callback(true);
         return;
     }
-    var count = parents.length,
+    let count = parents.length,
         imax = count,
         i = -1;
 
@@ -119,12 +118,12 @@ function bin_load(resource: Resource, parent:Resource) {
 }
 
 function normalize(url) {
-	let id = path_normalize(url);
-	let q = id.indexOf('?');
-	if (q !== -1)
-		id = id.substring(0, q);
+    let id = path_normalize(url);
+    let q = id.indexOf('?');
+    if (q !== -1)
+        id = id.substring(0, q);
 
-	return id.toLowerCase();
+    return id.toLowerCase();
 }
 function find (bins, url) {
     if (url == null) {
