@@ -1,7 +1,7 @@
 {
     "name": "includejs",
     "description": "Resource Loader",
-    "version": "0.16.4",
+    "version": "0.16.5",
     "homepage": "http://atmajs.com/include",
     "contributors": [],
     "author": "Alex Kit <alex.kit@atmajs.com>",
@@ -16,6 +16,7 @@
         "MIT"
     ],
     "main": "./lib/include.node.js",
+    "browser": "./lib/include.js",
     "dependencies": {
         "atma-io-middleware-condcomments": "^1.2.6",
         "atma-io-middleware-importer": "^1.1.30"

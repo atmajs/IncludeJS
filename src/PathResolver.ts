@@ -2,6 +2,7 @@ import { path_resolveCurrent, path_resolveUrl, path_combine } from './utils/path
 import { Helper } from './Helper'
 import { ResourceType } from './models/Type'
 import { Routes } from './Routing';
+import { isBrowser } from './global';
 
 
 export const PathResolver = {
@@ -201,7 +202,8 @@ function nodeModuleResolve(current_, path, cb){
                 cb(null, path_combine(dir, resource));
                 return;
             }
-            if (json.main) {
+            let main = isBrowser && json.browser ? json.browser : json.main;
+            if (main) {
                 combineMain(dir, json.main, cb);
                 return;
             }
