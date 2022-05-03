@@ -204,7 +204,7 @@ function nodeModuleResolve(current_, path, cb){
             }
             let main = isBrowser && json.browser ? json.browser : json.main;
             if (main) {
-                combineMain(dir, json.main, cb);
+                combineMain(dir, main, cb);
                 return;
             }
             cb(null, dir + 'index.js');
