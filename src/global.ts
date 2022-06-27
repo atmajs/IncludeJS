@@ -1,3 +1,5 @@
+import { IPartialXMLHttpRequestCtor } from './interfaces/IPartialXMLHttpRequest';
+
 declare var global: any;
 declare var document: any;
 declare var module: any;
@@ -48,7 +50,7 @@ export const isNode = _isNode;
 export const isWeb = !! (typeof location !== 'undefined' && location.protocol && /^https?:/.test(location.protocol));
 
 export const refs = {
-    XMLHttpRequest: global.XMLHttpRequest,
+    XMLHttpRequest: global.XMLHttpRequest as IPartialXMLHttpRequestCtor,
     evaluate: typeof __eval !== 'undefined' ? __eval : null
 };
 

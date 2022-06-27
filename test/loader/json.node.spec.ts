@@ -1,7 +1,7 @@
 
-let includeModule = require('../../lib/include.node.module.js');
-let include = includeModule
-    .includeLib
+import { includeLib } from '../lib';
+
+let include = includeLib
     .instance(`file://${__filename}`);
 
 UTest({
@@ -12,5 +12,3 @@ UTest({
         });
     }
 })
-
-export {};

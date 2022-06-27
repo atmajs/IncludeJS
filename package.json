@@ -1,7 +1,7 @@
 {
     "name": "includejs",
     "description": "Resource Loader",
-    "version": "0.16.6",
+    "version": "0.16.7",
     "homepage": "http://atmajs.com/include",
     "contributors": [],
     "author": "Alex Kit <alex.kit@atmajs.com>",
@@ -17,20 +17,20 @@
     ],
     "main": "./lib/include.node.js",
     "browser": "./lib/include.js",
-    "dependencies": {
-        "atma-io-middleware-condcomments": "^1.2.6",
-        "atma-io-middleware-importer": "^1.1.30"
-    },
     "devDependencies": {
         "@types/node": "^10.3.0",
-        "app-bundler": "^0.1.2",
-        "atma": "^0.15.15",
+        "app-bundler": "^0.1.7",
+        "atma": "^0.15.17",
+        "atma-io-middleware-condcomments": "^1.2.6",
+        "atma-io-middleware-importer": "^1.1.30",
         "atma-loader-ts": "^1.1.18",
+        "atma-utest": "^0.21.28",
+        "atma-utils": "^0.2.60",
         "maskjs": "^0.72.36"
     },
     "scripts": {
-        "test": "atma test",
-        "server": "atma server",
+        "test": "atma test --TEST",
+        "server": "atma server --TEST",
         "build": "app-bundler",
         "build:worker": "app-bundler --app node-worker",
         "watch": "app-bundler --watch",
@@ -55,6 +55,7 @@
             "atma-loader-ts": {
                 "typescript": {
                     "compilerOptions": {
+                        "esModuleInterop": true,
                         "#if (TEST)": {
                             "module": "AMD"
                         }
@@ -145,8 +146,8 @@
                 }
             },
             "dynamicDependencies": [
-                "vm",
-                "fs",
+                "^vm$",
+                "^fs$",
                 "^module$",
                 "^path$",
                 "^worker_threads$",
@@ -163,7 +164,8 @@
             "middlewares": {
                 "js": [
                     "atma-io-middleware-condcomments:read",
-                    "atma-io-middleware-importer:read"
+                    "atma-io-middleware-importer:read",
+                    "./tools/imports.js:write"
                 ],
                 "ts": [
                     "atma-io-middleware-condcomments:read",

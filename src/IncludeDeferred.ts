@@ -7,7 +7,7 @@ import { tree_resolveUsage } from './utils/tree';
 import { State } from './models/State'
 import { ResourceType } from './models/Type'
 
-declare var global: any;
+declare let global: any;
 
 
 export class IncludeDeferred {
@@ -65,7 +65,7 @@ export class IncludeDeferred {
             this.state = State.AllCompleted;
         }
 
-        var currentState = this.state,
+        let currentState = this.state,
             cbs = this.callbacks,
             imax = cbs.length,
             i = -1;
@@ -75,7 +75,7 @@ export class IncludeDeferred {
         }
 
         while (++i < imax) {
-            var x = cbs[i];
+            let x = cbs[i];
             if (x == null || x.state > this.state) {
                 continue;
             }
@@ -107,7 +107,7 @@ export class IncludeDeferred {
         this.done(onComplete);
     }
     resolve(callback: Function) {
-        var includes = this.includes,
+        let includes = this.includes,
             length = includes == null
                 ? 0
                 : includes.length
@@ -115,11 +115,11 @@ export class IncludeDeferred {
 
         if (length > 0) {
 
-            for (var i = 0; i < length; i++) {
-                var x = includes[i];
-                var resource = x.resource;
-                var route = x.route;
-                var type = resource.type;
+            for(let i = 0; i < length; i++) {
+                let x = includes[i];
+                let resource = x.resource;
+                let route = x.route;
+                let type = resource.type;
 
                 switch (type) {
                     case 'js':
@@ -127,18 +127,17 @@ export class IncludeDeferred {
                     case 'ajax':
                     case 'mask':
                     case 'embed':
-                        var alias = route.alias || Routes.parseAlias(route),
-                            obj = type === 'js'
+                        let alias = route.alias || Routes.parseAlias(route);
+                        let responseObj = type === 'js'
                                 ? (this.response)
-                                : (this.response[type] || (this.response[type] = {}))
-                            ;
+                                : (this.response[type] || (this.response[type] = {}));
 
                         if (alias != null) {
-                            var exp = resource.exports;
+                            let exp = resource.exports;
                             if (cfg.es6Exports && (exp != null && typeof exp === 'object')) {
                                 exp = exp.default || exp;
                             }
-                            obj[alias] = exp;
+                            responseObj[alias] = exp;
                             break;
                         }
                         console.warn('<includejs> Alias is undefined', resource);
@@ -147,7 +146,7 @@ export class IncludeDeferred {
             }
         }
 
-        var response = this.response || emptyResponse;
+        let response = this.response || emptyResponse;
 
         if (this._use == null && this._usage != null) {
             this._use = tree_resolveUsage(this, this._usage, () => {
@@ -163,7 +162,7 @@ export class IncludeDeferred {
             return;
         }
 
-        var before = null;
+        let before = null;
         if (this.type === ResourceType.Js) {
             before = global.include
             global.include = this;

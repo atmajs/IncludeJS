@@ -26,6 +26,10 @@ export class Resource extends Include {
 
     exports: any
     response: any
+    source: string
+    error?: Error
+
+    loaderType: 'import' | 'embed' | 'eval';
 
     constructor(type = null, route = null, namespace = null, xpath = null, parent: Resource = null, id = null, priority = null, opts: IIncludeOptions = null) {
         super();
@@ -69,6 +73,9 @@ export class Resource extends Include {
             this.state = 3;
             return this;
         }
+        if (type === 'embed') {
+            this.loaderType = 'embed';
+        }
         if (url == null) {
             this.state = 3;
             this.url = path_resolveCurrent();
@@ -90,22 +97,35 @@ export class Resource extends Include {
             const before = global.include;
             global.include = this;
 
-            this.exports = __require.nativeRequire(this.url);
+            try {
+                this.exports = __require.nativeRequire(this.url);
 
-            if (before != null && global.include === this) {
-                global.include = before;
+                if (before != null && global.include === this) {
+                    global.include = before;
+                }
+                this.readystatechanged(4);
+            } catch (error) {
+                if (error.code == 'ERR_REQUIRE_ESM') {
+
+                    this.loaderType = 'import';
+                    process(this);
+                    return this;
+                }
+                throw error;
             }
-            this.readystatechanged(4);
             return this;
         }
         if (isNpm === false) {
             process(this);
             return this;
         }
-        PathResolver.resolveNpm(this.url, this.type, this.parent, (error, url) => {
+        PathResolver.resolveNpm(this.url, this.type, this.parent, (error, url, loaderType) => {
             if (error) {
                 this.readystatechanged(4);
                 return;
+            }
+            if (loaderType) {
+                this.loaderType = loaderType;
             }
             this.url = url;
             this.location = path_getDir(url);
@@ -322,7 +342,7 @@ function PackageExtract(pckg: any[]): PackageArgument {
 
 // private
 
-function process(resource) {
+function process(resource: Resource) {
     let { type, url, parent } = resource;
 
     if (document == null && type === 'css') {
@@ -343,7 +363,7 @@ function process(resource) {
     switch (type) {
         case 'js':
         case 'embed':
-            ScriptStack.load(resource, parent, type === 'embed');
+            ScriptStack.load(resource, parent);
             break;
         case 'ajax':
         case 'load':

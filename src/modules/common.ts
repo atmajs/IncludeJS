@@ -1,36 +1,48 @@
 import { __require, global } from '../global'
 import { cfg } from '../Config'
 
-declare var include: any;
+declare let include: any;
 
 
 export const CommonJS = {
     exports: null,
     require: function commonjs(path) {
-        if (path.charCodeAt(0) !== 46 && __require.nativeRequire != null) {
+        if (path.charCodeAt(0) !== 46) {
             // .
-            return __require.nativeRequire(path);
+            if (global.module?.require) {
+                let moduleBefore = global.module;
+                let result = global.module.require(path);
+
+                if (moduleBefore !== global.module) {
+                    global.module = moduleBefore;
+                }
+                return result;
+            }
+            if (__require.nativeRequire != null) {
+                return __require.nativeRequire(path);
+            }
         }
 
-        var currentSync = cfg.sync;
-        var currentEval = cfg.eval;
-        var currentInclude = include;
-        var exports = null;
+        let currentSync = cfg.sync;
+        let currentEval = cfg.eval;
+        let currentInclude = include;
+        let currentModule = global.module;
+        let exports = null;
+
 
         cfg.sync = true;
         cfg.eval = true;
-        include.js(path + '::Module').done(function (resp) {
+        include.js(path + '::Module').done(resp => {
             exports = resp.Module;
         });
         include = currentInclude;
+        global.module = currentModule;
+
         cfg.sync = currentSync;
         cfg.eval = currentEval;
         return exports;
     },
-    enable: function () {
-        // if (typeof __require.nativeRequire === 'function') {
-        // 	return;
-        // }
+    enable () {
 
         enableExports();
         enableRequire();

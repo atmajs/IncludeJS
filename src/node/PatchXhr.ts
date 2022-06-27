@@ -2,10 +2,14 @@ import { refs } from '../global'
 import { file_read, file_watch } from './utils/file';
 import { cfg } from '../Config';
 import { bin_removeDelegate } from '../Bin';
+import { IPartialXMLHttpRequest } from '../interfaces/IPartialXMLHttpRequest';
 
-refs.XMLHttpRequest = class XMLHttpRequest {
+refs.XMLHttpRequest = class NodeXMLHttpRequest implements IPartialXMLHttpRequest {
+
     url: string
+    headers: any = {}
     status: number
+
     responseText: string
     readyState: number
 
@@ -46,4 +50,8 @@ refs.XMLHttpRequest = class XMLHttpRequest {
     addEventListener(event, cb) {
         this.on(event, cb);
     }
+    getAllResponseHeaders () {
+        return this.headers;
+    }
+
 };

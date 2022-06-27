@@ -1,25 +1,17 @@
-let url = global.include.url;
-let instance = () => includeModule
-	.includeLib
-	.instance(url)
-	.cfg('amd', true);
+import { includeLib } from './lib';
 
-let include = instance();
+let include = includeLib.instance();
 
-UTest({		
+UTest({
     $after () {
-        include.noConflict();        
+        include.noConflict();
     },
-    $teardown () {
-        include = global.include = instance();
-    },
-	
     'should load script with `use` feature' (done) {
         include
             .js(
-                'use/a.js::a_res',
-                'use/c.js::c',
-                'use/b.js'
+                '/test/use/a.js::a_res',
+                '/test/use/c.js::c',
+                '/test/use/b.js'
             )
             .done(function(resp){
                 eq_(resp.b, 'ab');

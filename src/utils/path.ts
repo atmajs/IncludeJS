@@ -2,12 +2,17 @@ import { cfg } from '../Config';
 import { global, document, isNode, isBrowser } from '../global';
 
 const reg_hasProtocol = /^[\w\-]{2,}:\/\//i;
+const reg_hasExt = /\.(?<extension>[\w]{1,})($|\?|#)/;
 
-export function path_getDir(path) {
+export function path_getDir(path: string) {
     return path.substring(0, path.lastIndexOf('/') + 1);
 }
 
-export function path_getFile(path) {
+export function path_cdUp(dirpath: string) {
+    return dirpath.replace(/[^\/]+\/?$/, '');
+}
+
+export function path_getFile(path: string) {
     path = path
         .replace('file://', '')
         .replace(/\\/g, '/')
@@ -20,13 +25,13 @@ export function path_getFile(path) {
     return path;
 }
 
-export function path_getExtension(path) {
-    var query = path.indexOf('?');
-    if (query === -1) {
-        return path.substring(path.lastIndexOf('.') + 1);
-    }
+export function path_hasExtension(path: string) {
+    return reg_hasExt.test(path);
+}
 
-    return path.substring(path.lastIndexOf('.', query) + 1, query);
+export function path_getExtension(path: string) {
+    let match = reg_hasExt.exec(path);
+    return match?.groups?.extension;
 }
 
 export function path_resolveBase () {
@@ -51,16 +56,15 @@ export function path_resolveCurrent() {
     if (document == null) {
         return global.module == null ? '' : path_win32Normalize(process.cwd() + '/');
     }
-    var scripts = document.getElementsByTagName('script'),
-        last = scripts[scripts.length - 1],
-        url = (last && last.getAttribute('src')) || '';
+    let scripts = document.getElementsByTagName('script');
+    let last = scripts[scripts.length - 1];
+    let url = (last && last.getAttribute('src')) || '';
 
     if (url[0] === '/') {
         return url;
     }
 
-    var location = window.location.pathname.replace(/\/[^\/]+\.\w+$/, '');
-
+    let location = window.location.pathname.replace(/\/[^\/]+\.\w+$/, '');
     if (location[location.length - 1] !== '/') {
         location += '/';
     }
@@ -69,7 +73,7 @@ export function path_resolveCurrent() {
 }
 
 export function path_normalize(path) {
-    var path_ = path
+    let path_ = path
         .replace(/\\/g, '/')
         // remove double slashes, but not near protocol
         .replace(/([^:\/])\/{2,}/g, '$1/');
@@ -103,7 +107,7 @@ export function path_toLocalFile(path: string) {
     return path;
 }
 
-export function path_resolveUrl(url, parent) {
+export function path_resolveUrl(url: string, parent?: { base?: string, location?: string }) {
     url = path_normalize(url);
     if (reg_hasProtocol.test(url)) {
         return Path.collapse(url);
@@ -151,13 +155,14 @@ export function path_isRelative(path) {
 }
 
 export function path_combine(...args) {
-    var out = '',
-        imax = args.length,
-        i = -1,
-        x;
+    let out = '';
+    let imax = args.length;
+    let i = -1;
     while (++i < imax) {
-        x = args[i];
-        if (!x) continue;
+        let x = args[i];
+        if (!x) {
+            continue;
+        }
 
         x = path_normalize(x);
 
@@ -165,11 +170,12 @@ export function path_combine(...args) {
             out = x;
             continue;
         }
-
-        if (out[out.length - 1] !== '/') out += '/';
-
-        if (x[0] === '/') x = x.substring(1);
-
+        if (out[out.length - 1] !== '/') {
+            out += '/';
+        }
+        if (x[0] === '/') {
+            x = x.substring(1);
+        }
         out += x;
     }
 

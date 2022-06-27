@@ -1,8 +1,16 @@
-import { path_resolveCurrent, path_resolveUrl, path_combine } from './utils/path'
-import { Helper } from './Helper'
-import { ResourceType } from './models/Type'
+import {
+    path_resolveCurrent,
+    path_resolveUrl,
+    path_combine,
+    path_getDir,
+    path_cdUp,
+    path_hasExtension
+} from './utils/path';
+import { Helper } from './Helper';
+import { ResourceType } from './models/Type';
 import { Routes } from './Routing';
 import { isBrowser } from './global';
+import { type Resource } from './Resource';
 
 
 export const PathResolver = {
@@ -54,7 +62,7 @@ export const PathResolver = {
     getType: getTypeForPath,
     resolveNpm(path_, type, parent, cb){
         let path = map(path_);
-        if (path.indexOf('.') > -1) {
+        if (path_hasExtension(path)) {
             cb(null, path);
             return;
         }
@@ -68,7 +76,7 @@ export const PathResolver = {
                 return;
             }
         }
-        if (hasExt(path) === false) {
+        if (path_hasExtension(path) === false) {
             path += '.' + _ext[type];
         }
         cb(null, path);
@@ -146,9 +154,6 @@ function rewrite (path: string) {
     }
     return null;
 }
-function hasExt(path) {
-    return /\.[\w]{1,8}($|\?|#)/.test(path);
-}
 function isNodeModuleResolution(path: string){
     let aliasIdx = path.indexOf('::');
     if (aliasIdx > - 1)  {
@@ -158,7 +163,13 @@ function isNodeModuleResolution(path: string){
     if (path in _npm) {
         return true;
     }
-    let isNpm = /^(@?[\w\-]+)(\/[\w\-_]+)*$/.test(path);
+
+    // npm name
+    let rgx_ROOT = /^@?[\w\-_]+$/;
+    // npm name with path or npm organization with name and/or path
+    let rgx_withPath = /^(@?[\w_]+[\w\-_\.]*)(\/[\w\-_]+)+$/;
+
+    let isNpm = rgx_ROOT.test(path) || rgx_withPath.test(path);
     if (isNpm === false) {
         return false;
     }
@@ -168,10 +179,94 @@ function isNodeModuleResolution(path: string){
     let namespace = path.substring(0, path.indexOf('/'));
     return Routes.routes[namespace] == null;
 }
-function nodeModuleResolve(current_, path, cb){
+
+namespace dir {
+    export function getRoot (dirpath: string) {
+        let end = dirpath.indexOf('/');
+        if (end === -1) {
+            end = dirpath.length;
+        }
+        return dirpath.substring(0, end);
+    }
+    export function getName(dirpath: string) {
+        let lastIndexOf = null;
+        if (dirpath.endsWith('/')) {
+            lastIndexOf = dirpath.length - 2;
+        }
+        let start = dirpath.lastIndexOf(dirpath, lastIndexOf);
+        return dirpath.substring(start + 1, lastIndexOf);
+    }
+    export function trimStart(path: string) {
+        return path.replace(/^\/+/, '');
+    }
+    export function trimEnd(path: string) {
+        return path.replace(/\/+$/, '');
+    }
+}
+
+export namespace NodeModulePaths {
+    export function getPaths (currentPath: string, packageName: string): string[] {
+        let paths = [];
+        let pckg = `/node_modules/${packageName}/package.json`
+        if (isBrowser) {
+            paths.push(pckg);
+        }
+        let dir = path_getDir(currentPath);
+        while (true) {
+            let path = path_combine(dir, pckg);
+            paths.push(path);
+            let next = path_cdUp(dir);
+            if (next === dir) {
+                break;
+            }
+            dir = next;
+        }
+        return paths;
+    }
+}
+
+async function nodeModuleResolve(current_: string, path: string, cb: (err, path?: string, loaderType?: Resource['loaderType']) => void){
+    let name = dir.getRoot(path);
+    let resource = dir.trimStart(path.substring(name.length));
+    if (name.startsWith('@')) {
+        let subname = dir.getRoot(resource);
+        resource = dir.trimStart(resource.substring(subname.length));
+        name = `${name}/${subname}`;
+    }
+    let paths = NodeModulePaths.getPaths(current_, name);
+    let loaderType = null;
+    for (let i = 0; i < paths.length; i++) {
+        let path = paths[i];
+        let resp = await Helper.XHR_LOAD(path);
+        if (resp.status !== 200) {
+            continue;
+        }
+        if (!resource) {
+            let json;
+            let text = resp.body;
+            if (typeof text === 'string') {
+                json = JSON.parse(text);
+            } else {
+                json = text;
+            }
+            resource = isBrowser && json.browser ? json.browser : json.main;
+            if (json.type === 'module') {
+                loaderType = 'import';
+            }
+        }
+        if (path_hasExtension(resource) === false) {
+            resource += '.js';
+        }
+        let main = path_combine(path.replace('package.json', ''), resource);
+        cb(null, main, loaderType);
+        return;
+    }
+    cb('Not found');
+}
+function nodeModuleResolveOld(current_, path, cb){
     let name = /^(@?[\w\-]+)/.exec(path)[0];
     let resource = path.substring(name.length + 1);
-    if (resource && hasExt(resource) === false) {
+    if (resource && path_hasExtension(resource) === false) {
         resource += '.js';
     }
     let current = current_.replace(/[^\/]+\.[\w]{1,8}$/, '');
@@ -213,7 +308,7 @@ function nodeModuleResolve(current_, path, cb){
     check();
 }
 function ensureExtension(path, type) {
-    if (hasExt(path)) {
+    if (path_hasExtension(path)) {
         return path;
     }
     let ext = _ext[type];
@@ -222,8 +317,9 @@ function ensureExtension(path, type) {
         return path;
     }
     let i = path.indexOf('?');
-    if (i === -1) return path + '.' + ext;
-
+    if (i === -1) {
+        return path + '.' + ext;
+    }
     return path.substring(0, i) + '.' + ext + path.substring(i);
 }
 function getTypeForPath(path: string): ResourceType {
@@ -248,7 +344,7 @@ function getTypeForPath(path: string): ResourceType {
 
 function combineMain (dir, fileName, cb) {
     let path = path_combine(dir, fileName);
-    if (hasExt(path)) {
+    if (path_hasExtension(path)) {
         cb(null, path);
         return;
     }

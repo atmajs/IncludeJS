@@ -44,8 +44,8 @@ Resource.prototype.inject = function(...args) {
             bundle.state = 3;
             bundle.on(4, function() {
 
-                var remove = 1;
-                var index = arr_indexOf(current.includes, function(res) {
+                let remove = 1;
+                let index = arr_indexOf(current.includes, function(res) {
                     return res.resource === bundle;
                 });
                 if (index === -1) {
@@ -142,7 +142,7 @@ Resource.prototype.instance = function(currentUrl, parent) {
 
         global.module = module = next;
 
-        var req = next.require.bind(next);
+        let req = next.require.bind(next);
         if (__require.includeRequire == null) {
             global.require = require = req;
         } else {
@@ -151,7 +151,7 @@ Resource.prototype.instance = function(currentUrl, parent) {
 
     }
 
-    var resource;
+    let resource;
     if (currentUrl == null) {
         resource = new Include();
         resource.state = 4;
@@ -167,14 +167,24 @@ Resource.prototype.instance = function(currentUrl, parent) {
 
 
 
-function inject_process(bundle, index) {
-    if (index >= bundle.includes.length)
-        return bundle.readystatechanged(4);
+function inject_process(bundle, index: number) {
+    if (index >= bundle.includes.length) {
+        bundle.readystatechanged(4);
+        return;
+    }
 
-    var include = bundle.includes[index],
-        resource = include.resource,
-        alias = include.route.alias,
-        source = resource.exports;
+    let include = bundle.includes[index];
+    let resource = include.resource;
+    let alias = include.route.alias;
+    let source = resource.source || resource.exports;
+
+    if (resource.state === 4) {
+        if (resource.exports && alias) {
+            global[alias] = resource.exports;
+        }
+        inject_process(bundle, ++index);
+        return;
+    }
 
     resource.exports = null;
     resource.type = 'js';
@@ -182,7 +192,7 @@ function inject_process(bundle, index) {
     resource.state = 3;
     resource.parent = null;
 
-    for (var key in bin.load) {
+    for (let key in bin.load) {
         if (bin.load[key] === resource) {
             delete bin.load[key];
             break;

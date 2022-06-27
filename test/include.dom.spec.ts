@@ -1,3 +1,5 @@
+import { includeModule } from './lib'
+
 let global = window;
 let include = includeModule
     .include
@@ -10,7 +12,11 @@ include.routes({
 });
 
 UTest({
-   
+
+    $before () {
+        global.include = include;
+    },
+
     'Waterfall' (done) {
 
         global.letters = {};

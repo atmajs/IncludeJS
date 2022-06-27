@@ -11,7 +11,7 @@ import { ScriptStack } from './ScriptStack';
 import { PackageArgument, Resource } from './Resource';
 import { global, noConflict } from './global'
 
-declare var include: any;
+declare let include: any;
 
 
 
@@ -38,7 +38,7 @@ export class Include extends IncludeDeferred {
         Lib = IncludeLib
 
         setCurrent (data: IIncludeData) {
-            var url = data.url,
+            let url = data.url,
                 resource = this.getResourceById(url, 'js');
 
             if (resource == null) {
@@ -83,16 +83,16 @@ export class Include extends IncludeDeferred {
                 return this;
             }
 
-            for (var key in mix) {
+            for (let key in mix) {
                 Routes.register(key, mix[key]);
             }
             return this;
         }
-        promise (namespace) {
-            var arr = namespace.split('.'),
-                obj = global;
+        promise (namespace: string) {
+            let arr = namespace.split('.');
+            let obj = global;
             while (arr.length) {
-                var key = arr.shift();
+                let key = arr.shift();
                 obj = obj[key] || (obj[key] = {});
             }
             return obj;
@@ -100,44 +100,41 @@ export class Include extends IncludeDeferred {
         /** @TODO - `id` property seems to be unsed and always equal to `url` */
         register (_bin) {
 
-            var base = this.base,
-                key,
-                info,
-                infos,
-                imax,
-                i;
+            let base = this.base;
 
             function transform(info){
                 if (base == null)
                     return info;
-                if (info.url[0] === '/')
+                if (info.url[0] === '/') {
                     info.url = base + info.url.substring(1);
+                }
 
-                if (info.parent[0] === '/')
+                if (info.parent[0] === '/') {
                     info.parent = base + info.parent.substring(1);
+                }
 
                 info.id = info.url;
                 return info;
             }
 
-            for (key in _bin) {
-                infos = _bin[key];
-                imax = infos.length;
-                i = -1;
+            for (let key in _bin) {
+                let infos = _bin[key];
+                let imax = infos.length;
+                let i = -1;
 
                 while ( ++i < imax ) {
 
-                    info = transform(infos[i]);
+                    let info = transform(infos[i]);
 
-                    var id = info.url,
-                        url = info.url,
-                        namespace = info.namespace,
-                        parent = info.parent && Bin.find(info.parent),
-                        resource = new Resource(),
-                        state = info.state
-                        ;
-                    if (! (id || url))
+                    let id = info.url;
+                    let url = info.url;
+                    let namespace = info.namespace;
+                    let parent = info.parent && Bin.find(info.parent);
+                    let resource = new Resource();
+                    let state = info.state;
+                    if (!id || !url) {
                         continue;
+                    }
 
                     if (url) {
                         if (url[0] === '/') {
@@ -152,7 +149,7 @@ export class Include extends IncludeDeferred {
                         : state
                         ;
                     resource.namespace = namespace;
-                    resource.type = key;
+                    resource.type = key as ResourceType;
                     resource.url = url || id;
                     resource.parent = parent;
                     resource.base = parent && parent.base || base;
@@ -160,8 +157,8 @@ export class Include extends IncludeDeferred {
                     switch (key) {
                     case 'load':
                     case 'lazy':
-                        var query = '[data-bundler-path="/' + url + '"]';
-                        var bags = IncludeLib.loadBags,
+                        let query = '[data-bundler-path="/' + url + '"]';
+                        let bags = IncludeLib.loadBags,
                             j = bags.length,
                             el = null;
                         while( --j > -1 && el == null){
@@ -174,14 +171,13 @@ export class Include extends IncludeDeferred {
                         }
                         resource.exports = el.innerHTML;
                         if (CustomLoader.exists(resource)){
-
                             resource.state = 3;
                             CustomLoader.load(resource, CustomLoader_onComplete);
                         }
                         break;
                     }
 
-                    Bin.add(key, id, resource);
+                    Bin.add(key as ResourceType, id, resource);
                 }
             }
             function CustomLoader_onComplete(resource, response) {
@@ -224,7 +220,7 @@ export class Include extends IncludeDeferred {
             return this.getResourceById(url, type);
         }
         getResourceById(url, type): Resource {
-            var _res = Bin.get(type, url);
+            let _res = Bin.get(type, url);
             if (_res != null)
                 return _res;
 
@@ -254,7 +250,7 @@ export class Include extends IncludeDeferred {
 
         plugin(pckg, callback) {
 
-            var urls = [],
+            let urls = [],
                 length = 0,
                 j = 0,
                 i = 0,
@@ -314,14 +310,14 @@ export class Include extends IncludeDeferred {
         allDone(callback){
             ScriptStack.complete(function(){
 
-                var pending = include.getPending(),
+                let pending = include.getPending(),
                     await_ = pending.length;
                 if (await_ === 0) {
                     callback();
                     return;
                 }
 
-                var i = -1,
+                let i = -1,
                     imax = await_;
                 while( ++i < imax ){
                     pending[i].on(4, check, null, 'push');
@@ -335,7 +331,7 @@ export class Include extends IncludeDeferred {
         }
 
         getPending (type){
-            var resources = [],
+            let resources = [],
                 res, key, id;
 
             for(key in bin){

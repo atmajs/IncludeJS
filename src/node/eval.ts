@@ -36,11 +36,12 @@ export function internalEval (source: string, include, isGlobalCtx: boolean = fa
             module = currentModule = new Module(filename, module);
             module.paths = (Module as any)._nodeModulePaths(path_getDir(filename));
             module.filename = filename;
+
+            global.module = module;
             (module as any)._compile(source, filename);
             module.loaded = true;
-        }
-
-        else {
+            global.module = currentModule;
+        } else {
             module.exports = {};
             vm.runInThisContext(source, global.__filename);
         }

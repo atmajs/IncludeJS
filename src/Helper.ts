@@ -1,5 +1,7 @@
 import { cfg } from './Config'
 import { isBrowser, handler, refs } from './global'
+import { type Resource } from './Resource';
+import { class_Dfr } from './utils/class_Dfr';
 
 export const Helper = { /** TODO: improve url handling*/
 
@@ -8,7 +10,7 @@ export const Helper = { /** TODO: improve url handling*/
         handler.onerror && handler.onerror(e);
     },
 
-    XHR(resource, callback) {
+    XHR(resource: string | Resource, callback) {
         let xhr = new refs.XMLHttpRequest();
         xhr.onreadystatechange = function () {
             if (xhr.readyState === 4) {
@@ -25,25 +27,52 @@ export const Helper = { /** TODO: improve url handling*/
             url = url.substring(1);
         }
         xhr.addEventListener('error', err => {
-            resource.error = err;
+            if (typeof resource !== 'string') {
+                resource.error = err;
+            }
         });
         xhr.open('GET', url, async);
         xhr.send();
     },
-    XHR_LOAD(url, callback) {
+    XHR_LOAD(url: string, callback?: (status: number, content?: string) => void): PromiseLike<TNetworkResponse> | null {
         let xhr = new refs.XMLHttpRequest();
+        let dfr = callback == null
+            ? new class_Dfr<TNetworkResponse>()
+            : null;
+
         xhr.onreadystatechange = function () {
             if (xhr.readyState !== 4) {
                 return;
             }
-            if (xhr.status !== 200) {
-                callback(xhr.status);
+            const body = xhr.responseText;
+            const headers = xhr.getAllResponseHeaders();
+            const status = xhr.status;
+
+            if (status !== 200) {
+                dfr?.resolve({
+                    body,
+                    status,
+                    headers,
+                });
+                callback?.(status);
                 return;
             }
-            callback(null, xhr.responseText);
+            dfr?.resolve({
+                body,
+                status,
+                headers,
+            });
+            callback?.(null, body);
         };
 
         xhr.open('GET', url, cfg.sync === true ? false : true);
         xhr.send();
+        return dfr;
     }
 };
+
+interface TNetworkResponse<T = string> {
+    status: number
+    headers: any
+    body?: T
+}

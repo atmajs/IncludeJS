@@ -1,27 +1,24 @@
-(function () {
+import { includeLib } from '../lib';
 
-	global.mask = require('maskjs');
-	
-	let includeModule = require('../../lib/include.node.module.js');
-	let include = includeModule
-		.includeLib
-		.instance(`file://${__filename}`);
 
-	
+global.mask = require('maskjs');
 
-	UTest({
-		'loads mask' (done) {
-	
-		include
-			.mask('../letter/letter.mask')
-			.done(function(resp){
-				var compo = global.mask.getHandler('Letter');
-				notEq_(compo, null);
-				notEq_(resp.mask.letter.Letter, null);
-				done();
-			});
+let include = includeLib
+    .instance(`file://${__filename}`);
 
-		}
-	});
 
-}());
+
+UTest({
+    'loads mask'(done) {
+
+        include
+            .mask('../letter/letter.mask')
+            .done(function (resp) {
+                var compo = global.mask.getHandler('Letter');
+                notEq_(compo, null);
+                notEq_(resp.mask.letter.Letter, null);
+                done();
+            });
+
+    }
+});
