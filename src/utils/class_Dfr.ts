@@ -226,7 +226,7 @@ function arr_callOnce(arr, ctx, args) {
     }
     arr.length = 0;
 }
-function isDeferred(x) {
+export function isDeferred(x) {
     return x != null
         && typeof x === 'object'
         && typeof x.then === 'function'

@@ -6,6 +6,7 @@ import { emptyResponse } from './global';
 import { tree_resolveUsage } from './utils/tree';
 import { State } from './models/State'
 import { ResourceType } from './models/Type'
+import { isDeferred } from './utils/class_Dfr';
 
 declare let global: any;
 
@@ -106,12 +107,11 @@ export class IncludeDeferred {
     then(onComplete, onError) {
         this.done(onComplete);
     }
-    resolve(callback: Function) {
-        let includes = this.includes,
-            length = includes == null
+    async resolve(callback: Function) {
+        let includes = this.includes;
+        let length = includes == null
                 ? 0
-                : includes.length
-            ;
+                : includes.length;
 
         if (length > 0) {
 
@@ -136,6 +136,10 @@ export class IncludeDeferred {
                             let exp = resource.exports;
                             if (cfg.es6Exports && (exp != null && typeof exp === 'object')) {
                                 exp = exp.default || exp;
+                            }
+
+                            if (isDeferred(exp)) {
+                                exp = await exp;
                             }
                             responseObj[alias] = exp;
                             break;
