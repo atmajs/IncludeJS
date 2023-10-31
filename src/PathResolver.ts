@@ -159,11 +159,9 @@ function isNodeModuleResolution(path: string){
     if (aliasIdx > - 1)  {
         path = path.substring(0, aliasIdx);
     }
-
     if (path in _npm) {
         return true;
     }
-
     // npm name
     let rgx_ROOT = /^@?[\w\-_]+$/;
     // npm name with path or npm organization with name and/or path
@@ -173,9 +171,7 @@ function isNodeModuleResolution(path: string){
     if (isNpm === false) {
         return false;
     }
-    if (path[0] !== '@') {
-        return true;
-    }
+    // if namespace is present, most likely is not the npm package.
     let namespace = path.substring(0, path.indexOf('/'));
     return Routes.routes[namespace] == null;
 }
