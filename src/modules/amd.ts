@@ -8,16 +8,18 @@ export const Amd = {
     },
 };
 
-declare var require: any;
+declare let require: any;
 
 function enable() {
     const define = (global.define = function(a, b, c) {
-        var i = arguments.length,
-            args = new Array(i);
-        while (--i > -1) args[i] = arguments[i];
+        let i = arguments.length;
+        let args = new Array(i);
+        while (--i > -1) {
+            args[i] = arguments[i];
+        }
 
-        var fn = getFn(patterns, args);
-        var module = global.include;
+        let fn = getFn(patterns, args);
+        let module = global.include;
         fn(module, a, b, c);
     });
     if (isBrowser) {
@@ -33,7 +35,7 @@ function enable() {
         require = __includeRequire;
     }
 }
-var patterns = [
+let patterns = [
     [
         [isExports],
         function(module, exports) {
@@ -60,17 +62,17 @@ var patterns = [
     ],
 ];
 function getFn(patterns, args) {
-    var i = -1,
+    let i = -1,
         imax = patterns.length;
     outer: while (++i < imax) {
-        var pattern = patterns[i][0];
+        let pattern = patterns[i][0];
         if (pattern.length !== args.length) {
             continue;
         }
-        var j = -1,
+        let j = -1,
             jmax = pattern.length;
         while (++j < jmax) {
-            var matcher = pattern[j];
+            let matcher = pattern[j];
             if (matcher(args[j]) === false) {
                 continue outer;
             }
@@ -89,9 +91,9 @@ function _define(module, name, dependencies: string[], exports) {
         module.exports = getExports(exports) || module.exports;
         return;
     }
-    var deps = getDepsInfo(dependencies, module);
-    var arr = deps.array;
-    var linked = deps.linked;
+    let deps = getDepsInfo(dependencies, module);
+    let arr = deps.array;
+    let linked = deps.linked;
     if (linked.length === 0) {
         module.exports = getExports(exports, arr) || module.exports;
         return;
@@ -112,12 +114,12 @@ function getExports(mix, args = []) {
 }
 
 function getDepsInfo(deps, module) {
-    var array = new Array(deps.length),
+    let array = new Array(deps.length),
         linked = [],
         imax = deps.length,
         i = -1;
     while (++i < imax) {
-        var fn = StaticResolvers[deps[i]];
+        let fn = StaticResolvers[deps[i]];
         if (fn == null) {
             linked.push(deps[i] + '::' + i);
             continue;
@@ -126,7 +128,7 @@ function getDepsInfo(deps, module) {
     }
     return { array: array, linked: linked };
 }
-var StaticResolvers = {
+let StaticResolvers = {
     module: function(module) {
         return module;
     },
@@ -160,7 +162,7 @@ function enableExports() {
 
     Object.defineProperty(global, 'exports', {
         get: function() {
-            var current = global.include;
+            let current = global.include;
             return current.exports || (current.exports = {});
         },
         set: function(exports) {
@@ -170,9 +172,9 @@ function enableExports() {
 }
 
 function readResp(arr, resp) {
-    var digit = /^\d+$/;
-    for (var key in resp) {
-        var val = resp[key];
+    let digit = /^\d+$/;
+    for (let key in resp) {
+        let val = resp[key];
         if (val == null) {
             continue;
         }

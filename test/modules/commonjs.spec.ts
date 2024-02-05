@@ -9,6 +9,12 @@ let $include;
 let instance = () => {
     return includeLib
         .instance('/test/modules/commonjs.spec.ts')
+        .cfg({
+            extensionDefault: {
+                "js": "ts"
+            },
+        })
+        .cfg('amd', false)
         .cfg('commonjs', true);
 };
 
@@ -24,7 +30,7 @@ UTest({
         $include = $global.include = instance();
     },
 
-    '//include should work with enabled modules' (done) {
+    'include should work with enabled modules' (done) {
         $include
             .js('../letter/commonjs/a.js::Module')
             .done(resp => {
@@ -42,8 +48,7 @@ UTest({
         eq_(bExports.b, 'b');
         eq_(bExports.c, 'c');
     },
-    'should load with node module resolver with package.json' () {
-        debugger;
+    '//should load with node module resolver with package.json' () {
         let fooExports = $global.require('foo_common');
         eq_(fooExports.foo, 'FooCommon');
     },

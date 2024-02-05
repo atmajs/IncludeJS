@@ -1,5 +1,5 @@
 import { Resource, PackageArgument } from '../Resource'
-import { path_getFile, path_getDir, path_combine, path_normalize, path_resolveUrl } from '../utils/path';
+import { path_getFile, path_getDir, path_combine, path_normalize, path_resolveUrl, path_resolveCurrent, path_resolveBase } from '../utils/path';
 import { State } from '../models/State'
 import { ResourceType } from '../models/Type'
 import { arr_indexOf } from '../utils/array';
@@ -79,6 +79,11 @@ Resource.prototype.instance = function(currentUrl, parent) {
         let path = currentUrl === '' || currentUrl === '/'
             ? moduleRoot.id
             : currentUrl;
+
+        if (path[0] === '/') {
+            path = path_combine(path_resolveBase(), path);
+        }
+
         let next = new Module(path, moduleRoot);
 
         next.filename = path_getFile(path);

@@ -1,5 +1,6 @@
 import { __require, global } from '../global'
 import { cfg } from '../Config'
+import { path_resolveUrl } from '../utils/path';
 
 declare let include: any;
 
@@ -26,17 +27,19 @@ export const CommonJS = {
         let currentSync = cfg.sync;
         let currentEval = cfg.eval;
         let currentInclude = include;
-        let currentModule = global.module;
+        let currentModuleDescriptor = Object.getOwnPropertyDescriptor(global, 'module');
         let exports = null;
 
 
         cfg.sync = true;
         cfg.eval = true;
-        include.instance(include.location).js(path + '::Module').done(resp => {
+
+        include.instance(include.url, include).js(path + '::Module').done(resp => {
             exports = resp.Module;
         });
         include = currentInclude;
-        global.module = currentModule;
+
+        Object.defineProperty(global, 'module', currentModuleDescriptor);
 
         cfg.sync = currentSync;
         cfg.eval = currentEval;

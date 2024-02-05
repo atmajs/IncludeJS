@@ -3,9 +3,18 @@ import { includeLib } from '../lib'
 let $glob: any = typeof global !== 'undefined' ? global : window;
 let url = $glob.include.url;
 
-let instance = () => includeLib
-    .instance(url)
-    .cfg('amd', true);
+
+let instance = () => {
+    return includeLib
+        .instance('/test/modules/amd.spec.ts')
+        .cfg({
+            extensionDefault: {
+                "js": "ts"
+            },
+        })
+        .cfg('commonjs', false)
+        .cfg('amd', true)
+};
 
 let include = instance();
 

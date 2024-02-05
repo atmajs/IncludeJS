@@ -38,10 +38,12 @@ export const PathResolver = {
         }
     },
     resolveBasic(path_, type, parent) {
-        if (type === 'js' && isNodeModuleResolution(path_)) {
-            return path_;
-        }
         let path = map(path_);
+
+        if (type === 'js' && isNodeModuleResolution(path)) {
+            return path;
+        }
+
         if (path[0] === '@') {
             let i = path.indexOf('/');
             let namespace = path.substring(0, i);
