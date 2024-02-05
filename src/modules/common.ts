@@ -32,7 +32,7 @@ export const CommonJS = {
 
         cfg.sync = true;
         cfg.eval = true;
-        include.js(path + '::Module').done(resp => {
+        include.instance(include.location).js(path + '::Module').done(resp => {
             exports = resp.Module;
         });
         include = currentInclude;

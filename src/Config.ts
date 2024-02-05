@@ -71,7 +71,7 @@ class Config {
 
 };
 
-type TConfigKey = 'loader' | 'modules' | 'commonjs' | 'amd' | 'map' | 'npm' | 'extensionDefault' | 'extentionTypes' | 'routes' ;
+type TConfigKey = 'loader' | 'modules' | 'commonjs' | 'amd' | 'map' | 'npm' | 'extensionDefault' | 'extensionTypes' | 'routes' ;
 
 function set(cfg: Config, key: TConfigKey | string, value: any) {
     switch (key) {
@@ -101,9 +101,11 @@ function set(cfg: Config, key: TConfigKey | string, value: any) {
         case 'extensionDefault':
         // typo: but back comp it
         case 'extentionDefault':
+        case 'extensionDefault':
             PathResolver.configExt({ def: value });
             return;
         case 'extentionTypes':
+        case 'extensionTypes':
             PathResolver.configExt({ types: value });
             return;
         case 'routes':

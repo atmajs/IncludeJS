@@ -1,4 +1,4 @@
-import { cfg } from './Config'
+import { Config, cfg } from './Config'
 import { Helper } from './Helper'
 import { refs } from './global'
 import { type Resource } from './Resource';
@@ -156,6 +156,13 @@ export const ScriptStack = {
         let loaderType = Loaders.ensureType(resource);
         if (loaderType === 'eval') {
             SourceLoader.prefetch(resource);
+            if (cfg.sync === true) {
+                Loaders.byEval(resource, () => {
+                    resource.readystatechanged(3);
+                });
+                tickStack();
+                return;
+            }
         }
         ScriptStack.add(resource, parent);
         tickStack();
