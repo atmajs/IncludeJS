@@ -20,11 +20,11 @@
     "devDependencies": {
         "@types/node": "^10.3.0",
         "app-bundler": "^0.1.7",
-        "atma": "^0.15.20",
+        "atma": "^0.15.21",
         "atma-io-middleware-condcomments": "^1.2.6",
         "atma-io-middleware-importer": "^1.1.30",
         "atma-loader-ts": "^1.1.18",
-        "atma-utest": "^0.21.31",
+        "atma-utest": "^0.21.32",
         "atma-utils": "^0.2.60",
         "maskjs": "^0.72.36"
     },
