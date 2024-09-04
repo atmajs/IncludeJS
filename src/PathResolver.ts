@@ -97,6 +97,8 @@ let _ext = {
 };
 let _extTypes: { [ext: string] : ResourceType } = {
     'js': ResourceType.Js,
+    'mjs': ResourceType.Js,
+    'cjs': ResourceType.Js,
     'es6': ResourceType.Js,
     'ts': ResourceType.Js,
     'css': ResourceType.Css,

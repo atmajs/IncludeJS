@@ -76,6 +76,9 @@ export class Resource extends Include {
         if (type === 'embed') {
             this.loaderType = 'embed';
         }
+        if (url?.endsWith('.mjs')) {
+            this.loaderType = 'import';
+        }
         if (url == null) {
             this.state = 3;
             this.url = path_resolveCurrent();

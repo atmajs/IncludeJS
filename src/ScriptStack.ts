@@ -69,10 +69,11 @@ namespace Loaders {
         import(resource.url).then(
             result => {
                 resource.exports = result;
+                resource.response = result;
                 callback();
             },
             error => {
-                console.error('Not Loaded:', resource.url);
+                console.error('Not Loaded:', resource.url, error?.message);
                 console.error('- Initiator:', resource.parent?.url ?? '<root resource>');
 
                 resource.error = error;
