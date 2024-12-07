@@ -44,9 +44,9 @@ export const PathResolver = {
             return path;
         }
 
-        if (path[0] === '@') {
-            let i = path.indexOf('/');
-            let namespace = path.substring(0, i);
+        let i = path.indexOf('/');
+        let namespace = path.substring(0, i);
+        if (Routes.has(namespace)) {
             let template = path.substring(i + 1);
             let info = Routes.resolve(namespace, template);
             path = info.path;

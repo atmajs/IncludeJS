@@ -10,6 +10,10 @@ export class RoutesCtor {
 
     routes: { [namespace: string]: string[] } = {};
 
+    has (namespace: string): boolean {
+        return this.routes[namespace] != null;
+    }
+
     /**
      *    @param route {String} = Example: '.reference/libjs/{0}/{1}.js'
      */
