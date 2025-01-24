@@ -37,7 +37,7 @@ export const PathResolver = {
             _extTypes[key] = types[key];
         }
     },
-    resolveBasic(path_, type, parent) {
+    resolveBasic(path_: string, type: ResourceType, parent: Resource) {
         let path = map(path_);
 
         if (type === 'js' && isNodeModuleResolution(path)) {

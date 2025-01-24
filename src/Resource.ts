@@ -137,8 +137,9 @@ export class Resource extends Include {
         return this;
     }
 
-
-
+    resolvePath (path: string, type: ResourceType = ResourceType.Js) {
+        return PathResolver.resolveBasic(path, type, this);
+    }
 
     setBase(baseUrl: string): this {
         this.base = baseUrl;
