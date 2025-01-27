@@ -1,7 +1,9 @@
 import { bin } from '../Bin';
 import { CommonJS } from './common';
 import { isNode, isBrowser, global, __require } from '../global';
-import { Resource } from '../Resource';
+import type { Resource } from '../Resource';
+import { ResourceType } from '../models/Type';
+import { State } from '../models/State';
 export const Amd = {
     enable: function() {
         enable();
@@ -9,8 +11,18 @@ export const Amd = {
 };
 
 declare let require: any;
+declare let include: Resource;
+
+let requireGlobalCtx = typeof require === 'function' ? require : null;
+let enabled = false;
 
 function enable() {
+    if (enabled) {
+        return;
+    }
+
+    enabled = true;
+
     const define = (global.define = function(a, b, c) {
         let i = arguments.length;
         let args = new Array(i);
@@ -26,8 +38,33 @@ function enable() {
         (define as any).amd = true;
     }
     const __includeRequire = (global.require = __require.includeRequire = function amd() {
-        if (isNode && __require.nativeRequire && arguments.length === 1) {
-            return __require.nativeRequire.apply(null, arguments);
+        if (arguments.length === 1 && typeof arguments[0] ==='string') {
+            let path = arguments[0];
+            let url = include?.resolvePath(path);
+            let resource = include?.getResource(url, ResourceType.Js);
+            if (resource != null && resource.state === State.AllCompleted) {
+                return resource.exports;
+            }
+
+            let requireCurrentCtx = typeof require === 'function' && require !== __includeRequire
+                ? require : null;
+
+            if (typeof requireCurrentCtx === 'function') {
+                try {
+                    return requireCurrentCtx(path);
+                } catch (e) { }
+            }
+            if (typeof requireGlobalCtx === 'function') {
+                try {
+                    return requireGlobalCtx(path);
+                } catch (e) { }
+            }
+            if (__require.nativeRequire != null) {
+                try {
+                    return __require.nativeRequire(path);
+                } catch (e) { }
+            }
+            throw new Error(`Module not found: ${ JSON.stringify(arguments) }`);
         }
         return define.apply(null, arguments);
     });

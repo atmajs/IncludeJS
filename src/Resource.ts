@@ -244,15 +244,16 @@ export class Resource extends Include {
 
         return this;
     }
-    require(arr: string[], options?: IIncludeOptions) {
+    require(mix: string | string[], options?: IIncludeOptions) {
         if (this.exports == null) {
             this.exports = {};
         }
         this.includes = [];
+        let arr = typeof mix === 'string' ? [mix] : mix;
 
-        let pckg = res_groupByType(arr);
-        for (let key in pckg) {
-            this.include(key as ResourceType, pckg[key], options);
+        let pkg = res_groupByType(arr);
+        for (let key in pkg) {
+            this.include(key as ResourceType, pkg[key], options);
         }
         return this;
     }

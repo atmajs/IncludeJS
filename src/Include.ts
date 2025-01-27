@@ -213,13 +213,13 @@ export class Include extends IncludeDeferred {
             noConflict();
         }
 
-        getResource(url, type){
+        getResource(url: string, type: ResourceType){
             if (this.base && url[0] === '/')
                 url = this.base + url.substring(1);
 
             return this.getResourceById(url, type);
         }
-        getResourceById(url, type): Resource {
+        getResourceById(url: string, type: ResourceType): Resource {
             let _res = Bin.get(type, url);
             if (_res != null)
                 return _res;

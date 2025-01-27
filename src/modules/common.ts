@@ -1,27 +1,40 @@
 import { __require, global } from '../global'
 import { cfg } from '../Config'
-import { path_resolveUrl } from '../utils/path';
+import type { Resource } from '../Resource';
+import { ResourceType } from '../models/Type';
+import { State } from '../models/State';
 
-declare let include: any;
+declare let include: Resource;
+declare let require: any;
 
+let requireGlobalCtx = typeof require === 'function' ? require : null;
+let enabled = false;
 
-export const CommonJS = {
+const CommonJSInternal = {
     exports: null,
     require: function commonjs(path) {
-        if (path.charCodeAt(0) !== 46) {
-            // .
-            if (global.module?.require) {
-                let moduleBefore = global.module;
-                let result = global.module.require(path);
+        let url = include?.resolvePath(path);
+        let resource = include?.getResource(url, ResourceType.Js);
+        if (resource != null && resource.state === State.AllCompleted) {
+            return resource.exports;
+        }
 
-                if (moduleBefore !== global.module) {
-                    global.module = moduleBefore;
-                }
-                return result;
-            }
-            if (__require.nativeRequire != null) {
+        let requireCurrentCtx = typeof require === 'function' && require !== CommonJSInternal.require
+            ? require : null;
+        if (typeof requireCurrentCtx === 'function') {
+            try {
+                return requireCurrentCtx(path);
+            } catch (e) { }
+        }
+        if (typeof requireGlobalCtx === 'function') {
+            try {
+                return requireGlobalCtx(path);
+            } catch (e) { }
+        }
+        if (__require.nativeRequire != null) {
+            try {
                 return __require.nativeRequire(path);
-            }
+            } catch (e) { }
         }
 
         let currentSync = cfg.sync;
@@ -46,15 +59,19 @@ export const CommonJS = {
         return exports;
     },
     enable () {
-
+        if (enabled) {
+            return;
+        }
+        enabled = true;
         enableExports();
         enableRequire();
     }
 };
 
 
+
 function enableRequire() {
-    global.require = CommonJS.require
+    global.require = CommonJSInternal.require
 }
 
 function enableExports() {
@@ -90,3 +107,6 @@ function enableExports() {
         configurable: true
     });
 }
+
+
+export const CommonJS = CommonJSInternal;
