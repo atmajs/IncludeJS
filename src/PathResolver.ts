@@ -77,7 +77,7 @@ export const PathResolver = {
             path,
             module: mapped1?.module
                 ?? mapped2?.module
-                ?? (path.include('/esm/') ? 'import' : null)
+                ?? (path.includes('/esm/') ? 'import' : null)
         };
         return data;
     },

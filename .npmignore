@@ -1,6 +1,7 @@
 node_modules/
 .gitignore
 .npmignore
+.circleci
 .travis.yml
 .komodotools
 *.komodoproject
@@ -10,3 +11,7 @@ node_modules/
 /.dev/
 /.vscode/
 /typings/
+/tools
+/typings.json
+/tsconfig.json
+/README.md
