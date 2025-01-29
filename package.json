@@ -1,7 +1,7 @@
 {
     "name": "includejs",
     "description": "Resource Loader",
-    "version": "0.17.8",
+    "version": "0.17.9",
     "homepage": "http://atmajs.com/include",
     "contributors": [],
     "author": "Alex Kit <alex.kit@atmajs.com>",

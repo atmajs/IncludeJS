@@ -37,7 +37,11 @@ export class Resource extends Include {
         let url = route?.path;
         if (url != null) {
             url = path_normalize(url);
-            url = PathResolver.resolveBasic(url, type, parent);
+            let data = PathResolver.resolveBasicWithData(url, type, parent);
+            url = data.path;
+            if (data.module === 'import') {
+                this.loaderType = 'import';
+            }
         }
         if (id == null && url) {
             id = url;
@@ -218,11 +222,11 @@ export class Resource extends Include {
         this.includes.push(data);
         return data;
     }
-    include (type: ResourceType, pckg: PackageArgument, options: IIncludeOptions) {
+    include (type: ResourceType, pkg: PackageArgument, options: IIncludeOptions) {
         let children = [];
         let child;
 
-        Routes.each(type, pckg, (namespace, route, xpath) => {
+        Routes.each(type, pkg, (namespace, route, xpath) => {
             if (this.route != null && this.route.path === route.path) {
                 // loading itself
                 return;
@@ -308,29 +312,29 @@ export class Resource extends Include {
     }
 
 
-    js (...pckg: PackageArgument[]) {
-        return this.include(ResourceType.Js, PackageExtract(pckg), null)
+    js (...pkg: PackageArgument[]) {
+        return this.include(ResourceType.Js, PackageExtract(pkg), null)
     }
-    inject (...pckg: PackageArgument[]) {
-        return this.include(ResourceType.Js, PackageExtract(pckg), null)
+    inject (...pkg: PackageArgument[]) {
+        return this.include(ResourceType.Js, PackageExtract(pkg), null)
     }
-    css (...pckg: PackageArgument[]) {
-        return this.include(ResourceType.Css, PackageExtract(pckg), null)
+    css (...pkg: PackageArgument[]) {
+        return this.include(ResourceType.Css, PackageExtract(pkg), null)
     }
-    load (...pckg: PackageArgument[]) {
-        return this.include(ResourceType.Load, PackageExtract(pckg), null)
+    load (...pkg: PackageArgument[]) {
+        return this.include(ResourceType.Load, PackageExtract(pkg), null)
     }
-    ajax (...pckg: PackageArgument[]) {
-        return this.include(ResourceType.Ajax, PackageExtract(pckg), null)
+    ajax (...pkg: PackageArgument[]) {
+        return this.include(ResourceType.Ajax, PackageExtract(pkg), null)
     }
-    embed (...pckg: PackageArgument[]) {
-        return this.include(ResourceType.Embed, PackageExtract(pckg), null)
+    embed (...pkg: PackageArgument[]) {
+        return this.include(ResourceType.Embed, PackageExtract(pkg), null)
     }
-    lazy (...pckg: PackageArgument[]) {
-        return this.include(ResourceType.Lazy, PackageExtract(pckg), null)
+    lazy (...pkg: PackageArgument[]) {
+        return this.include(ResourceType.Lazy, PackageExtract(pkg), null)
     }
-    mask (...pckg: PackageArgument[]) {
-        return this.include(ResourceType.Mask, PackageExtract(pckg), null)
+    mask (...pkg: PackageArgument[]) {
+        return this.include(ResourceType.Mask, PackageExtract(pkg), null)
     }
 
     path_getFile: Function
@@ -339,10 +343,10 @@ export class Resource extends Include {
 
 export declare type PackageArgument = string | string[] | { [namespace: string]: string | string[] };
 
-function PackageExtract(pckg: any[]): PackageArgument {
-    if (pckg.length > 1) return pckg;
-    if (Array.isArray(pckg[0])) return pckg[0];
-    return pckg;
+function PackageExtract(pkg: any[]): PackageArgument {
+    if (pkg.length > 1) return pkg;
+    if (Array.isArray(pkg[0])) return pkg[0];
+    return pkg;
 }
 
 // private

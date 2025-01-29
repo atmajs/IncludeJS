@@ -13,10 +13,19 @@ import { isBrowser } from './global';
 import { type Resource } from './Resource';
 
 
+type TResourceData = {
+    path: string
+    module?: 'import' | 'commonjs' | 'umd'
+}
+
 export const PathResolver = {
-    configMap(map){
+    configMap(map: Record<string, string | TResourceData>) {
         for (let key in map) {
-            _map[key] = map[key];
+            let value = map[key];
+
+            _map[key] = typeof value === 'string'
+                ? { path: value }
+                : value;
         }
     },
     configRewrites (rewrites) {
@@ -38,7 +47,7 @@ export const PathResolver = {
         }
     },
     resolveBasic(path_: string, type: ResourceType, parent: Resource) {
-        let path = map(path_);
+        let { path } = map(path_);
 
         if (type === 'js' && isNodeModuleResolution(path)) {
             return path;
@@ -60,10 +69,22 @@ export const PathResolver = {
         }
         return ensureExtension(path, type);
     },
+    resolveBasicWithData(path_: string, type: ResourceType, parent: Resource): TResourceData {
+        let mapped1 = map(path_);
+        let path = PathResolver.resolveBasic(path_, type, parent);
+        let mapped2 = map(path);
+        let data = {
+            path,
+            module: mapped1?.module
+                ?? mapped2?.module
+                ?? (path.include('/esm/') ? 'import' : null)
+        };
+        return data;
+    },
     isNpm: isNodeModuleResolution,
     getType: getTypeForPath,
-    resolveNpm(path_, type, parent, cb){
-        let path = map(path_);
+    resolveNpm(path_: string, type, parent, cb){
+        let { path } = map(path_);
         if (path_hasExtension(path)) {
             cb(null, path);
             return;
@@ -83,11 +104,11 @@ export const PathResolver = {
         }
         cb(null, path);
     },
-    isNodeNative (path) {
-        return _nodeBuiltIns.indexOf(path) !== -1;
+    isNodeNative (path: string) {
+        return _nodeBuiltIns.indexOf(path) !== -1 || path.startsWith('node:');
     }
 };
-let _map = Object.create(null);
+let _map = Object.create(null) as Record<string, TResourceData>;
 let _npm = Object.create(null);
 let _rewrites = Object.create(null);
 let _ext = {
@@ -147,8 +168,8 @@ let _nodeBuiltIns = [
     "vm",
     "zlib"
 ];
-function map(path) {
-    return _map[path] ?? path;
+function map(path: string) {
+    return _map[path] ?? { path };
 }
 function rewrite (path: string) {
     for (let key in _rewrites) {
@@ -322,16 +343,16 @@ function ensureExtension(path, type) {
     }
     return path.substring(0, i) + '.' + ext + path.substring(i);
 }
-function getTypeForPath(path: string): ResourceType {
-    let aliasIdx = path.indexOf('::');
+function getTypeForPath(path_: string): ResourceType {
+    let aliasIdx = path_.indexOf('::');
     if (aliasIdx > - 1)  {
-        path = path.substring(0, aliasIdx);
+        path_ = path_.substring(0, aliasIdx);
     }
 
-    if (isNodeModuleResolution(path)) {
+    if (isNodeModuleResolution(path_)) {
         return ResourceType.Js;
     }
-    path = map(path);
+    let { path } = map(path_);
 
     let match = /\.([\w]{1,8})($|\?|:)/.exec(path);
     if (match === null) {

@@ -12,6 +12,10 @@ import { CustomLoader } from './CustomLoader'
 import { Include } from './Include'
 import { Config } from './Config'
 
+//#if (BROWSER)
+import './browser/init.ts';
+//#endif
+
 
 const IncludeLib = {
     Routes: RoutesLib,
@@ -22,6 +26,8 @@ const IncludeLib = {
     registerLoader: CustomLoader.register,
     instance: Include.instance
 }
+
+
 
 export = {
     include: new Include,
