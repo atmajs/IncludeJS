@@ -68,6 +68,12 @@ namespace Loaders {
 
         import(resource.url).then(
             result => {
+                if (cfg.esModuleInterop) {
+                    result = {
+                        __esModule: true,
+                        ...(result ?? {})
+                    };
+                }
                 resource.exports = result;
                 resource.response = result;
                 callback();

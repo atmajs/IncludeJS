@@ -38,6 +38,10 @@ class Config {
     eval = document == null
 
     es6Exports = false
+
+    /** Adds "__esModule" to exports when loaded by import to be compatible with TS commonjs/umd modules */
+    esModuleInterop = false
+
     server = false
     logCyclic = false
     workerSuffix = 'worker'
