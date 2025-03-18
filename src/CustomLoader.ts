@@ -5,6 +5,10 @@ import { Helper } from './Helper';
 import { Config } from './Config';
 import { WorkerLoader } from './worker/WorkerLoader';
 import { IIncludeOptions } from './Include';
+import { Bin } from './Bin';
+import { ResourceType } from './models/Type';
+import { Amd } from './modules/amd';
+import { State } from './models/State';
 
 
 /** GLOBAL */
@@ -27,6 +31,23 @@ function loader_isInstance(x) {
 function createLoader(url: string, options: IIncludeOptions) {
     if (workerLoader.supports(url) && options?.skipWorker !== true) {
         return workerLoader;
+    }
+    if (Amd.isEnabled() && url.includes('!')) {
+        let [ loaderId, path ] = url.split('!');
+        let loaderResource = Bin.get(ResourceType.Js, loaderId);
+        let loader = loaderResource.exports as { load (name, req, onLoad, config) }
+        return {
+            process: function (result, resource, onLoad) {
+                onLoad(result);
+            },
+            load: function (resource: Resource, onLoad) {
+                let name = resource.url.substring(resource.url.indexOf('!') + 1);
+                loader.load(name, include, (result) => {
+                    resource.state = State.AllCompleted;
+                    onLoad(resource, result);
+                }, cfg);
+            }
+        };
     }
 
     let extension = path_getExtension(url);
@@ -115,6 +136,14 @@ export const CustomLoader = {
 
         if (workerLoader.supports(resource.url) && resource.options?.skipWorker !== true) {
             return true;
+        }
+
+        if (resource.url.includes('!')) {
+            let [ loaderId, path ] = resource.url.split('!');
+            let loader = Bin.get(ResourceType.Js, loaderId);
+            if (loader != null) {
+                return loader;
+            }
         }
 
         let ext = path_getExtension(resource.url);

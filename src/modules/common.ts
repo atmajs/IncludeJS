@@ -3,6 +3,7 @@ import { cfg } from '../Config'
 import type { Resource } from '../Resource';
 import { ResourceType } from '../models/Type';
 import { State } from '../models/State';
+import { PathResolver } from '../PathResolver';
 
 declare let include: Resource;
 declare let require: any;
@@ -13,6 +14,22 @@ let enabled = false;
 const CommonJSInternal = {
     exports: null,
     require: function commonjs(path) {
+        let resolveFn;
+        if (arguments.length === 3) {
+            let [paths, _resolveFn, rejectFn ] = Array.from(arguments);
+            if (typeof _resolveFn === 'function') {
+                // AmdJS require
+                resolveFn = _resolveFn;
+                if (Array.isArray(paths)) {
+                    if (paths.length > 1) {
+                        console.error(paths);
+                        throw new Error('RequireJS paths must be an array of length = 1');
+                    }
+                    path = paths[0];
+                }
+            }
+        }
+
         let url = include?.resolvePath(path);
         let resource = include?.getResource(url, ResourceType.Js);
         if (resource != null && resource.state === State.AllCompleted) {
@@ -49,6 +66,9 @@ const CommonJSInternal = {
 
         include.instance(include.url, include).js(path + '::Module').done(resp => {
             exports = resp.Module;
+            if (resolveFn != null) {
+                resolveFn(exports);
+            }
         });
         include = currentInclude;
 
@@ -67,6 +87,12 @@ const CommonJSInternal = {
         enableRequire();
     }
 };
+
+(CommonJSInternal.require as any).toUrl = function (path) {
+    let url = PathResolver.resolveBasic(path, ResourceType.Js, include);
+    return url;
+
+}
 
 
 

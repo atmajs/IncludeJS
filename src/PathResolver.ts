@@ -4,7 +4,8 @@ import {
     path_combine,
     path_getDir,
     path_cdUp,
-    path_hasExtension
+    path_hasExtension,
+    path_getExtension
 } from './utils/path';
 import { Helper } from './Helper';
 import { ResourceType } from './models/Type';
@@ -49,7 +50,7 @@ export const PathResolver = {
     resolveBasic(path_: string, type: ResourceType, parent: Resource) {
         let { path } = map(path_);
 
-        if (type === 'js' && isNodeModuleResolution(path)) {
+        if (type === 'js' && isNodeModuleResolution(path) || path.includes('!')) {
             return path;
         }
 
@@ -328,9 +329,13 @@ function nodeModuleResolveOld(current_, path, cb){
     }
     check();
 }
-function ensureExtension(path, type) {
+function ensureExtension(path: string, type: string) {
     if (path_hasExtension(path)) {
-        return path;
+        let ext = path_getExtension(path);
+        if (type !== 'js' || ext in _extTypes) {
+            // For scripts we return only if the extension is known.
+            return path;
+        }
     }
     let ext = _ext[type];
     if (ext == null) {

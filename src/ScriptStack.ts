@@ -4,6 +4,7 @@ import { refs } from './global'
 import { type Resource } from './Resource';
 import { res_setState } from './utils/res';
 import { class_Dfr } from './utils/class_Dfr';
+import { State } from './models/State';
 
 declare var global: any;
 
@@ -126,6 +127,10 @@ function tickStack () {
         return;
     }
     let resource = stack[0];
+    if (resource.state === State.AllCompleted) {
+        onResourceLoaded(resource);
+        return;
+    }
 
     currentResource = resource;
     currentResource.state = 1;

@@ -17,7 +17,7 @@ declare let include: any;
 
 export interface IIncludeData {
     url: string
-    namespace: string
+    namespace?: string
     aliases?: string[]
 }
 export interface IIncludeOptions {
@@ -39,7 +39,7 @@ export class Include extends IncludeDeferred {
 
         setCurrent (data: IIncludeData) {
             let url = data.url,
-                resource = this.getResourceById(url, 'js');
+                resource = this.getResourceById(url, ResourceType.Js);
 
             if (resource == null) {
                 if (url[0] === '/' && this.base)
@@ -62,9 +62,10 @@ export class Include extends IncludeDeferred {
                 })
             }
 
-            /**@TODO - probably state shoulb be changed to 2 at this place */
+            /**@TODO - probably state should be changed to 2 at this place */
             resource.state = 3;
             global.include = resource;
+            return resource;
         }
 
         cfg (a, b) {

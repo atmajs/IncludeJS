@@ -13,6 +13,7 @@ import { LazyModule } from './LazyModule'
 import { ResourceType } from './models/Type'
 import { cfg } from './Config';
 import { document } from './global'
+import { State } from './models/State';
 
 export class Resource extends Include {
 
@@ -142,6 +143,11 @@ export class Resource extends Include {
     }
 
     resolvePath (path: string, type: ResourceType = ResourceType.Js) {
+        return PathResolver.resolveBasic(path, type, this);
+    }
+
+    toUrl (path: string, type?: ResourceType) {
+        type ??= PathResolver.getType(path);
         return PathResolver.resolveBasic(path, type, this);
     }
 
@@ -394,7 +400,7 @@ function process(resource: Resource) {
     return resource;
 }
 
-function onXHRCompleted(resource, response) {
+function onXHRCompleted(resource: Resource, response) {
     if (!response) {
         console.warn('Resource can`t be loaded', resource.url);
         //- resource.readystatechanged(4);
@@ -404,7 +410,7 @@ function onXHRCompleted(resource, response) {
         case 'js':
         case 'embed':
             resource.source = response;
-            resource.state = 2;
+            resource.state = Math.max(resource.state, State.Evaluating);
             ScriptStack.touch();
             return;
         case 'load':

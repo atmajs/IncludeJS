@@ -1,13 +1,17 @@
 import { bin } from '../Bin';
 import { CommonJS } from './common';
 import { isNode, isBrowser, global, __require } from '../global';
-import type { Resource } from '../Resource';
+import { Resource } from '../Resource';
 import { ResourceType } from '../models/Type';
 import { State } from '../models/State';
+import { PathResolver } from '../PathResolver';
 export const Amd = {
-    enable: function() {
+    enable () {
         enable();
     },
+    isEnabled () {
+        return enabled;
+    }
 };
 
 declare let require: any;
@@ -120,7 +124,23 @@ function getFn(patterns, args) {
     return emptyFn;
 }
 function emptyFn() {}
-function _define(module, name, dependencies: string[], exports) {
+function _define(module, name: string, dependencies: string[], exports) {
+
+    if (name != null) {
+        let path = PathResolver.resolveBasic(name, ResourceType.Js, module);
+        if (path.endsWith(module.id) === false) {
+            // We have additional define registration in the module
+
+            let aliases = [ name ];
+            let includeGlobal = include;
+            include.register({"js":[{"type":"js","url": path}]});
+            let resource = include.setCurrent({ url: path, aliases });
+            _define(resource, null, dependencies, exports);
+            resource.readystatechanged(3);
+            include = includeGlobal;
+            return
+        }
+    }
     if (name != null) {
         bin.js[name] = module;
     }
