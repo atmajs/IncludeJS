@@ -191,7 +191,7 @@ function isNodeModuleResolution(path: string){
     // npm name
     let rgx_ROOT = /^@?[\w\-_]+$/;
     // npm name with path or npm organization with name and/or path
-    let rgx_withPath = /^(@?[\w_]+[\w\-_\.]*)(\/[\w\-_]+)+$/;
+    let rgx_withPath = /^(@?[\w_]+[\w\-_\.]*)(\/[\w\-_$]+)+$/;
 
     let isNpm = rgx_ROOT.test(path) || rgx_withPath.test(path);
     if (isNpm === false) {
